@@ -1317,24 +1317,24 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div class="grid-4">
         <div class="box-card">
-          <div class="box-kicker"><span class="num">1</span>The Picture</div>
-          <div class="box-title">Where you stand today &mdash; and where it&rsquo;s heading.</div>
-          <div class="box-body">RMDs. Single-filer years. The kids inheriting. We map it all.</div>
+          <div class="box-kicker"><span class="num">1</span>Future Tax Liability</div>
+          <div class="box-title">What is our future tax liability?</div>
+          <div class="box-body">Project out our RMDs and tax brackets, year by year.</div>
         </div>
         <div class="box-card">
           <div class="box-kicker"><span class="num">2</span>The Math</div>
-          <div class="box-title">What converting actually saves you, in dollars.</div>
-          <div class="box-body">On your ${balStr} IRA, the gap between acting now and waiting.</div>
+          <div class="box-title">Does converting actually save us money?</div>
+          <div class="box-body">On your ${balStr} IRA, the dollar gap between acting now and waiting.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">3</span>The Floor</div>
-          <div class="box-title">How we shrink every tax bill we legally can.</div>
-          <div class="box-body">Bracket fills, dip conversions, paired losses. Every dollar engineered.</div>
+          <div class="box-kicker"><span class="num">3</span>Minimization</div>
+          <div class="box-title">How do we minimize taxation?</div>
+          <div class="box-body">The best strategy for minimizing taxes &mdash; bracket fills, dip conversions, paired losses.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">4</span>The Ceiling</div>
-          <div class="box-title">What you keep beyond the tax saved.</div>
-          <div class="box-body">Tax-free growth. No RMDs. Spouse protected. Heirs inherit clean.</div>
+          <div class="box-kicker"><span class="num">4</span>Who It Affects</div>
+          <div class="box-title">How does this apply to me${inputs.filingStatus === 'MFJ' ? ', my spouse,' : ''} and my beneficiaries?</div>
+          <div class="box-body">${inputs.filingStatus === 'MFJ' ? 'Your taxes, your spouse&rsquo;s widow-penalty exposure, and what your heirs actually inherit.' : 'Your taxes today and what your heirs actually inherit when the 10-year rule kicks in.'}</div>
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
