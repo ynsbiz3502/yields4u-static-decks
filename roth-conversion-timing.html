@@ -1874,30 +1874,45 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <h2 class="title">The Index Hides Where The Opportunity Lives.</h2>
         <p class="subtitle">We don&rsquo;t harvest the S&amp;P 500 &mdash; we harvest the 500 stocks underneath it. Even in green years, dozens of names are down. That&rsquo;s our surface area.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;max-width:1300px;margin:32px auto 0;">
-        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:24px 26px;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
-            <div style="font-family:var(--font-serif);font-size:34px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">2024</div>
-            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">A Green Year</div>
+      <div id="spx-year-panels" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;max-width:1300px;margin:32px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:22px 24px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
+            <div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">2024</div>
+            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">A Green Year</div>
           </div>
-          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:#4A8A6B;line-height:1;">+23%</div></div>
-            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);text-align:right;">Looks great<br>on the surface.</div>
+          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between;">
+            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:28px;font-weight:700;color:#4A8A6B;line-height:1;">+23%</div></div>
+            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);text-align:right;">Looks great<br>on the surface.</div>
           </div>
-          <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:10px;">The 500 Stocks Underneath</div>
+          <div style="font-family:var(--font-sans);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>
           ${constituentBar(340, 160)}
         </div>
-        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:24px 26px;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
-            <div style="font-family:var(--font-serif);font-size:34px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">2025</div>
-            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">Also Green</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:22px 24px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
+            <div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">2025</div>
+            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">Also Green</div>
           </div>
-          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:#4A8A6B;line-height:1;">+14%</div></div>
-            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);text-align:right;">Same story.<br>Different mix.</div>
+          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between;">
+            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:28px;font-weight:700;color:#4A8A6B;line-height:1;">+14%</div></div>
+            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);text-align:right;">Same story.<br>Different mix.</div>
           </div>
-          <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:10px;">The 500 Stocks Underneath</div>
+          <div style="font-family:var(--font-sans);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>
           ${constituentBar(320, 180)}
+        </div>
+        <!-- 2026 YTD card — fields populated by renderCharts() from the live SPX series. -->
+        <div id="spx-ytd-card" style="background:white;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:none;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
+            <div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;" data-ytd-year>2026</div>
+            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">Year to Date</div>
+          </div>
+          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:baseline;justify-content:space-between;">
+            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 YTD</div><div style="font-family:var(--font-serif);font-size:28px;font-weight:700;color:#4A8A6B;line-height:1;" data-ytd-return>+5.3%</div></div>
+            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);text-align:right;">Through<br><span data-ytd-as-of>April</span>.</div>
+          </div>
+          <div style="background:#FDF6F4;border:1px solid #F1D6CF;border-radius:8px;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;">
+            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;font-weight:700;">YTD max drawdown</div><div style="font-family:var(--font-sans);font-size:11px;color:var(--fg-muted);margin-top:4px;">Peak to trough so far this year.</div></div>
+            <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#A83B2E;line-height:1;" data-ytd-dd>−5.9%</div>
+          </div>
         </div>
       </div>
       <div style="max-width:1300px;margin:24px auto 0;">
@@ -2596,9 +2611,71 @@ function renderCharts(inputs, sim, savings) {
       if (!Array.isArray(spxSeries) || spxSeries.length < 4) return;
       if (chartInstances.spxTraj) { chartInstances.spxTraj.destroy(); chartInstances.spxTraj = null; }
       updateSpxDrawdownCallouts(spxSeries);
+      updateSpxYtdCard(spxSeries);
       const labels = spxSeries.map(p => p.m);
       const prices = spxSeries.map(p => p.v);
       renderSpxChartInstance(labels, prices);
+    }
+
+    // Populate the third year-panel card with YTD return + YTD max drawdown
+    // when the most recent year isn't complete (last month < December). Hides
+    // the card otherwise so the panel grid collapses cleanly to 2 columns.
+    function updateSpxYtdCard(spxSeries) {
+      const card = document.getElementById('spx-ytd-card');
+      const grid = document.getElementById('spx-year-panels');
+      if (!card) return;
+      const MONTH_NAMES_LC = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+      const MONTH_NAMES_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      function parseLabel(label) {
+        const s = String(label).trim();
+        const moMatch = s.match(/^([A-Za-z]+)/);
+        const yrMatch = s.match(/(\d{2,4})$/);
+        const moIdx = moMatch ? MONTH_NAMES_LC.indexOf(moMatch[1].toLowerCase()) : -1;
+        const yrShort = yrMatch ? yrMatch[1].slice(-2) : '';
+        return { mo: moIdx + 1, yShort: yrShort, yFull: yrShort ? ('20' + yrShort) : '' };
+      }
+      const last = spxSeries[spxSeries.length - 1];
+      const { mo: lastMo, yShort: lastYShort, yFull: lastYFull } = parseLabel(last.m);
+      // Only show YTD when the most recent year isn't complete.
+      if (!lastYFull || lastMo === 12) {
+        card.style.display = 'none';
+        if (grid) grid.style.gridTemplateColumns = '1fr 1fr';
+        return;
+      }
+      // YTD return = (last close / prior-year Dec close) - 1. Fall back to the
+      // first available close of the current year if the prior December isn't
+      // in the windowed series (early-history edge case).
+      const priorYrShort = String(parseInt(lastYFull, 10) - 1).slice(-2);
+      const priorDec = spxSeries.find(p => p.m === 'Dec ' + priorYrShort);
+      const inYear = spxSeries.filter(p => parseLabel(p.m).yShort === lastYShort);
+      const baseClose = priorDec ? priorDec.v : (inYear.length ? inYear[0].v : null);
+      if (!baseClose) {
+        card.style.display = 'none';
+        if (grid) grid.style.gridTemplateColumns = '1fr 1fr';
+        return;
+      }
+      // Max drawdown within the current year only.
+      let peak = -Infinity, minDD = 0;
+      for (const p of inYear) {
+        peak = Math.max(peak, p.v);
+        const dd = (p.v - peak) / peak * 100;
+        if (dd < minDD) minDD = dd;
+      }
+      const ytdReturn = (last.v - baseClose) / baseClose * 100;
+      const fmt = (n, digits = 1) => (n >= 0 ? '+' : '−') + Math.abs(n).toFixed(digits) + '%';
+      const yrEl = card.querySelector('[data-ytd-year]');
+      const retEl = card.querySelector('[data-ytd-return]');
+      const asOfEl = card.querySelector('[data-ytd-as-of]');
+      const ddEl = card.querySelector('[data-ytd-dd]');
+      if (yrEl) yrEl.textContent = lastYFull;
+      if (retEl) {
+        retEl.textContent = fmt(ytdReturn);
+        retEl.style.color = ytdReturn >= 0 ? '#4A8A6B' : '#A83B2E';
+      }
+      if (asOfEl) asOfEl.textContent = MONTH_NAMES_FULL[lastMo - 1] || '';
+      if (ddEl) ddEl.textContent = '−' + Math.abs(minDD).toFixed(1) + '%';
+      card.style.display = 'block';
+      if (grid) grid.style.gridTemplateColumns = '1fr 1fr 1fr';
     }
 
     // Build the "max drawdown" callout cards below the chart, one per year in
