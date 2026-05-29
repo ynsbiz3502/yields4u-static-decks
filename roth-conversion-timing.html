@@ -980,6 +980,20 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
       </div>
 
       <div class="form-row">
+        <label for="annualWithdrawal">Annual withdrawal from the IRA <span class="hint" style="font-weight:400;">(optional)</span></label>
+        <input type="text" id="annualWithdrawal" value="$0" inputmode="numeric">
+        <div class="hint">Amount you plan to pull from the IRA each year. Grows with inflation each year and is deducted from the balance before growth is applied.</div>
+      </div>
+
+      <div class="form-row">
+        <label for="inflationRate">Inflation rate: <span class="slider-val" id="inflationVal" style="font-weight:700;">4.0%</span></label>
+        <div class="slider-row">
+          <input type="range" id="inflationRate" min="0" max="8" step="0.5" value="4">
+        </div>
+        <div class="hint">Annual percentage by which the withdrawal amount is grown each year.</div>
+      </div>
+
+      <div class="form-row">
         <label for="growthRate">Expected annual growth: <span class="slider-val" id="growthVal" style="font-weight:700;">7.0%</span></label>
         <div class="slider-row">
           <input type="range" id="growthRate" min="4" max="10" step="0.5" value="7">
@@ -1090,10 +1104,18 @@ function computeTax(income, status) {
 
 function simulate(inputs) {
   const { balance, currentAge, growthRate, otherIncome, filingStatus } = inputs;
+  const annualWithdrawal = inputs.annualWithdrawal || 0;
+  const inflationRate = (inputs.inflationRate != null) ? inputs.inflationRate : 0.04;
   const rmdStart = 73, endAge = 95;
   let bal = balance;
-  // Pre-RMD growth
-  for (let age = currentAge; age < rmdStart; age++) bal *= (1 + growthRate);
+  // Pre-RMD: each year, deduct the inflation-grown withdrawal BEFORE applying growth.
+  // yearsFromStart is 0 in the first year (current age), so the first-year withdrawal
+  // equals annualWithdrawal exactly; subsequent years scale by (1 + inflationRate)^n.
+  for (let age = currentAge; age < rmdStart; age++) {
+    const yearsFromStart = age - currentAge;
+    const withdraw = annualWithdrawal * Math.pow(1 + inflationRate, yearsFromStart);
+    bal = Math.max(0, bal - withdraw) * (1 + growthRate);
+  }
   const rows = [];
   let lifetimeRMD = 0, lifetimeTax = 0, peakRMD = 0;
   const baselineTax = computeTax(otherIncome, filingStatus);
@@ -1106,7 +1128,12 @@ function simulate(inputs) {
     const rmdTax = Math.max(0, totalTax - baselineTax);
     rows.push({ age, rmd, pct, balance: bal, rmdTax });
     lifetimeRMD += rmd; lifetimeTax += rmdTax; peakRMD = Math.max(peakRMD, rmd);
-    bal = (bal - rmd) * (1 + growthRate);
+    // Post-RMD: the actual draw is at least the RMD, but bumped up to match the
+    // inflation-grown withdrawal target if the advisor is planning a larger draw.
+    const yearsFromStart = age - currentAge;
+    const inflWithdraw = annualWithdrawal * Math.pow(1 + inflationRate, yearsFromStart);
+    const actualDraw = Math.max(rmd, inflWithdraw);
+    bal = Math.max(0, bal - actualDraw) * (1 + growthRate);
   }
   return { rows, lifetimeRMD, lifetimeTax, peakRMD, finalBalance: bal };
 }
@@ -2126,6 +2153,8 @@ function onGenerate(e) {
     currentAge: parseInt(document.getElementById('currentAge').value, 10) || 63,
     filingStatus: document.getElementById('filingStatus').value,
     otherIncome: parseMoney(document.getElementById('otherIncome').value),
+    annualWithdrawal: parseMoney(document.getElementById('annualWithdrawal')?.value || '0'),
+    inflationRate: (parseFloat(document.getElementById('inflationRate')?.value || '4') || 4) / 100,
     growthRate: parseFloat(document.getElementById('growthRate').value) / 100
   };
   if (!inputs.balance || inputs.balance < 50000) {
@@ -2183,6 +2212,7 @@ function applyUrlParamsToForm() {
   setText('currentAge', 'currentAge');
   setText('filingStatus', 'filingStatus');
   setMoney('otherIncome', 'otherIncome');
+  setMoney('annualWithdrawal', 'annualWithdrawal');
   const growth = params.get('growthRate');
   if (growth !== null && growth !== '') {
     const g = document.getElementById('growthRate');
@@ -2190,6 +2220,14 @@ function applyUrlParamsToForm() {
     const n = parseFloat(growth);
     if (g && !isNaN(n)) g.value = String(n);
     if (gv && !isNaN(n)) gv.textContent = n.toFixed(1) + '%';
+  }
+  const infl = params.get('inflationRate');
+  if (infl !== null && infl !== '') {
+    const i = document.getElementById('inflationRate');
+    const iv = document.getElementById('inflationVal');
+    const n = parseFloat(infl);
+    if (i && !isNaN(n)) i.value = String(n);
+    if (iv && !isNaN(n)) iv.textContent = n.toFixed(1) + '%';
   }
   return params.get('auto') === '1' || params.get('auto') === 'true';
 }
@@ -2239,8 +2277,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Inflation slider live label
+  const infl = document.getElementById('inflationRate');
+  const inflVal = document.getElementById('inflationVal');
+  if (infl && inflVal) {
+    infl.addEventListener('input', () => {
+      inflVal.textContent = parseFloat(infl.value).toFixed(1) + '%';
+    });
+  }
+
   // Money input formatters (on blur)
-  ['balance', 'otherIncome'].forEach(id => {
+  ['balance', 'otherIncome', 'annualWithdrawal'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('blur', () => formatMoneyInput(el));
