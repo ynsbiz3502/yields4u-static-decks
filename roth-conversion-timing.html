@@ -1641,6 +1641,12 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div style="max-width:1300px;margin:20px auto 0;">
+        <div style="display:flex;justify-content:center;margin-bottom:10px;">
+          <div style="display:inline-flex;background:#FAFAF9;border:1px solid var(--border);border-radius:999px;padding:3px;font-family:var(--font-sans);font-size:12px;font-weight:600;letter-spacing:0.06em;">
+            <button id="taxbr-mode-real" type="button" data-mode="real" class="taxbr-toggle active" style="border:0;background:var(--ink-900);color:white;padding:6px 16px;border-radius:999px;cursor:pointer;">Today&rsquo;s $</button>
+            <button id="taxbr-mode-nominal" type="button" data-mode="nominal" class="taxbr-toggle" style="border:0;background:transparent;color:var(--ink-700);padding:6px 16px;border-radius:999px;cursor:pointer;">Actual $</button>
+          </div>
+        </div>
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:320px;"><canvas id="chart-tax-brackets"></canvas></div>
         <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-top:14px;font-family:var(--font-sans);font-size:13px;color:var(--ink-700);">
           <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#4A8A6B;"></span>10&ndash;12%</div>
@@ -2367,31 +2373,24 @@ function renderCharts(inputs, sim, savings) {
     });
   }
 
-  // ---- Tax bracket trajectory in TODAY'S DOLLARS, with constant bracket-top
-  //      threshold lines drawn over the stacked bars (slide 9) ----
+  // ---- Tax bracket trajectory chart (slide 9) ----
+  //
+  // Two view modes, selected by the toggle pill above the chart:
+  //   'real'    — deflate income to today's dollars, slice against today's
+  //               brackets, draw constant horizontal threshold lines at the
+  //               top of each bracket. Default.
+  //   'nominal' — keep income in actual future dollars, slice against
+  //               inflation-INDEXED brackets year-by-year. No threshold
+  //               lines (they'd shift every year and clutter the chart).
+  //
+  // The custom legend pills below the chart describe the bands, so Chart.js's
+  // built-in legend is hidden in both modes.
   const taxBrEl = document.getElementById('chart-tax-brackets');
   if (taxBrEl && sim.yearly && sim.yearly.length) {
     const yrs = sim.yearly;
     const ages = yrs.map(y => y.age);
     const brackets = inputs.filingStatus === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
     const stdDed = STD_DED[inputs.filingStatus];
-    // Slice today's-dollar taxable against today's brackets. No inflation factor
-    // needed because we've already deflated income before slicing.
-    function sliceByBracket(taxable) {
-      const out = [];
-      let prev = 0;
-      for (const [maxT, rate] of brackets) {
-        const amt = Math.max(0, Math.min(taxable, maxT) - prev);
-        out.push({ rate, amt });
-        prev = maxT;
-        if (taxable <= maxT) {
-          for (let i = out.length; i < brackets.length; i++) out.push({ rate: brackets[i][1], amt: 0 });
-          break;
-        }
-      }
-      return out;
-    }
-    // 5 grouped buckets: 10-12 / 22 / 24 / 32 / 35-37
     const groupDefs = [
       { label: '10–12%', color: 'rgba(74, 138, 107, 0.92)',  rates: [0.10, 0.12] },
       { label: '22%',    color: 'rgba(201, 162, 59, 0.94)',  rates: [0.22] },
@@ -2399,72 +2398,121 @@ function renderCharts(inputs, sim, savings) {
       { label: '32%',    color: 'rgba(194, 90, 62, 0.94)',   rates: [0.32] },
       { label: '35–37%', color: 'rgba(168, 59, 46, 0.94)',   rates: [0.35, 0.37] }
     ];
-    const barDatasets = groupDefs.map(g => ({
-      label: g.label,
-      backgroundColor: g.color,
-      borderWidth: 0,
-      stack: 'income',
-      barPercentage: 0.92,
-      categoryPercentage: 0.92,
-      data: yrs.map(y => {
-        const f = y.inflFactor || 1;
-        // Deflate everything to today's dollars, then slice against today's brackets.
-        const taxableRealAfterStd = Math.max(0, (y.taxableInc / f) - stdDed);
-        const slices = sliceByBracket(taxableRealAfterStd);
-        return slices.reduce((sum, s) => sum + (g.rates.includes(s.rate) ? s.amt : 0), 0);
-      })
-    }));
-    // Horizontal threshold lines at the top of each bracket below the open-ended
-    // top one. Constant across all years because we're in today's dollars.
-    const lineDefs = [
-      { top: brackets[1][0], color: 'rgba(74, 138, 107, 0.65)',  label: 'Top of 12%' },
-      { top: brackets[2][0], color: 'rgba(201, 162, 59, 0.75)',  label: 'Top of 22%' },
-      { top: brackets[3][0], color: 'rgba(216, 138, 62, 0.75)',  label: 'Top of 24%' },
-      { top: brackets[4][0], color: 'rgba(194, 90, 62, 0.75)',   label: 'Top of 32%' },
-    ];
-    const lineDatasets = lineDefs.map(l => ({
-      type: 'line',
-      label: l.label,
-      data: ages.map(() => l.top),
-      borderColor: l.color,
-      backgroundColor: 'transparent',
-      borderWidth: 1.5,
-      borderDash: [6, 4],
-      pointRadius: 0,
-      pointHoverRadius: 0,
-      fill: false,
-      tension: 0,
-      order: -1, // draw on top of bars
-    }));
-    chartInstances.taxBr = new Chart(taxBrEl, {
-      type: 'bar',
-      data: { labels: ages, datasets: [...barDatasets, ...lineDatasets] },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: true, padding: 14,
-            // Hide the bracket-top line datasets from the legend (the dashed
-            // lines speak for themselves; keep the legend focused on the bands).
-            filter: item => !(item.text || '').startsWith('Top of ') } },
-          title: { display: true, text: `Taxable Income By Bracket — In Today's Dollars`,
-            color: '#0E0E0F', font: { size: 15, weight: '700', family: "'Playfair Display', Georgia, serif" }, padding: { bottom: 12 } },
-          tooltip: { mode: 'index', intersect: false,
-            callbacks: {
-              label: ctx => ctx.dataset.label + ': ' + fmtMoneyFull(ctx.parsed.y),
-              footer: items => {
-                // Sum only the stacked-bar slices, ignore the threshold lines.
-                const total = items.filter(it => it.dataset.type !== 'line').reduce((s, it) => s + it.parsed.y, 0);
-                return 'Total taxable (today $): ' + fmtMoneyFull(total);
-              }
-            } }
-        },
-        scales: {
-          x: { stacked: true, grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
-          y: { stacked: true, position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
-               ticks: { callback: v => fmtMoney(v) }, title: { display: true, text: 'Taxable Income (today $, after standard deduction)' } }
+    // Slice taxable-after-std-ded into per-bracket dollar amounts.
+    // inflScale = 1 means use today's bracket thresholds (real-dollar view);
+    // inflScale = y.inflFactor means index the thresholds to that year
+    // (nominal/actual-dollar view).
+    function sliceByBracket(taxable, inflScale) {
+      const f = inflScale || 1;
+      const out = [];
+      let prev = 0;
+      for (const [maxT, rate] of brackets) {
+        const ceiling = maxT === Infinity ? Infinity : maxT * f;
+        out.push({ rate, amt: Math.max(0, Math.min(taxable, ceiling) - prev) });
+        prev = ceiling;
+        if (taxable <= ceiling) {
+          for (let i = out.length; i < brackets.length; i++) out.push({ rate: brackets[i][1], amt: 0 });
+          break;
         }
       }
-    });
+      return out;
+    }
+    function buildBarDatasets(mode) {
+      return groupDefs.map(g => ({
+        label: g.label,
+        backgroundColor: g.color,
+        borderWidth: 0,
+        stack: 'income',
+        barPercentage: 0.92,
+        categoryPercentage: 0.92,
+        data: yrs.map(y => {
+          const f = y.inflFactor || 1;
+          let taxableAfterStd, slices;
+          if (mode === 'real') {
+            // Deflate income to today's $, slice against today's brackets.
+            taxableAfterStd = Math.max(0, (y.taxableInc / f) - stdDed);
+            slices = sliceByBracket(taxableAfterStd, 1);
+          } else {
+            // Keep income in nominal $, slice against inflated brackets.
+            taxableAfterStd = Math.max(0, y.taxableInc - stdDed * f);
+            slices = sliceByBracket(taxableAfterStd, f);
+          }
+          return slices.reduce((sum, s) => sum + (g.rates.includes(s.rate) ? s.amt : 0), 0);
+        })
+      }));
+    }
+    function buildLineDatasets(mode) {
+      // Threshold lines are only meaningful in the real-dollar view (constant
+      // bracket tops in today's $). Skip them in nominal mode since they'd be
+      // a different y-value per year.
+      if (mode !== 'real') return [];
+      const defs = [
+        { top: brackets[1][0], color: 'rgba(74, 138, 107, 0.65)',  label: 'Top of 12%' },
+        { top: brackets[2][0], color: 'rgba(201, 162, 59, 0.75)',  label: 'Top of 22%' },
+        { top: brackets[3][0], color: 'rgba(216, 138, 62, 0.75)',  label: 'Top of 24%' },
+        { top: brackets[4][0], color: 'rgba(194, 90, 62, 0.75)',   label: 'Top of 32%' },
+      ];
+      return defs.map(l => ({
+        type: 'line', label: l.label,
+        data: ages.map(() => l.top),
+        borderColor: l.color, backgroundColor: 'transparent',
+        borderWidth: 1.5, borderDash: [6, 4],
+        pointRadius: 0, pointHoverRadius: 0, fill: false, tension: 0,
+        order: -1,
+      }));
+    }
+    function renderTaxBrChart(mode) {
+      if (chartInstances.taxBr) chartInstances.taxBr.destroy();
+      const isReal = (mode === 'real');
+      const yTitle = isReal
+        ? `Taxable Income (today $, after standard deduction)`
+        : `Taxable Income (actual $, after standard deduction)`;
+      const chartTitle = isReal
+        ? `Taxable Income By Bracket — In Today's Dollars`
+        : `Taxable Income By Bracket — Actual (Inflated) Dollars`;
+      const footerLabel = isReal ? `Total taxable (today $): ` : `Total taxable: `;
+      chartInstances.taxBr = new Chart(taxBrEl, {
+        type: 'bar',
+        data: { labels: ages, datasets: [...buildBarDatasets(mode), ...buildLineDatasets(mode)] },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: chartTitle,
+              color: '#0E0E0F', font: { size: 15, weight: '700', family: "'Playfair Display', Georgia, serif" }, padding: { bottom: 12 } },
+            tooltip: { mode: 'index', intersect: false,
+              callbacks: {
+                label: ctx => ctx.dataset.label + ': ' + fmtMoneyFull(ctx.parsed.y),
+                footer: items => {
+                  const total = items.filter(it => it.dataset.type !== 'line').reduce((s, it) => s + it.parsed.y, 0);
+                  return footerLabel + fmtMoneyFull(total);
+                }
+              } }
+          },
+          scales: {
+            x: { stacked: true, grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
+            y: { stacked: true, position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
+                 ticks: { callback: v => fmtMoney(v) }, title: { display: true, text: yTitle } }
+          }
+        }
+      });
+    }
+    // Initial render in real (today's $) mode.
+    renderTaxBrChart('real');
+    // Wire the toggle pill.
+    const realBtn = document.getElementById('taxbr-mode-real');
+    const nominalBtn = document.getElementById('taxbr-mode-nominal');
+    function setActiveToggle(btn) {
+      [realBtn, nominalBtn].forEach(b => {
+        if (!b) return;
+        const isActive = (b === btn);
+        b.classList.toggle('active', isActive);
+        b.style.background = isActive ? 'var(--ink-900)' : 'transparent';
+        b.style.color = isActive ? 'white' : 'var(--ink-700)';
+      });
+    }
+    if (realBtn) realBtn.addEventListener('click', () => { setActiveToggle(realBtn); renderTaxBrChart('real'); });
+    if (nominalBtn) nominalBtn.addEventListener('click', () => { setActiveToggle(nominalBtn); renderTaxBrChart('nominal'); });
   }
 
   // ---- Negative stocks chart (slide 8) ----
