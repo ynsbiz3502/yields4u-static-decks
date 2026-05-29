@@ -24,8 +24,11 @@ and is refreshed automatically:
 
 1. **Schedule:** `.github/workflows/update-spx.yml` runs at **12:00 UTC on
    the 1st of every month**. The cron expression is `0 12 1 * *`.
-2. **Source:** the script GETs Stooq's monthly close CSV for `^SPX`:
-   `https://stooq.com/q/d/l/?s=%5Espx&i=m`. No API key required.
+2. **Source:** the script GETs monthly closes for `GSPC.INDX` from
+   [EOD Historical Data](https://eodhd.com/financial-apis/). Requires an
+   API key passed as the env var `EODHD_API_KEY` — in CI this comes from
+   the GitHub Actions secret of the same name (already configured). For
+   local runs, export the key before invoking the script.
 3. **Window:** every month from January of *(currentYear − 2)* through the
    last *completed* month. In May 2026 that's Jan 2024 → Apr 2026 (28
    months). The in-progress month is dropped so the chart never shows a

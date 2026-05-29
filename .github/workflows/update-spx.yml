@@ -28,6 +28,8 @@ jobs:
           node-version: '20'
 
       - name: Fetch and write spx-monthly.json
+        env:
+          EODHD_API_KEY: ${{ secrets.EODHD_API_KEY }}
         run: node scripts/update-spx.mjs
 
       - name: Commit if changed

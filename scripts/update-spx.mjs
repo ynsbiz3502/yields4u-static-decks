@@ -1,61 +1,73 @@
-// Fetches the last few years of S&P 500 (^GSPC) monthly closes from Yahoo
-// Finance (no API key needed) and writes them to data/spx-monthly.json. The
-// Roth deck's slide-16 chart reads that file at page-load time.
+// Fetches the last few years of S&P 500 (GSPC.INDX) monthly closes from
+// EOD Historical Data (eodhd.com) and writes them to data/spx-monthly.json.
+// The Roth deck's slide-16 chart reads that file at page-load time.
 //
-// Run locally:
-//   node scripts/update-spx.mjs
+// Requires EODHD_API_KEY in the environment. In CI this comes from the
+// GitHub Actions secret of the same name (set with `gh secret set
+// EODHD_API_KEY`). Locally, export it before running:
 //
-// Designed for the monthly GitHub Action in .github/workflows/update-spx.yml.
+//   EODHD_API_KEY=your_key node scripts/update-spx.mjs
 //
-// Notes:
-//   - Yahoo's monthly bar for the in-progress month includes a partial close
-//     that updates intraday. We drop it; the deck shouldn't show a close that
-//     could change tomorrow.
-//   - Window: every completed month from January of (currentYear - 2) through
-//     last month. So the chart always covers two full prior years + YTD.
+// Window: every completed month from January of (currentYear - 2) through
+// last month. The chart always covers two full prior years + current YTD.
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-const YAHOO_URL = 'https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=1mo&range=5y';
+const EODHD_BASE = 'https://eodhd.com/api';
+const TICKER = 'GSPC.INDX'; // S&P 500 index on EODHD
 const OUT_PATH = path.join('data', 'spx-monthly.json');
 const FULL_YEARS_KEPT = 2;
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-async function fetchYahoo() {
-  const res = await fetch(YAHOO_URL, {
-    headers: {
-      // Yahoo serves 401 to bare/curl-like UAs; mimic a generic browser.
-      'User-Agent': 'Mozilla/5.0 (compatible; roth-deck-spx-updater/1.0; +https://github.com/ynsbiz3502/yields4u-static-decks)',
-      'Accept': 'application/json',
-    },
-  });
-  if (!res.ok) throw new Error(`Yahoo HTTP ${res.status}`);
-  const json = await res.json();
-  const result = json && json.chart && json.chart.result && json.chart.result[0];
-  if (!result) throw new Error('Yahoo response missing chart.result[0]');
-  const timestamps = result.timestamp || [];
-  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0]
-    && result.indicators.quote[0].close) || [];
-  if (timestamps.length === 0 || closes.length === 0) {
-    throw new Error('Yahoo response had no timestamps/closes');
+function getApiKey() {
+  const key = process.env.EODHD_API_KEY;
+  if (!key) {
+    throw new Error(
+      'EODHD_API_KEY is not set. In CI it should come from a GitHub Actions ' +
+      'secret of the same name. Locally, export it before running:\n' +
+      '  EODHD_API_KEY=your_key node scripts/update-spx.mjs'
+    );
   }
-  if (timestamps.length !== closes.length) {
-    throw new Error(`Yahoo timestamp/close length mismatch (${timestamps.length} vs ${closes.length})`);
+  return key;
+}
+
+async function fetchEodhd() {
+  const apiKey = getApiKey();
+  // Pull from start of (currentYear - 5) to keep a small buffer beyond what
+  // the deck actually displays. Filtering happens after we have the rows.
+  const fromYear = new Date().getUTCFullYear() - 5;
+  const url = `${EODHD_BASE}/eod/${TICKER}?api_token=${apiKey}&fmt=json&period=m&from=${fromYear}-01-01`;
+  // Logged URL has the API key stripped — important for CI logs.
+  console.log(`Fetching ${EODHD_BASE}/eod/${TICKER}?fmt=json&period=m&from=${fromYear}-01-01`);
+  const res = await fetch(url, {
+    headers: { 'User-Agent': 'roth-deck-spx-updater/1.0 (+https://github.com/ynsbiz3502/yields4u-static-decks)' },
+  });
+  if (!res.ok) throw new Error(`EODHD HTTP ${res.status}`);
+  const arr = await res.json();
+  if (!Array.isArray(arr) || arr.length === 0) {
+    throw new Error('EODHD returned a non-array or empty response');
   }
   const rows = [];
-  for (let i = 0; i < timestamps.length; i++) {
-    const close = closes[i];
-    if (close == null || !Number.isFinite(close)) continue;
-    const d = new Date(timestamps[i] * 1000);
-    rows.push({ y: d.getUTCFullYear(), mo: d.getUTCMonth() + 1, close, date: d.toISOString().slice(0, 10) });
+  for (const o of arr) {
+    if (!o || typeof o.date !== 'string') continue;
+    const close = (typeof o.adjusted_close === 'number' && Number.isFinite(o.adjusted_close))
+      ? o.adjusted_close
+      : (typeof o.close === 'number' && Number.isFinite(o.close) ? o.close : null);
+    if (close == null) continue;
+    const [yStr, moStr] = o.date.split('-');
+    const y = parseInt(yStr, 10);
+    const mo = parseInt(moStr, 10);
+    if (!Number.isFinite(y) || !Number.isFinite(mo) || mo < 1 || mo > 12) continue;
+    rows.push({ y, mo, close, date: o.date });
   }
+  // Defensive sort by date ascending (EODHD typically returns ascending already).
+  rows.sort((a, b) => a.date.localeCompare(b.date));
   return rows;
 }
 
 async function main() {
-  console.log(`Fetching ${YAHOO_URL}`);
-  const rows = await fetchYahoo();
+  const rows = await fetchEodhd();
   if (rows.length === 0) throw new Error('No usable rows after parse');
 
   const now = new Date();
@@ -75,8 +87,8 @@ async function main() {
 
   const out = {
     updated_at: new Date().toISOString(),
-    source: YAHOO_URL,
-    note: 'Auto-generated by scripts/update-spx.mjs from Yahoo Finance monthly closes for ^GSPC. Hand-editing is OK; the scheduled workflow will overwrite on its next run.',
+    source: `https://eodhd.com/api/eod/${TICKER}?period=m`,
+    note: 'Auto-generated by scripts/update-spx.mjs from EOD Historical Data monthly closes for GSPC.INDX. Hand-editing is OK; the scheduled workflow will overwrite on its next run.',
     months: trimmed.length,
     series: trimmed,
   };
