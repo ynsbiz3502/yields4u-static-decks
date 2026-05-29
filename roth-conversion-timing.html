@@ -2733,7 +2733,11 @@ function applyUrlParamsToForm() {
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('input-form');
   if (form) form.addEventListener('submit', onGenerate);
-  const shouldAutoRun = applyUrlParamsToForm();
+  // A `#slide=N` hash on initial load also implies auto-run: someone is
+  // refreshing or following a shared link straight to a specific slide, and
+  // shouldn't have to re-click Continue. Falls back to whatever URL params
+  // are there (or the form defaults if not).
+  const shouldAutoRun = applyUrlParamsToForm() || getSlideFromHash() != null;
 
   // Two-step intake flow: questions → next → form
   const card = document.querySelector('.input-card');
