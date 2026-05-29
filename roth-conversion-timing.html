@@ -985,16 +985,21 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
         <div class="hint">Combined annual Social Security for the household once benefits start. Grows with inflation (COLA).</div>
       </div>
 
-      <!-- Inflation rate is fixed at 4% by default. URL param `?inflationRate=` can
-           still override (e.g., 3 for 3%). Hidden so the intake stays clean. -->
-      <input type="hidden" id="inflationRate" value="4">
-
       <div class="form-row">
         <label for="growthRate">Expected annual growth: <span class="slider-val" id="growthVal" style="font-weight:700;">7.0%</span></label>
         <div class="slider-row">
           <input type="range" id="growthRate" min="4" max="10" step="0.5" value="7">
         </div>
       </div>
+
+      <details style="margin: 4px 0 22px; font-family: var(--font-sans);">
+        <summary style="cursor:pointer; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--fg-subtle); font-weight:600; padding:6px 0; user-select:none;">Advanced</summary>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px 14px;background:#FAFAF9;border:1px solid var(--border);border-radius:8px;">
+          <label for="inflationRate" style="font-size:13px;color:var(--ink-700);font-weight:500;margin:0;flex:0 0 auto;">Inflation rate</label>
+          <input type="number" id="inflationRate" value="4" min="0" max="15" step="0.1" style="width:84px;font-size:14px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;">
+          <span style="font-size:13px;color:var(--fg-subtle);">% per year &middot; used to grow income needs &amp; Social Security</span>
+        </div>
+      </details>
 
       <button type="submit" class="cta-btn">See my plan</button>
     </form>
