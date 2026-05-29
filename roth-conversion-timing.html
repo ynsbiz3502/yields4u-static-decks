@@ -2463,6 +2463,22 @@ function show(slideN) {
   document.getElementById('prevBtn').disabled = slideN === 1;
   document.getElementById('nextBtn').disabled = slideN === TOTAL_SLIDES;
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Persist current slide in the URL hash so a refresh restores it.
+  // replaceState (not pushState) keeps Back/Forward focused on app-level navigation,
+  // not slide-by-slide. Wrap in try/catch in case the page is served from file://.
+  try {
+    const desired = '#slide=' + slideN;
+    if (window.location.hash !== desired) {
+      history.replaceState(null, '', desired);
+    }
+  } catch (_) { /* no-op */ }
+}
+
+function getSlideFromHash() {
+  const m = (window.location.hash || '').match(/slide=(\d+)/);
+  if (!m) return null;
+  const n = parseInt(m[1], 10);
+  return (Number.isFinite(n) && n > 0) ? n : null;
 }
 
 function onGenerate(e) {
@@ -2496,7 +2512,8 @@ function onGenerate(e) {
   wrap.innerHTML = buildSlides(inputs, sim, savings, heir, widow);
   document.getElementById('input-screen').style.display = 'none';
   document.getElementById('presentation-screen').classList.add('active');
-  show(1);
+  // Honor a #slide=N hash so a refresh / shared link restores the right slide.
+  show(getSlideFromHash() || 1);
   requestAnimationFrame(() => renderCharts(inputs, sim));
 }
 
