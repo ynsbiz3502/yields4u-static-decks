@@ -1145,17 +1145,22 @@ function simulate(inputs) {
     // Taxable income: all IRA draw is taxable, 85% of SS is taxable (simplification), plus otherIncome.
     const taxableInc = irargrossDraw + 0.85 * ssYear + otherIncome;
     const totalTax = computeTax(taxableInc, filingStatus);
-    // Marginal bracket = the rate of the bracket where the top dollar of taxable income falls.
-    const taxableAfterStd = Math.max(0, taxableInc - stdDed);
+    // Bracket thresholds and the standard deduction are indexed to inflation
+    // each year (the IRS does this in real life via CPI). Without this, the
+    // slide-9 trajectory dramatically overstates bracket creep — income grows
+    // with inflation but the brackets stay frozen at today's dollars.
+    const yearStdDed = stdDed * inflFactor;
+    const taxableAfterStd = Math.max(0, taxableInc - yearStdDed);
     let bracketPct = 0.10;
     for (const [maxT, rate] of brackets) {
+      const yearMaxT = maxT === Infinity ? Infinity : maxT * inflFactor;
       bracketPct = rate;
-      if (taxableAfterStd <= maxT) break;
+      if (taxableAfterStd <= yearMaxT) break;
     }
 
     yearly.push({
       age, rmd, rmdForced, ssIncome: ssYear, needsIncome: needsYear,
-      savingsDraw, irargrossDraw, taxableInc, bracketPct,
+      savingsDraw, irargrossDraw, taxableInc, bracketPct, inflFactor,
       balance: bal,
     });
 
@@ -2320,14 +2325,19 @@ function renderCharts(inputs, sim, savings) {
     const stdDed = STD_DED[inputs.filingStatus];
     // Slice a taxable-after-std-ded value into per-bracket dollar amounts.
     // brackets array is [[maxThreshold, rate], ...]; thresholds are cumulative taxable.
-    function sliceByBracket(taxable) {
+    // inflFactor scales the threshold to today's brackets indexed to the year being
+    // shown — so each year's slicing uses bracket boundaries appropriate to that year,
+    // not 2026 thresholds frozen forever.
+    function sliceByBracket(taxable, inflFactor) {
+      const f = inflFactor || 1;
       const out = [];
       let prev = 0;
       for (const [maxT, rate] of brackets) {
-        const amt = Math.max(0, Math.min(taxable, maxT) - prev);
+        const yearMaxT = maxT === Infinity ? Infinity : maxT * f;
+        const amt = Math.max(0, Math.min(taxable, yearMaxT) - prev);
         out.push({ rate, amt });
-        prev = maxT;
-        if (taxable <= maxT) {
+        prev = yearMaxT;
+        if (taxable <= yearMaxT) {
           // Fill remaining brackets with 0 so the array length is stable.
           for (let i = out.length; i < brackets.length; i++) out.push({ rate: brackets[i][1], amt: 0 });
           break;
@@ -2351,7 +2361,8 @@ function renderCharts(inputs, sim, savings) {
       barPercentage: 0.92,
       categoryPercentage: 0.92,
       data: yrs.map(y => {
-        const slices = sliceByBracket(Math.max(0, y.taxableInc - stdDed));
+        const f = y.inflFactor || 1;
+        const slices = sliceByBracket(Math.max(0, y.taxableInc - stdDed * f), f);
         return slices.reduce((sum, s) => sum + (g.rates.includes(s.rate) ? s.amt : 0), 0);
       })
     }));
