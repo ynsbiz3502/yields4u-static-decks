@@ -986,18 +986,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
       </div>
 
       <div class="form-row">
-        <label for="otherIncome">Other annual taxable income <span class="hint" style="font-weight:400;">(non-SS)</span></label>
-        <input type="text" id="otherIncome" value="$80,000" inputmode="numeric">
-        <div class="hint">Pension, rental income, part-time work, etc. &mdash; not Social Security. Used for bracket calculation.</div>
-      </div>
-
-      <div class="form-row">
-        <label for="annualWithdrawal">Annual withdrawal from the IRA <span class="hint" style="font-weight:400;">(optional override)</span></label>
-        <input type="text" id="annualWithdrawal" value="$0" inputmode="numeric">
-        <div class="hint">Leave $0 to auto-compute the IRA draw from the income gap above. Set a number to force a specific annual draw. Grows with inflation.</div>
-      </div>
-
-      <div class="form-row">
         <label for="inflationRate">Inflation rate: <span class="slider-val" id="inflationVal" style="font-weight:700;">4.0%</span></label>
         <div class="slider-row">
           <input type="range" id="inflationRate" min="0" max="8" step="0.5" value="4">
@@ -2477,15 +2465,19 @@ function show(slideN) {
 
 function onGenerate(e) {
   if (e) e.preventDefault();
+  // otherIncome and annualWithdrawal are no longer first-class form fields — they
+  // default to 0 (the IRA draw is auto-computed from totalIncomeNeeds - SS). URL
+  // params for both still work for backward compatibility with existing links.
+  const urlParams = new URLSearchParams(window.location.search);
   const inputs = {
     firstName: document.getElementById('firstName').value.trim(),
     balance: parseMoney(document.getElementById('balance').value),
     currentAge: parseInt(document.getElementById('currentAge').value, 10) || 63,
     filingStatus: document.getElementById('filingStatus').value,
-    otherIncome: parseMoney(document.getElementById('otherIncome').value),
+    otherIncome: parseMoney(urlParams.get('otherIncome') || '0'),
     totalIncomeNeeds: parseMoney(document.getElementById('totalIncomeNeeds')?.value || '0'),
     socialSecurity: parseMoney(document.getElementById('socialSecurity')?.value || '0'),
-    annualWithdrawal: parseMoney(document.getElementById('annualWithdrawal')?.value || '0'),
+    annualWithdrawal: parseMoney(urlParams.get('annualWithdrawal') || '0'),
     inflationRate: (parseFloat(document.getElementById('inflationRate')?.value || '4') || 4) / 100,
     growthRate: parseFloat(document.getElementById('growthRate').value) / 100
   };
@@ -2543,10 +2535,10 @@ function applyUrlParamsToForm() {
   setMoney('balance', 'balance');
   setText('currentAge', 'currentAge');
   setText('filingStatus', 'filingStatus');
-  setMoney('otherIncome', 'otherIncome');
   setMoney('totalIncomeNeeds', 'totalIncomeNeeds');
   setMoney('socialSecurity', 'socialSecurity');
-  setMoney('annualWithdrawal', 'annualWithdrawal');
+  // otherIncome and annualWithdrawal no longer have form fields; their URL
+  // params are still honored inside onGenerate() for backward compatibility.
   const growth = params.get('growthRate');
   if (growth !== null && growth !== '') {
     const g = document.getElementById('growthRate');
@@ -2621,7 +2613,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Money input formatters (on blur)
-  ['balance', 'otherIncome', 'totalIncomeNeeds', 'socialSecurity', 'annualWithdrawal'].forEach(id => {
+  ['balance', 'totalIncomeNeeds', 'socialSecurity'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('blur', () => formatMoneyInput(el));
