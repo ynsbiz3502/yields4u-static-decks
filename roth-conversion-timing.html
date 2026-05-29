@@ -974,15 +974,27 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
       </div>
 
       <div class="form-row">
-        <label for="otherIncome">Other annual taxable income</label>
-        <input type="text" id="otherIncome" value="$80,000" inputmode="numeric">
-        <div class="hint">Social Security, pension, rental income, etc. (used for bracket calculation)</div>
+        <label for="totalIncomeNeeds">Total annual income needed in retirement</label>
+        <input type="text" id="totalIncomeNeeds" value="$150,000" inputmode="numeric">
+        <div class="hint">What this household needs to live on each year (today&rsquo;s dollars). Grows with inflation each year.</div>
       </div>
 
       <div class="form-row">
-        <label for="annualWithdrawal">Annual withdrawal from the IRA <span class="hint" style="font-weight:400;">(optional)</span></label>
+        <label for="socialSecurity">Estimated Social Security income</label>
+        <input type="text" id="socialSecurity" value="$40,000" inputmode="numeric">
+        <div class="hint">Combined annual Social Security for the household once benefits start. Grows with inflation (COLA).</div>
+      </div>
+
+      <div class="form-row">
+        <label for="otherIncome">Other annual taxable income <span class="hint" style="font-weight:400;">(non-SS)</span></label>
+        <input type="text" id="otherIncome" value="$80,000" inputmode="numeric">
+        <div class="hint">Pension, rental income, part-time work, etc. &mdash; not Social Security. Used for bracket calculation.</div>
+      </div>
+
+      <div class="form-row">
+        <label for="annualWithdrawal">Annual withdrawal from the IRA <span class="hint" style="font-weight:400;">(optional override)</span></label>
         <input type="text" id="annualWithdrawal" value="$0" inputmode="numeric">
-        <div class="hint">Amount you plan to pull from the IRA each year. Grows with inflation each year and is deducted from the balance before growth is applied.</div>
+        <div class="hint">Leave $0 to auto-compute the IRA draw from the income gap above. Set a number to force a specific annual draw. Grows with inflation.</div>
       </div>
 
       <div class="form-row">
@@ -1023,7 +1035,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
       <button class="nav-btn" id="prevBtn" aria-label="Previous slide">
         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </button>
-      <div class="slide-count"><span id="curSlide">1</span> / <span id="totSlide">20</span></div>
+      <div class="slide-count"><span id="curSlide">1</span> / <span id="totSlide">22</span></div>
       <button class="nav-btn" id="nextBtn" aria-label="Next slide">
         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
       </button>
@@ -1105,37 +1117,64 @@ function computeTax(income, status) {
 function simulate(inputs) {
   const { balance, currentAge, growthRate, otherIncome, filingStatus } = inputs;
   const annualWithdrawal = inputs.annualWithdrawal || 0;
+  const totalIncomeNeeds = inputs.totalIncomeNeeds || 0;
+  const socialSecurity = inputs.socialSecurity || 0;
   const inflationRate = (inputs.inflationRate != null) ? inputs.inflationRate : 0.04;
   const rmdStart = 73, endAge = 95;
+
   let bal = balance;
-  // Pre-RMD: each year, deduct the inflation-grown withdrawal BEFORE applying growth.
-  // yearsFromStart is 0 in the first year (current age), so the first-year withdrawal
-  // equals annualWithdrawal exactly; subsequent years scale by (1 + inflationRate)^n.
-  for (let age = currentAge; age < rmdStart; age++) {
-    const yearsFromStart = age - currentAge;
-    const withdraw = annualWithdrawal * Math.pow(1 + inflationRate, yearsFromStart);
-    bal = Math.max(0, bal - withdraw) * (1 + growthRate);
-  }
-  const rows = [];
+  const yearly = [];          // full per-year breakdown (currentAge .. endAge)
+  const rows = [];            // backward-compat: RMD years only (73..endAge)
   let lifetimeRMD = 0, lifetimeTax = 0, peakRMD = 0;
   const baselineTax = computeTax(otherIncome, filingStatus);
-  for (let age = rmdStart; age <= endAge; age++) {
-    const div = ULT[age] || 8.9;
-    const rmd = bal / div;
-    const pct = (rmd / bal) * 100;
-    const totalInc = otherIncome + rmd;
-    const totalTax = computeTax(totalInc, filingStatus);
-    const rmdTax = Math.max(0, totalTax - baselineTax);
-    rows.push({ age, rmd, pct, balance: bal, rmdTax });
-    lifetimeRMD += rmd; lifetimeTax += rmdTax; peakRMD = Math.max(peakRMD, rmd);
-    // Post-RMD: the actual draw is at least the RMD, but bumped up to match the
-    // inflation-grown withdrawal target if the advisor is planning a larger draw.
+  const brackets = filingStatus === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
+  const stdDed = STD_DED[filingStatus];
+
+  for (let age = currentAge; age <= endAge; age++) {
     const yearsFromStart = age - currentAge;
-    const inflWithdraw = annualWithdrawal * Math.pow(1 + inflationRate, yearsFromStart);
-    const actualDraw = Math.max(rmd, inflWithdraw);
-    bal = Math.max(0, bal - actualDraw) * (1 + growthRate);
+    const inflFactor = Math.pow(1 + inflationRate, yearsFromStart);
+    const ssYear = socialSecurity * inflFactor;
+    const needsYear = totalIncomeNeeds * inflFactor;
+    const explicitDraw = annualWithdrawal * inflFactor;
+
+    // Gap = total spending needs - SS. Whatever the gap, that's what the IRA needs to fill.
+    const gap = Math.max(0, needsYear - ssYear);
+    // Pre-RMD ages: target draw = max(explicit override, computed gap).
+    // RMD-age years: actual draw is at least the RMD, bumped up to target if higher.
+    const rmd = age >= rmdStart ? (bal / (ULT[age] || 8.9)) : 0;
+    const targetDraw = Math.max(explicitDraw, gap);
+    const irargrossDraw = Math.max(rmd, targetDraw);
+    const savingsDraw = Math.max(0, irargrossDraw - rmd);
+
+    // Taxable income: all IRA draw is taxable, 85% of SS is taxable (simplification), plus otherIncome.
+    const taxableInc = irargrossDraw + 0.85 * ssYear + otherIncome;
+    const totalTax = computeTax(taxableInc, filingStatus);
+    // Marginal bracket = the rate of the bracket where the top dollar of taxable income falls.
+    const taxableAfterStd = Math.max(0, taxableInc - stdDed);
+    let bracketPct = 0.10;
+    for (const [maxT, rate] of brackets) {
+      bracketPct = rate;
+      if (taxableAfterStd <= maxT) break;
+    }
+
+    yearly.push({
+      age, rmd, ssIncome: ssYear, needsIncome: needsYear,
+      savingsDraw, irargrossDraw, taxableInc, bracketPct,
+      balance: bal,
+    });
+
+    if (age >= rmdStart) {
+      const pct = (rmd / bal) * 100;
+      const rmdTax = Math.max(0, totalTax - baselineTax);
+      rows.push({ age, rmd, pct, balance: bal, rmdTax });
+      lifetimeRMD += rmd;
+      lifetimeTax += rmdTax;
+      peakRMD = Math.max(peakRMD, rmd);
+    }
+
+    bal = Math.max(0, bal - irargrossDraw) * (1 + growthRate);
   }
-  return { rows, lifetimeRMD, lifetimeTax, peakRMD, finalBalance: bal };
+  return { rows, yearly, lifetimeRMD, lifetimeTax, peakRMD, finalBalance: bal };
 }
 
 function projectSavings(inputs) {
@@ -1515,9 +1554,59 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // SLIDE 8 — Threat #2: The 10-Year Rule (Your Kids)
+  // SLIDE 8 — RMDs vs Savings Withdrawals (income gap fills, year by year)
+  const needsStr = fmtMoney(inputs.totalIncomeNeeds || 0);
+  const ssStr = fmtMoney(inputs.socialSecurity || 0);
   slides.push(`
     <section class="slide" data-slide="8">
+      <div class="title-block">
+        <div class="kicker">Threat 1 &mdash; Continued</div>
+        <h2 class="title">RMDs aren&rsquo;t the only money leaving your portfolio.</h2>
+        <p class="subtitle">You need <strong>${needsStr}</strong>/yr to live on. Social Security covers <strong>${ssStr}</strong>. Everything else has to come out of your savings &mdash; and inflation pushes that draw up every single year.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1.15fr;gap:48px;max-width:1300px;margin:32px auto 0;align-items:center;">
+        <div style="text-align:left;">
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:14px;">What you actually pull out</div>
+          <p style="font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;margin:0 0 18px 0;font-weight:500;">Before age 73 there&rsquo;s no RMD &mdash; but you still need to live, so every dollar of the gap between your income needs and Social Security comes out of savings. Then at 73 the IRS makes you take even more, whether you need it or not.</p>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--ink-700);border-radius:8px;padding:14px 18px;"><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-700);font-weight:700;margin-bottom:4px;">Savings draw &mdash; pre-RMD</div><div style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);">Fills the gap between Social Security and what you actually need to spend, every year.</div></div>
+            <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--gold-600);border-radius:8px;padding:14px 18px;"><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);font-weight:700;margin-bottom:4px;">RMD &mdash; ages 73 to 95</div><div style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);">Forced minimum. Grows every year. Often more than you actually need &mdash; and every dollar is taxed.</div></div>
+          </div>
+        </div>
+        <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:460px;"><canvas id="chart-rmd-vs-savings"></canvas></div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">08</div>
+    </section>
+  `);
+
+  // SLIDE 9 — Tax bracket trajectory (color-coded year by year)
+  slides.push(`
+    <section class="slide" data-slide="9">
+      <div class="title-block">
+        <div class="kicker">Threat 1 &mdash; The Bracket Trajectory</div>
+        <h2 class="title">Your tax bracket trajectory.</h2>
+        <p class="subtitle">Color-coded by marginal bracket. As RMDs grow and inflation pushes everything up, your top dollar lands in a higher and higher bracket &mdash; unless we act.</p>
+      </div>
+      <div style="max-width:1300px;margin:24px auto 0;">
+        <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:380px;"><canvas id="chart-tax-brackets"></canvas></div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-top:18px;font-family:var(--font-sans);font-size:13px;color:var(--ink-700);">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#4A8A6B;"></span>10&ndash;12%</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#C9A23B;"></span>22%</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#D88A3E;"></span>24%</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#C25A3E;"></span>32%</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#A83B2E;"></span>35&ndash;37%</div>
+        </div>
+        <p style="max-width:1100px;margin:24px auto 0;font-family:var(--font-serif);font-size:18px;color:var(--ink-900);line-height:1.55;text-align:center;font-weight:500;">Every bar is a year of your retirement. Each one&rsquo;s color is the marginal bracket your top dollar of taxable income lands in &mdash; RMD + savings draw + 85% of Social Security + other income. Green is where we want to live. Red is where doing nothing puts you.</p>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">09</div>
+    </section>
+  `);
+
+  // SLIDE 10 — Threat #2: The 10-Year Rule (Your Kids)
+  slides.push(`
+    <section class="slide" data-slide="10">
       <div class="title-block">
         <div class="kicker">Threat 2 of 3 &mdash; Your Kids</div>
         <h2 class="title">When you pass away, your kids get <em>just 10 years</em> to empty your IRA.</h2>
@@ -1539,14 +1628,14 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">08</div>
+      <div class="slide-number">10</div>
     </section>
   `);
 
   // SLIDE 9 — Threat #3: The Widow Penalty (Your Spouse)
   if (widowAnnual > 0) {
     slides.push(`
-    <section class="slide" data-slide="9">
+    <section class="slide" data-slide="11">
       <div class="title-block">
         <div class="kicker">Threat 3 of 3 &mdash; Your Spouse</div>
         <h2 class="title">When one of you is gone, the other pays <em>more tax</em> &mdash; on the same money.</h2>
@@ -1565,26 +1654,26 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <p style="max-width:1080px;margin:36px auto 0;font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.55;text-align:center;font-weight:500;">When one spouse dies, the other one starts filing taxes as a <em style="color:var(--gold-600);font-style:italic;">single person.</em> The same income now sits in higher tax brackets. More of your Social Security gets taxed. Medicare costs go up too.</p>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">09</div>
+      <div class="slide-number">11</div>
     </section>
   `);
   } else {
     slides.push(`
-    <section class="slide" data-slide="9">
+    <section class="slide" data-slide="11">
       <div class="title-block">
         <div class="kicker">Threat 3 of 3 &mdash; Your Spouse</div>
         <h2 class="title">When one of you is gone, the other pays <em>more tax</em> &mdash; on the same money.</h2>
       </div>
       <p style="max-width:1080px;margin:60px auto 0;font-family:var(--font-serif);font-size:24px;color:var(--ink-900);line-height:1.55;text-align:center;font-weight:500;">When one spouse dies, the other one starts filing taxes as a <em style="color:var(--gold-600);font-style:italic;">single person.</em> The same income now sits in higher tax brackets. More of your Social Security gets taxed. Medicare costs go up too.</p>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">09</div>
+      <div class="slide-number">11</div>
     </section>
   `);
   }
 
   // SLIDE 10 — Reveal: Turning Tax-Deferred Into Tax-Free
   slides.push(`
-    <section class="slide" data-slide="10">
+    <section class="slide" data-slide="12">
       <div class="hook-hero">
         <div class="kicker" style="text-align:center">The Strategy</div>
         <h1 class="hero-title">
@@ -1611,13 +1700,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">10</div>
+      <div class="slide-number">12</div>
     </section>
   `);
 
   // SLIDE 11 — Markets Dip Constantly
   slides.push(`
-    <section class="slide" data-slide="11">
+    <section class="slide" data-slide="13">
       <div class="title-block">
         <div class="kicker">The Opportunity In Plain Sight</div>
         <h2 class="title">Markets Dip — Constantly</h2>
@@ -1646,13 +1735,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">11</div>
+      <div class="slide-number">13</div>
     </section>
   `);
 
   // SLIDE 12 — Losses Exist in Every Market
   slides.push(`
-    <section class="slide" data-slide="12">
+    <section class="slide" data-slide="14">
       <div class="title-block">
         <div class="kicker">The Raw Material</div>
         <h2 class="title">The Losses Are Always There</h2>
@@ -1663,13 +1752,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         In +25% years, ~30% of S&amp;P 500 stocks still finish negative. That's the raw material for tax-loss harvesting — and the fuel for your Roth conversion.
       </p>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">12</div>
+      <div class="slide-number">14</div>
     </section>
   `);
 
   // SLIDE 13 — Coke vs Pepsi
   slides.push(`
-    <section class="slide" data-slide="13">
+    <section class="slide" data-slide="15">
       <div class="title-block">
         <div class="kicker">The Mechanic</div>
         <h2 class="title">More Shares, Same Tax</h2>
@@ -1694,13 +1783,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <strong>The same tax bill. 25% more shares converted.</strong> The conversion is taxed on the dollar amount you move &mdash; not the share count. When prices recover, every one of those extra shares grows tax-free inside your Roth, forever. That&rsquo;s how a 20% dip becomes a 25% acceleration of every dollar you&rsquo;ll ever pull out tax-free.
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">13</div>
+      <div class="slide-number">15</div>
     </section>
   `);
 
   // SLIDE 14 — Strategic Dip Conversions
   slides.push(`
-    <section class="slide" data-slide="14">
+    <section class="slide" data-slide="16">
       <div class="title-block">
         <div class="kicker">Why Timing Is Everything</div>
         <h2 class="title">Strategic Dip Conversions</h2>
@@ -1729,13 +1818,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">14</div>
+      <div class="slide-number">16</div>
     </section>
   `);
 
   // SLIDE 15 — Four Pillars
   slides.push(`
-    <section class="slide" data-slide="15">
+    <section class="slide" data-slide="17">
       <div class="title-block">
         <div class="kicker">The Complete System</div>
         <h2 class="title">The Four Pillars</h2>
@@ -1764,13 +1853,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">15</div>
+      <div class="slide-number">17</div>
     </section>
   `);
 
   // SLIDE 16 — The Proof: 3-way comparison (Do Nothing vs Saved For You vs Saved For Your Spouse)
   slides.push(`
-    <section class="slide" data-slide="16">
+    <section class="slide" data-slide="18">
       <div class="title-block">
         <div class="kicker">The Math</div>
         <h2 class="title">The Proof: <em>Where The Savings Land</em></h2>
@@ -1805,13 +1894,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div style="font-family:var(--font-sans);font-size:15px;color:rgba(255,255,255,0.7);margin-top:18px;letter-spacing:0.04em;">Your savings + your spouse&rsquo;s widow-penalty avoided, combined &mdash; permanent dollars the IRS never gets.</div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">16</div>
+      <div class="slide-number">18</div>
     </section>
   `);
 
   // SLIDE 17 — Legacy & Survivor (the real reason to convert)
   slides.push(`
-    <section class="slide" data-slide="17">
+    <section class="slide" data-slide="19">
       <div class="title-block">
         <div class="kicker">The Real Reason To Convert</div>
         <h2 class="title">This Isn&rsquo;t About You. It&rsquo;s About Them.</h2>
@@ -1849,13 +1938,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div class="compare-note" style="margin-top:28px;">Conservative blended estimate. Heir effective rate assumes ${heirRatePct} on a 10-year forced drain on top of peak-earning income; widow figures use single-filer brackets vs MFJ.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">17</div>
+      <div class="slide-number">19</div>
     </section>
   `);
 
   // SLIDE 18 — Do Nothing vs With Our Strategy
   slides.push(`
-    <section class="slide" data-slide="18">
+    <section class="slide" data-slide="20">
       <div class="title-block">
         <div class="kicker">The Choice</div>
         <h2 class="title">Do Nothing vs. With Our Strategy</h2>
@@ -1892,13 +1981,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div class="compare-note">Educational illustration. Actual results vary based on individual circumstances, market performance, and future tax law.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">18</div>
+      <div class="slide-number">20</div>
     </section>
   `);
 
   // SLIDE 19 — White Glove Services (what's included)
   slides.push(`
-    <section class="slide" data-slide="19">
+    <section class="slide" data-slide="21">
       <div class="title-block">
         <div class="kicker">What&rsquo;s Included</div>
         <h2 class="title">The White Glove Service</h2>
@@ -1947,13 +2036,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">19</div>
+      <div class="slide-number">21</div>
     </section>
   `);
 
   // SLIDE 20 — CTA
   slides.push(`
-    <section class="slide" data-slide="20">
+    <section class="slide" data-slide="22">
       <div class="title-block">
         <div class="kicker">Next Steps</div>
         <h2 class="title">Ready to get started${name}?</h2>
@@ -1989,7 +2078,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">20</div>
+      <div class="slide-number">22</div>
     </section>
   `);
 
@@ -2121,6 +2210,96 @@ function renderCharts(inputs, sim, savings) {
     });
   }
 
+  // ---- RMDs vs Savings Withdrawals (new slide 8) ----
+  const rmdSavEl = document.getElementById('chart-rmd-vs-savings');
+  if (rmdSavEl && sim.yearly && sim.yearly.length) {
+    const yrs = sim.yearly;
+    const ages = yrs.map(y => y.age);
+    const rmds = yrs.map(y => y.rmd);
+    const savs = yrs.map(y => y.savingsDraw);
+    chartInstances.rmdSav = new Chart(rmdSavEl, {
+      type: 'bar',
+      data: {
+        labels: ages,
+        datasets: [
+          { label: 'Savings draw (fill the income gap)', data: savs, backgroundColor: 'rgba(45, 45, 50, 0.82)',
+            borderWidth: 0, stack: 'draw', barPercentage: 0.92, categoryPercentage: 0.92 },
+          { label: 'RMD (forced by IRS at 73+)', data: rmds, backgroundColor: 'rgba(232, 163, 61, 0.92)',
+            borderWidth: 0, stack: 'draw', barPercentage: 0.92, categoryPercentage: 0.92 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: true, padding: 16 } },
+          title: { display: true, text: `What Comes Out Of Your Portfolio, Year By Year`,
+            color: '#0E0E0F', font: { size: 15, weight: '700', family: "'Playfair Display', Georgia, serif" }, padding: { bottom: 12 } },
+          tooltip: { mode: 'index', intersect: false,
+            callbacks: { label: ctx => ctx.dataset.label + ': ' + fmtMoneyFull(ctx.parsed.y) } }
+        },
+        scales: {
+          x: { stacked: true, grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
+          y: { stacked: true, position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
+               ticks: { callback: v => fmtMoney(v) }, title: { display: true, text: 'Annual Withdrawal' } }
+        }
+      }
+    });
+  }
+
+  // ---- Tax bracket trajectory color-coded by year (new slide 9) ----
+  const taxBrEl = document.getElementById('chart-tax-brackets');
+  if (taxBrEl && sim.yearly && sim.yearly.length) {
+    const yrs = sim.yearly;
+    const ages = yrs.map(y => y.age);
+    const taxable = yrs.map(y => y.taxableInc);
+    const brColor = (pct) => {
+      if (pct <= 0.12) return '#4A8A6B';
+      if (pct <= 0.22) return '#C9A23B';
+      if (pct <= 0.24) return '#D88A3E';
+      if (pct <= 0.32) return '#C25A3E';
+      return '#A83B2E';
+    };
+    const colors = yrs.map(y => brColor(y.bracketPct));
+    chartInstances.taxBr = new Chart(taxBrEl, {
+      type: 'bar',
+      data: {
+        labels: ages,
+        datasets: [{
+          label: 'Taxable income',
+          data: taxable,
+          backgroundColor: colors,
+          borderWidth: 0,
+          barPercentage: 0.92, categoryPercentage: 0.92
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: `Marginal Bracket By Year — ${fmtMoney(inputs.balance, true)} @ ${fmtPct(inputs.growthRate*100,0)}`,
+            color: '#0E0E0F', font: { size: 15, weight: '700', family: "'Playfair Display', Georgia, serif" }, padding: { bottom: 12 } },
+          tooltip: { callbacks: {
+            label: ctx => {
+              const y = sim.yearly[ctx.dataIndex];
+              return [
+                'Taxable income: ' + fmtMoneyFull(y.taxableInc),
+                'Marginal bracket: ' + (y.bracketPct * 100).toFixed(0) + '%',
+                'RMD: ' + fmtMoneyFull(y.rmd),
+                'Savings draw: ' + fmtMoneyFull(y.savingsDraw),
+                'SS (inflated): ' + fmtMoneyFull(y.ssIncome),
+              ];
+            }
+          }}
+        },
+        scales: {
+          x: { grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
+          y: { position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
+               ticks: { callback: v => fmtMoney(v) }, title: { display: true, text: 'Taxable Income (top dollar in bracket)' } }
+        }
+      }
+    });
+  }
+
   // ---- Negative stocks chart (slide 8) ----
   const negEl = document.getElementById('chart-neg');
   if (negEl) {
@@ -2195,7 +2374,7 @@ function renderCharts(inputs, sim, savings) {
  *  App logic
  * =============================================================== */
 let currentSlide = 1;
-const TOTAL_SLIDES = 20;
+const TOTAL_SLIDES = 22;
 
 function show(slideN) {
   slideN = Math.max(1, Math.min(TOTAL_SLIDES, slideN));
@@ -2217,6 +2396,8 @@ function onGenerate(e) {
     currentAge: parseInt(document.getElementById('currentAge').value, 10) || 63,
     filingStatus: document.getElementById('filingStatus').value,
     otherIncome: parseMoney(document.getElementById('otherIncome').value),
+    totalIncomeNeeds: parseMoney(document.getElementById('totalIncomeNeeds')?.value || '0'),
+    socialSecurity: parseMoney(document.getElementById('socialSecurity')?.value || '0'),
     annualWithdrawal: parseMoney(document.getElementById('annualWithdrawal')?.value || '0'),
     inflationRate: (parseFloat(document.getElementById('inflationRate')?.value || '4') || 4) / 100,
     growthRate: parseFloat(document.getElementById('growthRate').value) / 100
@@ -2276,6 +2457,8 @@ function applyUrlParamsToForm() {
   setText('currentAge', 'currentAge');
   setText('filingStatus', 'filingStatus');
   setMoney('otherIncome', 'otherIncome');
+  setMoney('totalIncomeNeeds', 'totalIncomeNeeds');
+  setMoney('socialSecurity', 'socialSecurity');
   setMoney('annualWithdrawal', 'annualWithdrawal');
   const growth = params.get('growthRate');
   if (growth !== null && growth !== '') {
@@ -2351,7 +2534,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Money input formatters (on blur)
-  ['balance', 'otherIncome', 'annualWithdrawal'].forEach(id => {
+  ['balance', 'otherIncome', 'totalIncomeNeeds', 'socialSecurity', 'annualWithdrawal'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener('blur', () => formatMoneyInput(el));
