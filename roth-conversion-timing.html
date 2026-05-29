@@ -1103,6 +1103,23 @@ function computeTax(income, status) {
   return tax;
 }
 
+// Same as computeTax but scales the bracket thresholds + standard deduction by
+// `inflFactor` so the per-year tax matches the IRS's annual CPI indexing.
+function computeTaxIndexed(income, status, inflFactor) {
+  const f = inflFactor || 1;
+  const taxable = Math.max(0, income - STD_DED[status] * f);
+  const br = status === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
+  let tax = 0, prev = 0;
+  for (const [max, rate] of br) {
+    const ceiling = max === Infinity ? Infinity : max * f;
+    const slice = Math.min(taxable, ceiling) - prev;
+    if (slice > 0) tax += slice * rate;
+    prev = ceiling;
+    if (taxable <= ceiling) break;
+  }
+  return tax;
+}
+
 function simulate(inputs) {
   const { balance, currentAge, growthRate, otherIncome, filingStatus } = inputs;
   const annualWithdrawal = inputs.annualWithdrawal || 0;
@@ -1115,6 +1132,11 @@ function simulate(inputs) {
   const yearly = [];          // full per-year breakdown (currentAge .. endAge)
   const rows = [];            // backward-compat: RMD years only (73..endAge)
   let lifetimeRMD = 0, lifetimeTax = 0, peakRMD = 0;
+  // Sums for the slide-9 summary cards. Both are nominal (full inflated dollars)
+  // so the headline figures look like the actual lifetime totals the prospect
+  // would see, not the deflated chart numbers.
+  let lifetimeTaxableInc = 0;
+  let lifetimeFederalTax = 0;
   const baselineTax = computeTax(otherIncome, filingStatus);
   const brackets = filingStatus === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
   const stdDed = STD_DED[filingStatus];
@@ -1164,6 +1186,10 @@ function simulate(inputs) {
       balance: bal,
     });
 
+    // Accumulate lifetime totals (nominal $) for the summary cards.
+    lifetimeTaxableInc += taxableInc;
+    lifetimeFederalTax += computeTaxIndexed(taxableInc, filingStatus, inflFactor);
+
     if (age >= rmdStart) {
       const pct = (rmd / bal) * 100;
       const rmdTax = Math.max(0, totalTax - baselineTax);
@@ -1175,7 +1201,11 @@ function simulate(inputs) {
 
     bal = Math.max(0, bal - irargrossDraw) * (1 + growthRate);
   }
-  return { rows, yearly, lifetimeRMD, lifetimeTax, peakRMD, finalBalance: bal };
+  return {
+    rows, yearly, lifetimeRMD, lifetimeTax, peakRMD,
+    lifetimeTaxableInc, lifetimeFederalTax,
+    finalBalance: bal,
+  };
 }
 
 function projectSavings(inputs) {
@@ -1580,24 +1610,45 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // SLIDE 9 — Tax bracket trajectory (color-coded year by year)
+  // SLIDE 9 — Tax bracket trajectory: today's-dollar view + lifetime totals cards
+  const totalIncomeStr = fmtMoney(sim.lifetimeTaxableInc || 0, true);
+  const totalTaxStr = fmtMoney(sim.lifetimeFederalTax || 0, true);
+  const effRatePct = (sim.lifetimeTaxableInc > 0)
+    ? Math.round((sim.lifetimeFederalTax / sim.lifetimeTaxableInc) * 100) + '%'
+    : '0%';
   slides.push(`
     <section class="slide" data-slide="9">
       <div class="title-block">
         <div class="kicker">Threat 1 &mdash; The Bracket Trajectory</div>
-        <h2 class="title">Your tax bracket trajectory.</h2>
-        <p class="subtitle">Everything is shown in <strong>today&rsquo;s dollars</strong>, so the bracket lines stay where they sit now. The bars climb because RMDs grow faster than inflation &mdash; that&rsquo;s real bracket creep, not the inflation kind.</p>
+        <h2 class="title">Will our taxes be higher in the future than they are today?</h2>
+        <p class="subtitle">Ultimately, this is the real question that will determine if we should do Roth conversions. Figuring out what our taxes will be in retirement is a bit difficult &mdash; which is why we built this chart for you. Below is your anticipated <strong>taxable income</strong> in retirement, broken down by tax bracket and adjusted for inflation so everything is in today&rsquo;s dollars.</p>
       </div>
-      <div style="max-width:1300px;margin:24px auto 0;">
-        <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:380px;"><canvas id="chart-tax-brackets"></canvas></div>
-        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-top:18px;font-family:var(--font-sans);font-size:13px;color:var(--ink-700);">
+      <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:20px;max-width:1300px;margin:24px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:20px 24px;text-align:center;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:10px;">Total Income</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:38px;color:var(--ink-900);line-height:1;letter-spacing:-0.02em;">${totalIncomeStr}</div>
+          <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);margin-top:8px;">Cumulative taxable income, age ${inputs.currentAge}&ndash;95</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:10px;padding:20px 24px;text-align:center;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:10px;">Total Taxes Paid</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:38px;color:var(--ink-900);line-height:1;letter-spacing:-0.02em;">${totalTaxStr}</div>
+          <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);margin-top:8px;">Federal income tax over the same horizon</div>
+        </div>
+        <div style="background:var(--ink-900);color:white;border-top:4px solid var(--gold-400);border-radius:10px;padding:20px 24px;text-align:center;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:10px;">Effective Tax Rate</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:38px;color:var(--gold-400);line-height:1;letter-spacing:-0.02em;">${effRatePct}</div>
+          <div style="font-family:var(--font-sans);font-size:12px;color:rgba(255,255,255,0.7);margin-top:8px;">Average federal rate across retirement</div>
+        </div>
+      </div>
+      <div style="max-width:1300px;margin:20px auto 0;">
+        <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:320px;"><canvas id="chart-tax-brackets"></canvas></div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-top:14px;font-family:var(--font-sans);font-size:13px;color:var(--ink-700);">
           <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#4A8A6B;"></span>10&ndash;12%</div>
           <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#C9A23B;"></span>22%</div>
           <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#D88A3E;"></span>24%</div>
           <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#C25A3E;"></span>32%</div>
           <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#A83B2E;"></span>35&ndash;37%</div>
         </div>
-        <p style="max-width:1100px;margin:24px auto 0;font-family:var(--font-serif);font-size:18px;color:var(--ink-900);line-height:1.55;text-align:center;font-weight:500;">Every bar is a year of your retirement. Each one&rsquo;s color is the marginal bracket your top dollar of taxable income lands in &mdash; RMD + savings draw + 85% of Social Security + other income. Green is where we want to live. Red is where doing nothing puts you.</p>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">09</div>
