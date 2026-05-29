@@ -1630,7 +1630,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // SLIDE 9 — Threat #3: The Widow Penalty (Your Spouse)
+  // SLIDE 11 — Threat #3: The Widow Penalty (Your Spouse). MFJ-only.
+  if (inputs.filingStatus === 'MFJ') {
   if (widowAnnual > 0) {
     slides.push(`
     <section class="slide" data-slide="11">
@@ -1668,6 +1669,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
   }
+  } // end MFJ-only widow slide gate
 
   // SLIDE 10 — Reveal: Turning Tax-Deferred Into Tax-Free
   slides.push(`
@@ -2389,15 +2391,20 @@ function renderCharts(inputs, sim, savings) {
  *  App logic
  * =============================================================== */
 let currentSlide = 1;
-const TOTAL_SLIDES = 22;
+let TOTAL_SLIDES = 22; // updated after each render to match actual slide count
 
 function show(slideN) {
+  const allSlides = document.querySelectorAll('.slide');
+  TOTAL_SLIDES = allSlides.length || TOTAL_SLIDES;
   slideN = Math.max(1, Math.min(TOTAL_SLIDES, slideN));
-  document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
-  const tgt = document.querySelector(`.slide[data-slide="${slideN}"]`);
+  allSlides.forEach(el => el.classList.remove('active'));
+  // Index-based lookup so slides can be conditionally skipped (e.g. widow slide
+  // for non-MFJ filers) without leaving holes in the navigation sequence.
+  const tgt = allSlides[slideN - 1];
   if (tgt) tgt.classList.add('active');
   currentSlide = slideN;
   document.getElementById('curSlide').textContent = slideN;
+  document.getElementById('totSlide').textContent = TOTAL_SLIDES;
   document.getElementById('prevBtn').disabled = slideN === 1;
   document.getElementById('nextBtn').disabled = slideN === TOTAL_SLIDES;
   window.scrollTo({ top: 0, behavior: 'smooth' });
