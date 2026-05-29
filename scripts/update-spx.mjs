@@ -70,16 +70,19 @@ async function main() {
   const rows = await fetchEodhd();
   if (rows.length === 0) throw new Error('No usable rows after parse');
 
+  // We INCLUDE the in-progress current month — EODHD's monthly endpoint
+  // returns the running close (the last completed trading day's close)
+  // for that month. Using stale data ending at the prior month would
+  // understate YTD; this way slide 16 reflects where the market actually
+  // sits right now. The monthly bar for the in-progress month will tick
+  // each time the script runs.
   const now = new Date();
   const currentYear = now.getUTCFullYear();
-  const currentMonth = now.getUTCMonth() + 1;
-  // Drop the in-progress current month — its close is still moving.
-  const completed = rows.filter(r => (r.y < currentYear) || (r.y === currentYear && r.mo < currentMonth));
-  if (completed.length === 0) throw new Error('No completed months after current-month filter');
 
-  // Window: Jan(currentYear - FULL_YEARS_KEPT) through last completed month.
+  // Window: Jan(currentYear - FULL_YEARS_KEPT) through whatever the latest
+  // EODHD row is (including the in-progress current month).
   const startYear = currentYear - FULL_YEARS_KEPT;
-  const windowed = completed.filter(r => r.y >= startYear);
+  const windowed = rows.filter(r => r.y >= startYear);
   const trimmed = windowed.map(r => ({
     m: `${MONTH_NAMES[r.mo - 1]} ${String(r.y).slice(-2)}`,
     v: Math.round(r.close * 100) / 100,
