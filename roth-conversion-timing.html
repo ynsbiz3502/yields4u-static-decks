@@ -1623,7 +1623,23 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <h2 class="title">Will our taxes be higher in the future than they are today?</h2>
         <p class="subtitle">Ultimately, this is the real question that will determine if we should do Roth conversions. Figuring out what our taxes will be in retirement is a bit difficult &mdash; which is why we built this chart for you. Below is your anticipated <strong>taxable income</strong> in retirement, broken down by tax bracket and adjusted for inflation so everything is in today&rsquo;s dollars.</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:20px;max-width:1300px;margin:24px auto 0;">
+      <div style="max-width:1300px;margin:24px auto 0;">
+        <div style="display:flex;justify-content:center;margin-bottom:10px;">
+          <div style="display:inline-flex;background:#FAFAF9;border:1px solid var(--border);border-radius:999px;padding:3px;font-family:var(--font-sans);font-size:12px;font-weight:600;letter-spacing:0.06em;">
+            <button id="taxbr-mode-real" type="button" data-mode="real" class="taxbr-toggle active" style="border:0;background:var(--ink-900);color:white;padding:6px 16px;border-radius:999px;cursor:pointer;">Today&rsquo;s $</button>
+            <button id="taxbr-mode-nominal" type="button" data-mode="nominal" class="taxbr-toggle" style="border:0;background:transparent;color:var(--ink-700);padding:6px 16px;border-radius:999px;cursor:pointer;">Actual $</button>
+          </div>
+        </div>
+        <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:320px;"><canvas id="chart-tax-brackets"></canvas></div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-top:14px;font-family:var(--font-sans);font-size:13px;color:var(--ink-700);">
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#4A8A6B;"></span>10&ndash;12%</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#C9A23B;"></span>22%</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#D88A3E;"></span>24%</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#C25A3E;"></span>32%</div>
+          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#A83B2E;"></span>35&ndash;37%</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:20px;max-width:1300px;margin:22px auto 0;">
         <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:20px 24px;text-align:center;">
           <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:10px;">Total Income</div>
           <div style="font-family:var(--font-serif);font-weight:700;font-size:38px;color:var(--ink-900);line-height:1;letter-spacing:-0.02em;">${totalIncomeStr}</div>
@@ -1638,22 +1654,6 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:10px;">Effective Tax Rate</div>
           <div style="font-family:var(--font-serif);font-weight:700;font-size:38px;color:var(--gold-400);line-height:1;letter-spacing:-0.02em;">${effRatePct}</div>
           <div style="font-family:var(--font-sans);font-size:12px;color:rgba(255,255,255,0.7);margin-top:8px;">Average federal rate across retirement</div>
-        </div>
-      </div>
-      <div style="max-width:1300px;margin:20px auto 0;">
-        <div style="display:flex;justify-content:center;margin-bottom:10px;">
-          <div style="display:inline-flex;background:#FAFAF9;border:1px solid var(--border);border-radius:999px;padding:3px;font-family:var(--font-sans);font-size:12px;font-weight:600;letter-spacing:0.06em;">
-            <button id="taxbr-mode-real" type="button" data-mode="real" class="taxbr-toggle active" style="border:0;background:var(--ink-900);color:white;padding:6px 16px;border-radius:999px;cursor:pointer;">Today&rsquo;s $</button>
-            <button id="taxbr-mode-nominal" type="button" data-mode="nominal" class="taxbr-toggle" style="border:0;background:transparent;color:var(--ink-700);padding:6px 16px;border-radius:999px;cursor:pointer;">Actual $</button>
-          </div>
-        </div>
-        <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:320px;"><canvas id="chart-tax-brackets"></canvas></div>
-        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-top:14px;font-family:var(--font-sans);font-size:13px;color:var(--ink-700);">
-          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#4A8A6B;"></span>10&ndash;12%</div>
-          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#C9A23B;"></span>22%</div>
-          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#D88A3E;"></span>24%</div>
-          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#C25A3E;"></span>32%</div>
-          <div style="display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#A83B2E;"></span>35&ndash;37%</div>
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
