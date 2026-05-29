@@ -17,21 +17,30 @@ render entirely client-side.
 
 ## Automatic S&P 500 data refresh (slide 16)
 
-Slide 16 of the Roth deck shows the S&P 500's trajectory across the last
-~24 months with drawdown periods shaded red. The data behind that chart
-lives in `data/spx-monthly.json` and is refreshed automatically:
+Slide 16 of the Roth deck shows the S&P 500's trajectory across the two
+previous full years plus the **current year YTD**, with drawdown periods
+shaded red. The data behind that chart lives in `data/spx-monthly.json`
+and is refreshed automatically:
 
 1. **Schedule:** `.github/workflows/update-spx.yml` runs at **12:00 UTC on
    the 1st of every month**. The cron expression is `0 12 1 * *`.
 2. **Source:** the script GETs Stooq's monthly close CSV for `^SPX`:
    `https://stooq.com/q/d/l/?s=%5Espx&i=m`. No API key required.
-3. **Output:** the last 24 *completed* months land in
-   `data/spx-monthly.json`. The in-progress month is dropped so the chart
-   never shows a partial close.
-4. **Commit:** if the file changed, the workflow commits with the message
+3. **Window:** every month from January of *(currentYear − 2)* through the
+   last *completed* month. In May 2026 that's Jan 2024 → Apr 2026 (28
+   months). The in-progress month is dropped so the chart never shows a
+   partial close.
+4. **Output:** written to `data/spx-monthly.json` in the form
+   `{ updated_at, source, months, series: [{m, v}] }`. The deck reads it
+   on slide-16 render and rebuilds the chart + per-year callouts.
+5. **YTD detection:** the deck inspects the last entry in the series; if
+   its month isn't December, that year's callout reads `"YYYY YTD max
+   drawdown"` instead of `"YYYY max drawdown"`. Pure data-driven — no
+   hardcoded year boundaries in the HTML.
+6. **Commit:** if the file changed, the workflow commits with the message
    `Update S&P 500 monthly data (YYYY-MM-DD)` and pushes. GitHub Pages
    redeploys within a minute.
-5. **Fallback:** the HTML inlines the most recent series as a defensive
+7. **Fallback:** the HTML inlines the most recent series as a defensive
    default. If the fetch ever fails, the chart still renders with whatever
    was inlined at deploy time — it just won't be current.
 

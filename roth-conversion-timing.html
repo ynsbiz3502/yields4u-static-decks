@@ -1903,15 +1903,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1300px;margin:24px auto 0;">
         <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;text-align:center;">The Index Itself — And Its Drawdowns</div>
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px 18px;height:210px;"><canvas id="chart-spx-trajectory"></canvas></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px;" id="spx-dd-callouts">
-          <div style="background:#FDF6F4;border:1px solid #F1D6CF;border-left:4px solid #A83B2E;border-radius:8px;padding:12px 18px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;font-weight:700;"><span data-spx-year-label="0">2024</span> max drawdown</div>
-            <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#A83B2E;line-height:1;" data-spx-dd-label="0">&minus;8.5%</div>
-          </div>
-          <div style="background:#FDF6F4;border:1px solid #F1D6CF;border-left:4px solid #A83B2E;border-radius:8px;padding:12px 18px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;font-weight:700;"><span data-spx-year-label="1">2025</span> max drawdown</div>
-            <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#A83B2E;line-height:1;" data-spx-dd-label="1">&minus;10.4%</div>
-          </div>
+        <div id="spx-dd-callouts" style="display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;margin-top:14px;">
+          <!-- Populated dynamically by renderCharts() based on the years present
+               in the loaded series — full years + current-year YTD. -->
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
@@ -2592,6 +2586,8 @@ function renderCharts(inputs, sim, savings) {
       { m: 'Apr 25', v: 6420 }, { m: 'May 25', v: 6510 }, { m: 'Jun 25', v: 6580 },
       { m: 'Jul 25', v: 6240 }, { m: 'Aug 25', v: 5895 }, { m: 'Sep 25', v: 6090 },
       { m: 'Oct 25', v: 6380 }, { m: 'Nov 25', v: 6610 }, { m: 'Dec 25', v: 6700 },
+      { m: 'Jan 26', v: 6850 }, { m: 'Feb 26', v: 6920 }, { m: 'Mar 26', v: 6780 },
+      { m: 'Apr 26', v: 7050 },
     ];
 
     // Build the chart from a given series and update the two drawdown callouts
@@ -2605,33 +2601,49 @@ function renderCharts(inputs, sim, savings) {
       renderSpxChartInstance(labels, prices);
     }
 
-    // Populate the two "max drawdown" callout cards below the chart with the
-    // last two distinct years in the series + each year's worst intra-year
-    // peak-to-trough decline.
+    // Build the "max drawdown" callout cards below the chart, one per year in
+    // the series. The most recent year is flagged as YTD when its last month
+    // isn't December — its label reads "YYYY YTD" instead of "YYYY".
     function updateSpxDrawdownCallouts(spxSeries) {
-      const yearOf = (label) => {
-        const m = String(label).match(/(\d{2,4})$/);
-        return m ? ('20' + m[1].slice(-2)) : '';
-      };
-      // Group by year and compute intra-year max drawdown for each.
+      const container = document.getElementById('spx-dd-callouts');
+      if (!container) return;
+      const MONTH_NAMES_LC = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+      function parseLabel(label) {
+        const s = String(label).trim();
+        const moMatch = s.match(/^([A-Za-z]+)/);
+        const yrMatch = s.match(/(\d{2,4})$/);
+        const moIdx = moMatch ? MONTH_NAMES_LC.indexOf(moMatch[1].toLowerCase()) : -1;
+        const yrShort = yrMatch ? yrMatch[1].slice(-2) : '';
+        return { mo: moIdx + 1, y: yrShort ? ('20' + yrShort) : '' };
+      }
       const order = [];
       const byYear = {};
       for (const p of spxSeries) {
-        const y = yearOf(p.m);
-        if (!byYear[y]) { byYear[y] = { peak: -Infinity, minDD: 0 }; order.push(y); }
+        const { mo, y } = parseLabel(p.m);
+        if (!y) continue;
+        if (!byYear[y]) { byYear[y] = { peak: -Infinity, minDD: 0, lastMonth: 0 }; order.push(y); }
         const b = byYear[y];
         b.peak = Math.max(b.peak, p.v);
         const dd = (p.v - b.peak) / b.peak * 100;
         if (dd < b.minDD) b.minDD = dd;
+        if (mo > b.lastMonth) b.lastMonth = mo;
       }
-      // Show the last two distinct years.
-      const lastTwo = order.slice(-2);
-      lastTwo.forEach((y, i) => {
-        const yEl = document.querySelector('[data-spx-year-label="' + i + '"]');
-        const dEl = document.querySelector('[data-spx-dd-label="' + i + '"]');
-        if (yEl) yEl.textContent = y;
-        if (dEl) dEl.textContent = '−' + Math.abs(byYear[y].minDD).toFixed(1) + '%';
-      });
+      // The most recent year is YTD if it doesn't yet include December.
+      const lastYear = order[order.length - 1];
+      const cards = order.map(y => {
+        const b = byYear[y];
+        const ytd = (y === lastYear && b.lastMonth > 0 && b.lastMonth < 12);
+        const label = ytd ? (y + ' YTD max drawdown') : (y + ' max drawdown');
+        const ddStr = '−' + Math.abs(b.minDD).toFixed(1) + '%';
+        return (
+          '<div style="background:#FDF6F4;border:1px solid #F1D6CF;border-left:4px solid #A83B2E;border-radius:8px;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;">' +
+            '<div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;font-weight:700;">' + label + '</div>' +
+            '<div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:#A83B2E;line-height:1;">' + ddStr + '</div>' +
+          '</div>'
+        );
+      }).join('');
+      container.innerHTML = cards;
+      container.style.gridTemplateColumns = 'repeat(' + Math.max(1, order.length) + ', 1fr)';
     }
 
     function renderSpxChartInstance(labels, prices) {

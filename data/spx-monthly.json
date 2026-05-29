@@ -2,7 +2,7 @@
   "updated_at": "2026-05-29T00:00:00.000Z",
   "source": "https://stooq.com/q/d/l/?s=%5Espx&i=m",
   "note": "Initial seed values are stylized illustrative monthly closes. The scheduled workflow scripts/update-spx.mjs replaces these with real S&P 500 monthly closes from Stooq on the 1st of each month.",
-  "months": 24,
+  "months": 28,
   "series": [
     { "m": "Jan 24", "v": 4770 },
     { "m": "Feb 24", "v": 4980 },
@@ -27,6 +27,10 @@
     { "m": "Sep 25", "v": 6090 },
     { "m": "Oct 25", "v": 6380 },
     { "m": "Nov 25", "v": 6610 },
-    { "m": "Dec 25", "v": 6700 }
+    { "m": "Dec 25", "v": 6700 },
+    { "m": "Jan 26", "v": 6850 },
+    { "m": "Feb 26", "v": 6920 },
+    { "m": "Mar 26", "v": 6780 },
+    { "m": "Apr 26", "v": 7050 }
   ]
 }

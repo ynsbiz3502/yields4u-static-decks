@@ -11,7 +11,11 @@ import path from 'node:path';
 
 const STOOQ_URL = 'https://stooq.com/q/d/l/?s=%5Espx&i=m';
 const OUT_PATH = path.join('data', 'spx-monthly.json');
-const MONTHS_TO_KEEP = 24;
+// Keep the previous two complete calendar years plus the current year's
+// completed months (YTD). At year-end this is ~36 months; in January it
+// drops to ~24. Wider window than the old fixed 24 because the deck now
+// shows a YTD callout for the current year alongside the two priors.
+const FULL_YEARS_KEPT = 2;
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function parseCsv(text) {
@@ -48,15 +52,22 @@ async function main() {
   const rows = parseCsv(csv);
   if (rows.length === 0) throw new Error('Stooq returned 0 usable rows');
 
-  // Drop any row that's beyond the current month (defensive — Stooq sometimes
-  // includes the in-progress month before it has closed).
+  // Drop any row that's the in-progress current month (defensive — Stooq
+  // sometimes includes it before it has closed).
   const now = new Date();
-  const cutoffYear = now.getUTCFullYear();
-  const cutoffMonth = now.getUTCMonth() + 1;
-  const completed = rows.filter(r => (r.y < cutoffYear) || (r.y === cutoffYear && r.mo < cutoffMonth));
+  const currentYear = now.getUTCFullYear();
+  const currentMonth = now.getUTCMonth() + 1;
+  const completed = rows.filter(r => (r.y < currentYear) || (r.y === currentYear && r.mo < currentMonth));
   if (completed.length === 0) throw new Error('No completed months found after cutoff filter');
 
-  const trimmed = completed.slice(-MONTHS_TO_KEEP).map(r => ({
+  // Window: start of (currentYear - FULL_YEARS_KEPT) through last completed
+  // month. So in May 2026 we keep Jan 2024 through Apr 2026, giving two full
+  // years (2024, 2025) plus YTD (Jan-Apr 2026). The series naturally grows
+  // through the year and resets near January when the oldest year falls out
+  // of the window.
+  const startYear = currentYear - FULL_YEARS_KEPT;
+  const windowed = completed.filter(r => r.y >= startYear);
+  const trimmed = windowed.map(r => ({
     m: `${MONTH_NAMES[r.mo - 1]} ${String(r.y).slice(-2)}`,
     v: Math.round(r.close * 100) / 100,
   }));
