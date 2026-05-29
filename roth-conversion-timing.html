@@ -2577,7 +2577,19 @@ function getSlideFromHash() {
 }
 
 function onGenerate(e) {
-  if (e) e.preventDefault();
+  if (e) {
+    e.preventDefault();
+    // The form was submitted explicitly (Continue / See my plan), so any
+    // stale #slide=N from a previous session is meaningless — clear it so
+    // the deck starts at slide 1 instead of restoring an old position.
+    // Auto-runs (?auto=1) call onGenerate with no event and keep the hash
+    // so refresh-to-restore still works.
+    if (window.location.hash) {
+      try {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch (_) { /* no-op on file:// */ }
+    }
+  }
   // otherIncome and annualWithdrawal are no longer first-class form fields — they
   // default to 0 (the IRA draw is auto-computed from totalIncomeNeeds - SS). URL
   // params for both still work for backward compatibility with existing links.
