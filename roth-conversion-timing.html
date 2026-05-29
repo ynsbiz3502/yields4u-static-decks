@@ -1874,47 +1874,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <h2 class="title">The Index Hides Where The Opportunity Lives.</h2>
         <p class="subtitle">We don&rsquo;t harvest the S&amp;P 500 &mdash; we harvest the 500 stocks underneath it. Even in green years, dozens of names are down. That&rsquo;s our surface area.</p>
       </div>
-      <div id="spx-year-panels" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;max-width:1300px;margin:32px auto 0;">
-        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:22px 24px;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
-            <div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">2024</div>
-            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">A Green Year</div>
-          </div>
-          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:28px;font-weight:700;color:#4A8A6B;line-height:1;">+23%</div></div>
-            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);text-align:right;">Looks great<br>on the surface.</div>
-          </div>
-          <div style="font-family:var(--font-sans);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>
-          ${constituentBar(340, 160)}
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:22px 24px;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
-            <div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">2025</div>
-            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">Also Green</div>
-          </div>
-          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:28px;font-weight:700;color:#4A8A6B;line-height:1;">+14%</div></div>
-            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);text-align:right;">Same story.<br>Different mix.</div>
-          </div>
-          <div style="font-family:var(--font-sans);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>
-          ${constituentBar(320, 180)}
-        </div>
-        <!-- YTD year card — same visual as 2024 / 2025 above. The year, return,
-             "through Month" label, and constituent stats are populated by
-             renderCharts() / updateSpxYtdCard from the live SPX series. -->
-        <div id="spx-ytd-card" style="background:white;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:none;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
-            <div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;" data-ytd-year>2026</div>
-            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">Year to Date</div>
-          </div>
-          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 YTD</div><div style="font-family:var(--font-serif);font-size:28px;font-weight:700;color:#4A8A6B;line-height:1;" data-ytd-return>+5.3%</div></div>
-            <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);text-align:right;">Through<br><span data-ytd-as-of>April</span>.</div>
-          </div>
-          <div style="font-family:var(--font-sans);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>
-          <div data-ytd-constituent-bar>${constituentBar(290, 210)}</div>
-        </div>
-      </div>
+      <!-- Year-panel cards are rendered dynamically from data/spx-constituents.json
+           by renderCharts(). One card per year in the data; fall-through to
+           inline defaults if the fetch fails. -->
+      <div id="spx-year-panels" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;max-width:1300px;margin:32px auto 0;"></div>
       <div style="max-width:1300px;margin:24px auto 0;">
         <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;text-align:center;">The Index Itself — And Its Drawdowns</div>
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px 18px;height:210px;"><canvas id="chart-spx-trajectory"></canvas></div>
@@ -2611,72 +2574,89 @@ function renderCharts(inputs, sim, savings) {
       if (!Array.isArray(spxSeries) || spxSeries.length < 4) return;
       if (chartInstances.spxTraj) { chartInstances.spxTraj.destroy(); chartInstances.spxTraj = null; }
       updateSpxDrawdownCallouts(spxSeries);
-      updateSpxYtdCard(spxSeries);
       const labels = spxSeries.map(p => p.m);
       const prices = spxSeries.map(p => p.v);
       renderSpxChartInstance(labels, prices);
     }
 
-    // Populate the third year-panel card with YTD return + YTD max drawdown
-    // when the most recent year isn't complete (last month < December). Hides
-    // the card otherwise so the panel grid collapses cleanly to 2 columns.
-    function updateSpxYtdCard(spxSeries) {
-      const card = document.getElementById('spx-ytd-card');
-      const grid = document.getElementById('spx-year-panels');
-      if (!card) return;
-      const MONTH_NAMES_LC = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
-      const MONTH_NAMES_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      function parseLabel(label) {
-        const s = String(label).trim();
-        const moMatch = s.match(/^([A-Za-z]+)/);
-        const yrMatch = s.match(/(\d{2,4})$/);
-        const moIdx = moMatch ? MONTH_NAMES_LC.indexOf(moMatch[1].toLowerCase()) : -1;
-        const yrShort = yrMatch ? yrMatch[1].slice(-2) : '';
-        return { mo: moIdx + 1, yShort: yrShort, yFull: yrShort ? ('20' + yrShort) : '' };
-      }
-      const last = spxSeries[spxSeries.length - 1];
-      const { mo: lastMo, yShort: lastYShort, yFull: lastYFull } = parseLabel(last.m);
-      // Only show YTD when the most recent year isn't complete.
-      if (!lastYFull || lastMo === 12) {
-        card.style.display = 'none';
-        if (grid) grid.style.gridTemplateColumns = '1fr 1fr';
-        return;
-      }
-      // YTD return = (last close / prior-year Dec close) - 1. Fall back to the
-      // first available close of the current year if the prior December isn't
-      // in the windowed series (early-history edge case).
-      const priorYrShort = String(parseInt(lastYFull, 10) - 1).slice(-2);
-      const priorDec = spxSeries.find(p => p.m === 'Dec ' + priorYrShort);
-      const inYear = spxSeries.filter(p => parseLabel(p.m).yShort === lastYShort);
-      const baseClose = priorDec ? priorDec.v : (inYear.length ? inYear[0].v : null);
-      if (!baseClose) {
-        card.style.display = 'none';
-        if (grid) grid.style.gridTemplateColumns = '1fr 1fr';
-        return;
-      }
-      // Max drawdown within the current year only.
-      let peak = -Infinity, minDD = 0;
-      for (const p of inYear) {
-        peak = Math.max(peak, p.v);
-        const dd = (p.v - peak) / peak * 100;
-        if (dd < minDD) minDD = dd;
-      }
-      const ytdReturn = (last.v - baseClose) / baseClose * 100;
-      const fmt = (n, digits = 1) => (n >= 0 ? '+' : '−') + Math.abs(n).toFixed(digits) + '%';
-      const yrEl = card.querySelector('[data-ytd-year]');
-      const retEl = card.querySelector('[data-ytd-return]');
-      const asOfEl = card.querySelector('[data-ytd-as-of]');
-      const ddEl = card.querySelector('[data-ytd-dd]');
-      if (yrEl) yrEl.textContent = lastYFull;
-      if (retEl) {
-        retEl.textContent = fmt(ytdReturn);
-        retEl.style.color = ytdReturn >= 0 ? '#4A8A6B' : '#A83B2E';
-      }
-      if (asOfEl) asOfEl.textContent = MONTH_NAMES_FULL[lastMo - 1] || '';
-      if (ddEl) ddEl.textContent = '−' + Math.abs(minDD).toFixed(1) + '%';
-      card.style.display = 'block';
-      if (grid) grid.style.gridTemplateColumns = '1fr 1fr 1fr';
+    // Year-panel cards (the row above the trajectory chart): one card per year
+    // in data/spx-constituents.json. Each card carries the index return %, a
+    // Green/Red Year subtitle (or "Year to Date" for the YTD card), and the
+    // positive/negative split bar built from real constituent counts.
+    const MONTH_NAMES_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    function constituentBar(positive, negative) {
+      const total = (positive || 0) + (negative || 0);
+      if (!total) return '<div style="height:56px;border-radius:8px;border:1px solid var(--border);"></div>';
+      const posPct = (positive / total * 100).toFixed(1);
+      const negPct = (negative / total * 100).toFixed(1);
+      return '' +
+        '<div style="display:flex;height:56px;border-radius:8px;overflow:hidden;border:1px solid var(--border);box-shadow:inset 0 1px 0 rgba(0,0,0,0.04);">' +
+          '<div style="flex:' + positive + ';background:#4A8A6B;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-family:var(--font-sans);">' +
+            '<div style="font-weight:700;font-size:18px;line-height:1;">' + positive + '</div>' +
+            '<div style="font-size:11px;opacity:0.85;margin-top:2px;letter-spacing:0.04em;">positive &middot; ' + posPct + '%</div>' +
+          '</div>' +
+          '<div style="flex:' + negative + ';background:#A83B2E;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-family:var(--font-sans);">' +
+            '<div style="font-weight:700;font-size:18px;line-height:1;">' + negative + '</div>' +
+            '<div style="font-size:11px;opacity:0.85;margin-top:2px;letter-spacing:0.04em;">negative &middot; ' + negPct + '%</div>' +
+          '</div>' +
+        '</div>';
     }
+    function renderSpxYearPanel(year) {
+      const isYtd = !!year.ytd;
+      const ret = (typeof year.index_return_pct === 'number') ? year.index_return_pct : null;
+      const subtitle = isYtd ? 'Year to Date'
+        : (ret == null ? '' : (ret >= 0 ? 'Green Year' : 'Red Year'));
+      const returnLabel = isYtd ? 'S&P 500 YTD' : 'S&P 500 Index';
+      const returnStr = (ret == null) ? '—' :
+        ((ret >= 0 ? '+' : '−') + Math.abs(ret).toFixed(1) + '%');
+      const returnColor = (ret == null) ? 'var(--ink-900)' : (ret >= 0 ? '#4A8A6B' : '#A83B2E');
+      let asOfHtml = '';
+      if (isYtd && year.as_of) {
+        const moIdx = parseInt(String(year.as_of).split('-')[1], 10) - 1;
+        const moName = MONTH_NAMES_FULL[moIdx] || '';
+        if (moName) asOfHtml = '<div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);text-align:right;">Through<br>' + moName + '.</div>';
+      }
+      return '' +
+        '<div style="background:white;border:1px solid var(--border);border-radius:12px;padding:22px 24px;">' +
+          '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">' +
+            '<div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">' + (year.label || '') + '</div>' +
+            '<div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">' + subtitle + '</div>' +
+          '</div>' +
+          '<div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:baseline;justify-content:space-between;">' +
+            '<div>' +
+              '<div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">' + returnLabel + '</div>' +
+              '<div style="font-family:var(--font-serif);font-size:28px;font-weight:700;color:' + returnColor + ';line-height:1;">' + returnStr + '</div>' +
+            '</div>' +
+            asOfHtml +
+          '</div>' +
+          '<div style="font-family:var(--font-sans);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>' +
+          constituentBar(year.positive || 0, year.negative || 0) +
+        '</div>';
+    }
+    function renderSpxYearPanels(years) {
+      const container = document.getElementById('spx-year-panels');
+      if (!container || !Array.isArray(years) || years.length === 0) return;
+      container.innerHTML = years.map(renderSpxYearPanel).join('');
+      container.style.gridTemplateColumns = 'repeat(' + years.length + ', 1fr)';
+    }
+    const SPX_CONSTITUENTS_DEFAULTS = [
+      { label: '2024', ytd: false, index_return_pct: 23.3, positive: 363, negative: 136 },
+      { label: '2025', ytd: false, index_return_pct: 16.4, positive: 326, negative: 176 },
+      { label: '2026', ytd: true, as_of: '2026-05-28', index_return_pct: 10.5, positive: 304, negative: 199 },
+    ];
+    renderSpxYearPanels(SPX_CONSTITUENTS_DEFAULTS);
+    (function tryRefreshConstituents() {
+      try {
+        const url = new URL('data/spx-constituents.json', window.location.href).toString();
+        fetch(url, { cache: 'no-store' })
+          .then(r => r.ok ? r.json() : null)
+          .then(json => {
+            if (!json || !Array.isArray(json.years) || json.years.length === 0) return;
+            renderSpxYearPanels(json.years);
+          })
+          .catch(() => { /* keep defaults */ });
+      } catch (_) { /* keep defaults */ }
+    })();
 
     // Build the "max drawdown" callout cards below the chart, one per year in
     // the series. The most recent year is flagged as YTD when its last month

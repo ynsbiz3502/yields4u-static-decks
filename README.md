@@ -11,9 +11,11 @@ render entirely client-side.
 | `roth-conversion-timing.html` | Roth conversion timing deck. |
 | `tax-loss-harvesting.html` | Tax-loss harvesting deck. |
 | `index.html` | Landing page. |
-| `data/spx-monthly.json` | 24 months of S&P 500 monthly closes. Read by slide 16 of the Roth deck. |
-| `scripts/update-spx.mjs` | Node script that refreshes `data/spx-monthly.json` from Stooq. |
-| `.github/workflows/update-spx.yml` | Monthly GitHub Action that runs the update script and commits any change. |
+| `data/spx-monthly.json` | S&P 500 monthly closes for the previous two full years plus YTD. Drives the trajectory chart. |
+| `data/spx-constituents.json` | Per-year index return + positive / negative constituent counts. Drives the three year-panel cards above the chart. |
+| `scripts/update-spx.mjs` | Node script that refreshes `data/spx-monthly.json` from EODHD. |
+| `scripts/update-constituents.mjs` | Node script that refreshes `data/spx-constituents.json` from EODHD (fundamentals + eod-bulk-last-day). |
+| `.github/workflows/update-spx.yml` | Monthly GitHub Action that runs both scripts and commits any change. |
 
 ## Automatic S&P 500 data refresh (slide 16)
 
