@@ -1,0 +1,44 @@
+name: Update S&P 500 monthly data
+
+# Fetches the latest 24 months of S&P 500 closes from Stooq and commits the
+# result to data/spx-monthly.json. The Roth conversion timing deck (slide 16)
+# reads that file at page load and falls back to whatever values were inlined
+# in the HTML if the file fails to fetch.
+
+on:
+  # Run at 12:00 UTC on the 1st of every month — Stooq will have the previous
+  # month's close by then.
+  schedule:
+    - cron: '0 12 1 * *'
+  # Allow manual triggering from the Actions tab.
+  workflow_dispatch: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch and write spx-monthly.json
+        run: node scripts/update-spx.mjs
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- data/spx-monthly.json; then
+            echo "No changes to data/spx-monthly.json"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/spx-monthly.json
+            git commit -m "Update S&P 500 monthly data ($(date -u +%Y-%m-%d))"
+            git push
+            echo "Committed and pushed updated data."
+          fi

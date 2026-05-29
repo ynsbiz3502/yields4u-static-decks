@@ -1903,14 +1903,14 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1300px;margin:24px auto 0;">
         <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;text-align:center;">The Index Itself — And Its Drawdowns</div>
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px 18px;height:210px;"><canvas id="chart-spx-trajectory"></canvas></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px;" id="spx-dd-callouts">
           <div style="background:#FDF6F4;border:1px solid #F1D6CF;border-left:4px solid #A83B2E;border-radius:8px;padding:12px 18px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;font-weight:700;">2024 max drawdown</div>
-            <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#A83B2E;line-height:1;">&minus;8.5%</div>
+            <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;font-weight:700;"><span data-spx-year-label="0">2024</span> max drawdown</div>
+            <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#A83B2E;line-height:1;" data-spx-dd-label="0">&minus;8.5%</div>
           </div>
           <div style="background:#FDF6F4;border:1px solid #F1D6CF;border-left:4px solid #A83B2E;border-radius:8px;padding:12px 18px;display:flex;align-items:baseline;justify-content:space-between;">
-            <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;font-weight:700;">2025 max drawdown</div>
-            <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#A83B2E;line-height:1;">&minus;10.4%</div>
+            <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;font-weight:700;"><span data-spx-year-label="1">2025</span> max drawdown</div>
+            <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#A83B2E;line-height:1;" data-spx-dd-label="1">&minus;10.4%</div>
           </div>
         </div>
       </div>
@@ -2573,15 +2573,17 @@ function renderCharts(inputs, sim, savings) {
     });
   }
 
-  // ---- S&P 500 trajectory across 2024 + 2025 with full drawdown periods
-  //      shaded gray (slide 16) ----
-  // Stylized monthly closes, not exact — the deck is educational. Each
-  // contiguous span from "started declining from a peak" through "fully
-  // recovered back to that peak" is shaded gray via a custom Chart.js plugin
-  // that paints rectangles behind the line.
+  // ---- S&P 500 trajectory across the most recent ~24 months, with each
+  //      peak-to-recovery drawdown period shaded light red and labeled with
+  //      its max drawdown depth (slide 16) ----
+  //
+  // Data lives in data/spx-monthly.json and is auto-refreshed on the 1st of
+  // every month by .github/workflows/update-spx.yml. The defaults below act
+  // as a fallback if the fetch fails (e.g. file:// loads). After the initial
+  // render, we attempt to fetch fresh data and re-render if it differs.
   const spxEl = document.getElementById('chart-spx-trajectory');
   if (spxEl) {
-    const spxSeries = [
+    const SPX_DEFAULTS = [
       { m: 'Jan 24', v: 4770 }, { m: 'Feb 24', v: 4980 }, { m: 'Mar 24', v: 5230 },
       { m: 'Apr 24', v: 4785 }, { m: 'May 24', v: 5070 }, { m: 'Jun 24', v: 5470 },
       { m: 'Jul 24', v: 5520 }, { m: 'Aug 24', v: 5165 }, { m: 'Sep 24', v: 5450 },
@@ -2591,8 +2593,48 @@ function renderCharts(inputs, sim, savings) {
       { m: 'Jul 25', v: 6240 }, { m: 'Aug 25', v: 5895 }, { m: 'Sep 25', v: 6090 },
       { m: 'Oct 25', v: 6380 }, { m: 'Nov 25', v: 6610 }, { m: 'Dec 25', v: 6700 },
     ];
-    const labels = spxSeries.map(p => p.m);
-    const prices = spxSeries.map(p => p.v);
+
+    // Build the chart from a given series and update the two drawdown callouts
+    // below the chart. Re-entrant: destroys the previous chart instance if any.
+    function renderSpxTraj(spxSeries) {
+      if (!Array.isArray(spxSeries) || spxSeries.length < 4) return;
+      if (chartInstances.spxTraj) { chartInstances.spxTraj.destroy(); chartInstances.spxTraj = null; }
+      updateSpxDrawdownCallouts(spxSeries);
+      const labels = spxSeries.map(p => p.m);
+      const prices = spxSeries.map(p => p.v);
+      renderSpxChartInstance(labels, prices);
+    }
+
+    // Populate the two "max drawdown" callout cards below the chart with the
+    // last two distinct years in the series + each year's worst intra-year
+    // peak-to-trough decline.
+    function updateSpxDrawdownCallouts(spxSeries) {
+      const yearOf = (label) => {
+        const m = String(label).match(/(\d{2,4})$/);
+        return m ? ('20' + m[1].slice(-2)) : '';
+      };
+      // Group by year and compute intra-year max drawdown for each.
+      const order = [];
+      const byYear = {};
+      for (const p of spxSeries) {
+        const y = yearOf(p.m);
+        if (!byYear[y]) { byYear[y] = { peak: -Infinity, minDD: 0 }; order.push(y); }
+        const b = byYear[y];
+        b.peak = Math.max(b.peak, p.v);
+        const dd = (p.v - b.peak) / b.peak * 100;
+        if (dd < b.minDD) b.minDD = dd;
+      }
+      // Show the last two distinct years.
+      const lastTwo = order.slice(-2);
+      lastTwo.forEach((y, i) => {
+        const yEl = document.querySelector('[data-spx-year-label="' + i + '"]');
+        const dEl = document.querySelector('[data-spx-dd-label="' + i + '"]');
+        if (yEl) yEl.textContent = y;
+        if (dEl) dEl.textContent = '−' + Math.abs(byYear[y].minDD).toFixed(1) + '%';
+      });
+    }
+
+    function renderSpxChartInstance(labels, prices) {
 
     // Identify every drawdown-to-full-recovery span. A span starts at a peak
     // (last index where running-max was set) and ends at the first later index
@@ -2707,6 +2749,30 @@ function renderCharts(inputs, sim, savings) {
       },
       plugins: [drawdownBandsPlugin],
     });
+    } // end renderSpxChartInstance
+
+    // Initial render with the inline defaults so the chart appears immediately.
+    renderSpxTraj(SPX_DEFAULTS);
+
+    // Then try to swap in the latest data from data/spx-monthly.json. If the
+    // fetch fails (file://, offline, 404) we just keep the defaults — no
+    // user-visible error. The Pages-served JSON is refreshed monthly by
+    // .github/workflows/update-spx.yml.
+    (function tryRefreshSpxData() {
+      try {
+        const url = new URL('data/spx-monthly.json', window.location.href).toString();
+        fetch(url, { cache: 'no-store' })
+          .then(r => r.ok ? r.json() : null)
+          .then(json => {
+            if (!json || !Array.isArray(json.series) || json.series.length < 4) return;
+            // Validate shape: each entry must have a string m and finite v.
+            const clean = json.series.filter(p => typeof p.m === 'string' && Number.isFinite(p.v));
+            if (clean.length < 4) return;
+            renderSpxTraj(clean);
+          })
+          .catch(() => { /* keep defaults */ });
+      } catch (_) { /* keep defaults */ }
+    })();
   }
 
   // ---- Proof / savings chart (slide 12) ----
