@@ -2244,55 +2244,72 @@ function renderCharts(inputs, sim, savings) {
     });
   }
 
-  // ---- Tax bracket trajectory color-coded by year (new slide 9) ----
+  // ---- Tax bracket trajectory: stacked bars showing income by bracket (slide 9) ----
   const taxBrEl = document.getElementById('chart-tax-brackets');
   if (taxBrEl && sim.yearly && sim.yearly.length) {
     const yrs = sim.yearly;
     const ages = yrs.map(y => y.age);
-    const taxable = yrs.map(y => y.taxableInc);
-    const brColor = (pct) => {
-      if (pct <= 0.12) return '#4A8A6B';
-      if (pct <= 0.22) return '#C9A23B';
-      if (pct <= 0.24) return '#D88A3E';
-      if (pct <= 0.32) return '#C25A3E';
-      return '#A83B2E';
-    };
-    const colors = yrs.map(y => brColor(y.bracketPct));
+    const brackets = inputs.filingStatus === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
+    const stdDed = STD_DED[inputs.filingStatus];
+    // Slice a taxable-after-std-ded value into per-bracket dollar amounts.
+    // brackets array is [[maxThreshold, rate], ...]; thresholds are cumulative taxable.
+    function sliceByBracket(taxable) {
+      const out = [];
+      let prev = 0;
+      for (const [maxT, rate] of brackets) {
+        const amt = Math.max(0, Math.min(taxable, maxT) - prev);
+        out.push({ rate, amt });
+        prev = maxT;
+        if (taxable <= maxT) {
+          // Fill remaining brackets with 0 so the array length is stable.
+          for (let i = out.length; i < brackets.length; i++) out.push({ rate: brackets[i][1], amt: 0 });
+          break;
+        }
+      }
+      return out;
+    }
+    // Build 5 grouped buckets: 10-12 / 22 / 24 / 32 / 35-37
+    const groupDefs = [
+      { label: '10–12%', color: 'rgba(74, 138, 107, 0.92)',  rates: [0.10, 0.12] },
+      { label: '22%',    color: 'rgba(201, 162, 59, 0.94)',  rates: [0.22] },
+      { label: '24%',    color: 'rgba(216, 138, 62, 0.94)',  rates: [0.24] },
+      { label: '32%',    color: 'rgba(194, 90, 62, 0.94)',   rates: [0.32] },
+      { label: '35–37%', color: 'rgba(168, 59, 46, 0.94)',   rates: [0.35, 0.37] }
+    ];
+    const datasets = groupDefs.map(g => ({
+      label: g.label,
+      backgroundColor: g.color,
+      borderWidth: 0,
+      stack: 'income',
+      barPercentage: 0.92,
+      categoryPercentage: 0.92,
+      data: yrs.map(y => {
+        const slices = sliceByBracket(Math.max(0, y.taxableInc - stdDed));
+        return slices.reduce((sum, s) => sum + (g.rates.includes(s.rate) ? s.amt : 0), 0);
+      })
+    }));
     chartInstances.taxBr = new Chart(taxBrEl, {
       type: 'bar',
-      data: {
-        labels: ages,
-        datasets: [{
-          label: 'Taxable income',
-          data: taxable,
-          backgroundColor: colors,
-          borderWidth: 0,
-          barPercentage: 0.92, categoryPercentage: 0.92
-        }]
-      },
+      data: { labels: ages, datasets },
       options: {
         responsive: true, maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
-          title: { display: true, text: `Marginal Bracket By Year — ${fmtMoney(inputs.balance, true)} @ ${fmtPct(inputs.growthRate*100,0)}`,
+          legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: true, padding: 14 } },
+          title: { display: true, text: `Taxable Income Sliced By Bracket, Year By Year`,
             color: '#0E0E0F', font: { size: 15, weight: '700', family: "'Playfair Display', Georgia, serif" }, padding: { bottom: 12 } },
-          tooltip: { callbacks: {
-            label: ctx => {
-              const y = sim.yearly[ctx.dataIndex];
-              return [
-                'Taxable income: ' + fmtMoneyFull(y.taxableInc),
-                'Marginal bracket: ' + (y.bracketPct * 100).toFixed(0) + '%',
-                'RMD: ' + fmtMoneyFull(y.rmd),
-                'Savings draw: ' + fmtMoneyFull(y.savingsDraw),
-                'SS (inflated): ' + fmtMoneyFull(y.ssIncome),
-              ];
-            }
-          }}
+          tooltip: { mode: 'index', intersect: false,
+            callbacks: {
+              label: ctx => ctx.dataset.label + ': ' + fmtMoneyFull(ctx.parsed.y),
+              footer: items => {
+                const total = items.reduce((s, it) => s + it.parsed.y, 0);
+                return 'Total taxable: ' + fmtMoneyFull(total);
+              }
+            } }
         },
         scales: {
-          x: { grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
-          y: { position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
-               ticks: { callback: v => fmtMoney(v) }, title: { display: true, text: 'Taxable Income (top dollar in bracket)' } }
+          x: { stacked: true, grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
+          y: { stacked: true, position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
+               ticks: { callback: v => fmtMoney(v) }, title: { display: true, text: 'Taxable Income (after standard deduction)' } }
         }
       }
     });
