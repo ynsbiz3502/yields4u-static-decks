@@ -985,13 +985,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
         <div class="hint">Combined annual Social Security for the household once benefits start. Grows with inflation (COLA).</div>
       </div>
 
-      <div class="form-row">
-        <label for="inflationRate">Inflation rate: <span class="slider-val" id="inflationVal" style="font-weight:700;">4.0%</span></label>
-        <div class="slider-row">
-          <input type="range" id="inflationRate" min="0" max="8" step="0.5" value="4">
-        </div>
-        <div class="hint">Annual percentage by which the withdrawal amount is grown each year.</div>
-      </div>
+      <!-- Inflation rate is fixed at 4% by default. URL param `?inflationRate=` can
+           still override (e.g., 3 for 3%). Hidden so the intake stays clean. -->
+      <input type="hidden" id="inflationRate" value="4">
 
       <div class="form-row">
         <label for="growthRate">Expected annual growth: <span class="slider-val" id="growthVal" style="font-weight:700;">7.0%</span></label>
@@ -2550,10 +2546,8 @@ function applyUrlParamsToForm() {
   const infl = params.get('inflationRate');
   if (infl !== null && infl !== '') {
     const i = document.getElementById('inflationRate');
-    const iv = document.getElementById('inflationVal');
     const n = parseFloat(infl);
     if (i && !isNaN(n)) i.value = String(n);
-    if (iv && !isNaN(n)) iv.textContent = n.toFixed(1) + '%';
   }
   return params.get('auto') === '1' || params.get('auto') === 'true';
 }
@@ -2600,15 +2594,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (growth && growthVal) {
     growth.addEventListener('input', () => {
       growthVal.textContent = parseFloat(growth.value).toFixed(1) + '%';
-    });
-  }
-
-  // Inflation slider live label
-  const infl = document.getElementById('inflationRate');
-  const inflVal = document.getElementById('inflationVal');
-  if (infl && inflVal) {
-    infl.addEventListener('input', () => {
-      inflVal.textContent = parseFloat(infl.value).toFixed(1) + '%';
     });
   }
 
