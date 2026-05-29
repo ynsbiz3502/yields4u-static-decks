@@ -1848,23 +1848,24 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   `);
 
   // SLIDE 16 — Under the index: individual constituents (2024 + 2025)
-  // Stylistic dot grid: green = positive constituent, red = negative.
+  // Each year shows the S&P 500 index figure plus a horizontal stacked bar
+  // splitting the 500 stocks into green (positive) and red (negative) segments.
   // Numbers are illustrative — they match the rough pattern shown on slide 14.
-  function dotGrid(posCount, negCount) {
-    const cells = [];
-    // Interleave so green/red aren't clumped
+  function constituentBar(posCount, negCount) {
     const total = posCount + negCount;
-    const step = Math.max(1, Math.floor(total / negCount));
-    let placedNeg = 0;
-    for (let i = 0; i < total; i++) {
-      const isNeg = placedNeg < negCount && i % step === 0;
-      if (isNeg) placedNeg++;
-      cells.push(isNeg
-        ? '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#A83B2E;"></span>'
-        : '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#4A8A6B;"></span>'
-      );
-    }
-    return cells.join('');
+    const posPct = (posCount / total * 100).toFixed(1);
+    const negPct = (negCount / total * 100).toFixed(1);
+    return `
+      <div style="display:flex;height:56px;border-radius:8px;overflow:hidden;border:1px solid var(--border);box-shadow:inset 0 1px 0 rgba(0,0,0,0.04);">
+        <div style="flex:${posCount};background:#4A8A6B;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-family:var(--font-sans);">
+          <div style="font-weight:700;font-size:18px;line-height:1;">${posCount}</div>
+          <div style="font-size:11px;opacity:0.85;margin-top:2px;letter-spacing:0.04em;">positive &middot; ${posPct}%</div>
+        </div>
+        <div style="flex:${negCount};background:#A83B2E;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-family:var(--font-sans);">
+          <div style="font-weight:700;font-size:18px;line-height:1;">${negCount}</div>
+          <div style="font-size:11px;opacity:0.85;margin-top:2px;letter-spacing:0.04em;">negative &middot; ${negPct}%</div>
+        </div>
+      </div>`;
   }
   slides.push(`
     <section class="slide" data-slide="16">
@@ -1873,7 +1874,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <h2 class="title">The Index Hides Where The Opportunity Lives.</h2>
         <p class="subtitle">We don&rsquo;t harvest the S&amp;P 500 &mdash; we harvest the 500 stocks underneath it. Even in green years, dozens of names are down. That&rsquo;s our surface area.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;max-width:1300px;margin:24px auto 0;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;max-width:1300px;margin:32px auto 0;">
         <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:24px 26px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
             <div style="font-family:var(--font-serif);font-size:34px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">2024</div>
@@ -1883,12 +1884,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:#4A8A6B;line-height:1;">+23%</div></div>
             <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);text-align:right;">Looks great<br>on the surface.</div>
           </div>
-          <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>
-          <div style="display:grid;grid-template-columns:repeat(25, 1fr);gap:4px;padding:10px;background:#FAFAF9;border-radius:8px;border:1px solid var(--border);">${dotGrid(340, 160)}</div>
-          <div style="display:flex;justify-content:space-between;margin-top:12px;font-family:var(--font-sans);font-size:13px;">
-            <span style="color:#4A8A6B;font-weight:700;">340 positive</span>
-            <span style="color:#A83B2E;font-weight:700;">160 negative</span>
-          </div>
+          <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:10px;">The 500 Stocks Underneath</div>
+          ${constituentBar(340, 160)}
         </div>
         <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:24px 26px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
@@ -1899,12 +1896,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:#4A8A6B;line-height:1;">+14%</div></div>
             <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);text-align:right;">Same story.<br>Different mix.</div>
           </div>
-          <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>
-          <div style="display:grid;grid-template-columns:repeat(25, 1fr);gap:4px;padding:10px;background:#FAFAF9;border-radius:8px;border:1px solid var(--border);">${dotGrid(320, 180)}</div>
-          <div style="display:flex;justify-content:space-between;margin-top:12px;font-family:var(--font-sans);font-size:13px;">
-            <span style="color:#4A8A6B;font-weight:700;">320 positive</span>
-            <span style="color:#A83B2E;font-weight:700;">180 negative</span>
-          </div>
+          <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:10px;">The 500 Stocks Underneath</div>
+          ${constituentBar(320, 180)}
         </div>
       </div>
       <p style="max-width:1100px;margin:20px auto 0;font-family:var(--font-serif);font-size:17px;color:var(--ink-900);line-height:1.5;text-align:center;font-weight:500;">Even when the index finishes up double-digits, roughly <strong>1 in 3 of its stocks finished red.</strong> Every one of those is a harvestable loss, a dip-conversion opportunity, a chance to move more shares into the Roth at the same tax cost.</p>
