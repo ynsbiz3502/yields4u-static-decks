@@ -2573,60 +2573,86 @@ function renderCharts(inputs, sim, savings) {
     });
   }
 
-  // ---- S&P 500 trajectory across 2024 + 2025 with drawdown shading (slide 16) ----
-  // Stylized monthly closes, not exact — the deck is educational. Drawdown is the
-  // shaded gap between the running peak and the current price; we render it by
-  // stacking the actual price (visible gold line) underneath an invisible
-  // running-peak dataset and filling the area between them red.
+  // ---- S&P 500 trajectory across 2024 + 2025 with full drawdown periods
+  //      shaded gray (slide 16) ----
+  // Stylized monthly closes, not exact — the deck is educational. Each
+  // contiguous span from "started declining from a peak" through "fully
+  // recovered back to that peak" is shaded gray via a custom Chart.js plugin
+  // that paints rectangles behind the line.
   const spxEl = document.getElementById('chart-spx-trajectory');
   if (spxEl) {
     const spxSeries = [
       { m: 'Jan 24', v: 4770 }, { m: 'Feb 24', v: 4980 }, { m: 'Mar 24', v: 5230 },
-      { m: 'Apr 24', v: 4970 }, { m: 'May 24', v: 5280 }, { m: 'Jun 24', v: 5470 },
-      { m: 'Jul 24', v: 5520 }, { m: 'Aug 24', v: 5330 }, { m: 'Sep 24', v: 5650 },
-      { m: 'Oct 24', v: 5760 }, { m: 'Nov 24', v: 5990 }, { m: 'Dec 24', v: 5880 },
-      { m: 'Jan 25', v: 6020 }, { m: 'Feb 25', v: 6150 }, { m: 'Mar 25', v: 6280 },
+      { m: 'Apr 24', v: 4785 }, { m: 'May 24', v: 5070 }, { m: 'Jun 24', v: 5470 },
+      { m: 'Jul 24', v: 5520 }, { m: 'Aug 24', v: 5165 }, { m: 'Sep 24', v: 5450 },
+      { m: 'Oct 24', v: 5780 }, { m: 'Nov 24', v: 5990 }, { m: 'Dec 24', v: 5880 },
+      { m: 'Jan 25', v: 6050 }, { m: 'Feb 25', v: 6150 }, { m: 'Mar 25', v: 6280 },
       { m: 'Apr 25', v: 6420 }, { m: 'May 25', v: 6510 }, { m: 'Jun 25', v: 6580 },
-      { m: 'Jul 25', v: 6280 }, { m: 'Aug 25', v: 5900 }, { m: 'Sep 25', v: 6100 },
-      { m: 'Oct 25', v: 6450 }, { m: 'Nov 25', v: 6620 }, { m: 'Dec 25', v: 6700 },
+      { m: 'Jul 25', v: 6240 }, { m: 'Aug 25', v: 5895 }, { m: 'Sep 25', v: 6090 },
+      { m: 'Oct 25', v: 6380 }, { m: 'Nov 25', v: 6610 }, { m: 'Dec 25', v: 6700 },
     ];
     const labels = spxSeries.map(p => p.m);
     const prices = spxSeries.map(p => p.v);
-    const runningPeak = [];
-    let peak = -Infinity;
-    for (const v of prices) { peak = Math.max(peak, v); runningPeak.push(peak); }
+
+    // Identify every drawdown-to-full-recovery span. A span starts at a peak
+    // (last index where running-max was set) and ends at the first later index
+    // that meets-or-exceeds that peak. If the series ends still underwater,
+    // the span extends to the last index.
+    function findDrawdownPeriods(arr) {
+      const out = [];
+      let i = 0;
+      while (i < arr.length - 1) {
+        let peak = arr[i], peakIdx = i, j = i + 1;
+        while (j < arr.length && arr[j] >= peak) { peak = arr[j]; peakIdx = j; j++; }
+        if (j >= arr.length) break;
+        let k = j;
+        while (k < arr.length && arr[k] < peak) k++;
+        if (k >= arr.length) {
+          out.push({ start: peakIdx, end: arr.length - 1, recovered: false });
+          break;
+        }
+        out.push({ start: peakIdx, end: k, recovered: true });
+        i = k;
+      }
+      return out;
+    }
+    const periods = findDrawdownPeriods(prices);
+
+    // Custom plugin: paint a gray vertical band for each drawdown period before
+    // the line is drawn, so the line rides on top of the shading.
+    const grayBandsPlugin = {
+      id: 'grayBands',
+      beforeDatasetsDraw(chart) {
+        const ctx = chart.ctx;
+        const ca = chart.chartArea;
+        const xScale = chart.scales.x;
+        if (!xScale) return;
+        ctx.save();
+        ctx.fillStyle = 'rgba(120, 120, 120, 0.18)';
+        periods.forEach(p => {
+          const x1 = xScale.getPixelForValue(p.start);
+          const x2 = xScale.getPixelForValue(p.end);
+          ctx.fillRect(x1, ca.top, x2 - x1, ca.bottom - ca.top);
+        });
+        ctx.restore();
+      },
+    };
+
     chartInstances.spxTraj = new Chart(spxEl, {
       type: 'line',
       data: {
         labels,
-        datasets: [
-          {
-            label: 'S&P 500 (illustrative monthly close)',
-            data: prices,
-            borderColor: '#0E0E0F',
-            backgroundColor: 'rgba(168, 59, 46, 0.16)',
-            borderWidth: 2,
-            pointRadius: 0,
-            pointHoverRadius: 4,
-            tension: 0.3,
-            fill: { target: 1, above: 'rgba(168, 59, 46, 0.16)', below: 'transparent' },
-            order: 1,
-          },
-          {
-            // Invisible running peak — used only as a fill reference so the area
-            // between current price and recent peak gets shaded red.
-            label: 'Running peak',
-            data: runningPeak,
-            borderColor: 'rgba(0,0,0,0)',
-            backgroundColor: 'transparent',
-            borderWidth: 0,
-            pointRadius: 0,
-            pointHoverRadius: 0,
-            tension: 0,
-            fill: false,
-            order: 2,
-          },
-        ],
+        datasets: [{
+          label: 'S&P 500 (illustrative monthly close)',
+          data: prices,
+          borderColor: '#0E0E0F',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          tension: 0.3,
+          fill: false,
+        }],
       },
       options: {
         responsive: true, maintainAspectRatio: false,
@@ -2634,12 +2660,14 @@ function renderCharts(inputs, sim, savings) {
           legend: { display: false },
           tooltip: {
             mode: 'index', intersect: false,
-            filter: it => it.datasetIndex === 0,
             callbacks: {
               label: ctx => 'S&P 500: ' + Math.round(ctx.parsed.y).toLocaleString(),
               afterBody: items => {
                 const i = items[0].dataIndex;
-                const dd = (prices[i] - runningPeak[i]) / runningPeak[i] * 100;
+                // Recompute running peak at i so the tooltip can report the drawdown.
+                let peak = -Infinity;
+                for (let k = 0; k <= i; k++) peak = Math.max(peak, prices[k]);
+                const dd = (prices[i] - peak) / peak * 100;
                 return Math.abs(dd) > 0.05 ? ['Drawdown from peak: ' + dd.toFixed(1) + '%'] : [];
               },
             },
@@ -2650,6 +2678,7 @@ function renderCharts(inputs, sim, savings) {
           y: { grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { callback: v => v.toLocaleString() } },
         },
       },
+      plugins: [grayBandsPlugin],
     });
   }
 
