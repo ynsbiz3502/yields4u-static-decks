@@ -1098,7 +1098,7 @@ const NEG_STOCKS_DATA = [
   {year:'2018', spx:-4,  neg:68}, {year:'2019', spx:29, neg:18},
   {year:'2020', spx:16,  neg:30}, {year:'2021', spx:27, neg:22},
   {year:'2022', spx:-19, neg:72}, {year:'2023', spx:24, neg:30},
-  {year:'2024', spx:23,  neg:32},
+  {year:'2024', spx:23,  neg:32}, {year:'2025', spx:14, neg:36},
 ];
 
 function computeTax(income, status) {
@@ -1787,9 +1787,75 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // SLIDE 14 — Strategic Dip Conversions
+  // SLIDE 16 — Under the index: individual constituents (2024 + 2025)
+  // Stylistic dot grid: green = positive constituent, red = negative.
+  // Numbers are illustrative — they match the rough pattern shown on slide 14.
+  function dotGrid(posCount, negCount) {
+    const cells = [];
+    // Interleave so green/red aren't clumped
+    const total = posCount + negCount;
+    const step = Math.max(1, Math.floor(total / negCount));
+    let placedNeg = 0;
+    for (let i = 0; i < total; i++) {
+      const isNeg = placedNeg < negCount && i % step === 0;
+      if (isNeg) placedNeg++;
+      cells.push(isNeg
+        ? '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#A83B2E;"></span>'
+        : '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#4A8A6B;"></span>'
+      );
+    }
+    return cells.join('');
+  }
   slides.push(`
     <section class="slide" data-slide="16">
+      <div class="title-block">
+        <div class="kicker">Under The Index</div>
+        <h2 class="title">The Index Hides Where The Opportunity Lives.</h2>
+        <p class="subtitle">We don&rsquo;t harvest the S&amp;P 500 &mdash; we harvest the 500 stocks underneath it. Even in green years, dozens of names are down. That&rsquo;s our surface area.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;max-width:1300px;margin:24px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:24px 26px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-family:var(--font-serif);font-size:34px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">2024</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">A Green Year</div>
+          </div>
+          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:baseline;justify-content:space-between;">
+            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:#4A8A6B;line-height:1;">+23%</div></div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);text-align:right;">Looks great<br>on the surface.</div>
+          </div>
+          <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>
+          <div style="display:grid;grid-template-columns:repeat(25, 1fr);gap:4px;padding:10px;background:#FAFAF9;border-radius:8px;border:1px solid var(--border);">${dotGrid(340, 160)}</div>
+          <div style="display:flex;justify-content:space-between;margin-top:12px;font-family:var(--font-sans);font-size:13px;">
+            <span style="color:#4A8A6B;font-weight:700;">340 positive</span>
+            <span style="color:#A83B2E;font-weight:700;">160 negative</span>
+          </div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:24px 26px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-family:var(--font-serif);font-size:34px;font-weight:700;color:var(--ink-900);letter-spacing:-0.02em;">2025</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-subtle);letter-spacing:0.06em;text-transform:uppercase;">Also Green</div>
+          </div>
+          <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:baseline;justify-content:space-between;">
+            <div><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;">S&amp;P 500 Index</div><div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:#4A8A6B;line-height:1;">+14%</div></div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);text-align:right;">Same story.<br>Different mix.</div>
+          </div>
+          <div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);font-weight:700;margin-bottom:8px;">The 500 Stocks Underneath</div>
+          <div style="display:grid;grid-template-columns:repeat(25, 1fr);gap:4px;padding:10px;background:#FAFAF9;border-radius:8px;border:1px solid var(--border);">${dotGrid(320, 180)}</div>
+          <div style="display:flex;justify-content:space-between;margin-top:12px;font-family:var(--font-sans);font-size:13px;">
+            <span style="color:#4A8A6B;font-weight:700;">320 positive</span>
+            <span style="color:#A83B2E;font-weight:700;">180 negative</span>
+          </div>
+        </div>
+      </div>
+      <p style="max-width:1100px;margin:20px auto 0;font-family:var(--font-serif);font-size:17px;color:var(--ink-900);line-height:1.5;text-align:center;font-weight:500;">Even when the index finishes up double-digits, roughly <strong>1 in 3 of its stocks finished red.</strong> Every one of those is a harvestable loss, a dip-conversion opportunity, a chance to move more shares into the Roth at the same tax cost.</p>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">16</div>
+    </section>
+  `);
+
+  // SLIDE 17 — Strategic Dip Conversions
+  slides.push(`
+    <section class="slide" data-slide="17">
       <div class="title-block">
         <div class="kicker">Why Timing Is Everything</div>
         <h2 class="title">Strategic Dip Conversions</h2>
@@ -1818,13 +1884,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">16</div>
+      <div class="slide-number">17</div>
     </section>
   `);
 
   // SLIDE 15 — Four Pillars
   slides.push(`
-    <section class="slide" data-slide="17">
+    <section class="slide" data-slide="18">
       <div class="title-block">
         <div class="kicker">The Complete System</div>
         <h2 class="title">The Four Pillars</h2>
@@ -1853,54 +1919,53 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">17</div>
+      <div class="slide-number">18</div>
     </section>
   `);
 
   // SLIDE 16 — The Proof: 3-way comparison (Do Nothing vs Saved For You vs Saved For Your Spouse)
   slides.push(`
-    <section class="slide" data-slide="18">
+    <section class="slide" data-slide="19">
       <div class="title-block">
         <div class="kicker">The Math</div>
         <h2 class="title">The Proof: <em>Where The Savings Land</em></h2>
         <p class="subtitle">On your ${balStr} IRA, here&rsquo;s the same money, three different outcomes &mdash; depending on whether we plan or we wait.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;max-width:1300px;margin:36px auto 0;align-items:stretch;">
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:10px;padding:36px 32px;display:flex;flex-direction:column;">
-          <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:14px;">Do Nothing</div>
-          <div style="font-family:var(--font-serif);font-weight:700;font-size:64px;color:var(--ink-900);line-height:1;letter-spacing:-0.02em;">${lifeTax}</div>
-          <div style="font-family:var(--font-sans);font-size:14px;color:var(--fg-subtle);margin-top:10px;letter-spacing:0.06em;text-transform:uppercase;">Projected lifetime tax bill</div>
-          <div style="height:1px;background:var(--border);margin:20px 0;"></div>
-          <p style="font-family:var(--font-serif);font-size:17px;color:var(--ink-900);line-height:1.5;margin:0;font-weight:500;">Money the IRS takes from you and your spouse, year by year, mostly forced out by RMDs at peak rates.</p>
+      <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:24px;max-width:1300px;margin:30px auto 0;align-items:stretch;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:10px;padding:30px 28px;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:12px;">Do Nothing</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:72px;color:var(--ink-900);line-height:1;letter-spacing:-0.02em;">${lifeTax}</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-subtle);margin-top:10px;letter-spacing:0.06em;text-transform:uppercase;">Projected lifetime tax bill</div>
+          <p style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);line-height:1.5;margin:14px 0 0 0;font-weight:500;">What the IRS takes from your household, mostly forced out at peak rates by RMDs.</p>
         </div>
-        <div style="background:#FBF9F4;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:36px 32px;display:flex;flex-direction:column;">
-          <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:14px;">Tax Saved For You</div>
-          <div style="font-family:var(--font-serif);font-weight:700;font-size:64px;color:var(--gold-600);line-height:1;letter-spacing:-0.02em;">${saveStr}</div>
-          <div style="font-family:var(--font-sans);font-size:14px;color:var(--fg-subtle);margin-top:10px;letter-spacing:0.06em;text-transform:uppercase;">During your lifetime</div>
-          <div style="height:1px;background:var(--border);margin:20px 0;"></div>
-          <p style="font-family:var(--font-serif);font-size:17px;color:var(--ink-900);line-height:1.5;margin:0;font-weight:500;">Permanent tax savings from converting at lower brackets and using market dips, instead of paying RMD tax at the top.</p>
-        </div>
-        <div style="background:var(--ink-900);color:white;border-top:4px solid var(--gold-400);border-radius:10px;padding:36px 32px;display:flex;flex-direction:column;">
-          <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:14px;">Tax Saved For Your Spouse</div>
-          <div style="font-family:var(--font-serif);font-weight:700;font-size:64px;color:var(--gold-400);line-height:1;letter-spacing:-0.02em;">${widowAnnual > 0 ? widowCumStr : '$0 widow tax'}</div>
-          <div style="font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.6);margin-top:10px;letter-spacing:0.06em;text-transform:uppercase;">After one of you passes</div>
-          <div style="height:1px;background:rgba(255,255,255,0.2);margin:20px 0;"></div>
-          <p style="font-family:var(--font-serif);font-size:17px;color:rgba(255,255,255,0.9);line-height:1.5;margin:0;font-weight:500;">${widowAnnual > 0 ? `Widow-penalty avoided over ten years of single-filer status. Roth distributions don&rsquo;t count as taxable income.` : `Roth dollars don&rsquo;t generate any single-filer penalty. Whichever spouse is left keeps the same purchasing power.`}</p>
+        <div style="background:var(--ink-900);color:white;border-radius:14px;padding:30px 32px;text-align:center;border:1px solid rgba(255,255,255,0.08);border-top:4px solid var(--gold-400);display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold-400);margin-bottom:14px;">Total Household Tax Saved By Acting Now</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:96px;color:var(--gold-400);line-height:1;letter-spacing:-0.03em;">${fmtMoney((widowAnnual > 0 ? widowCum : 0) + (typeof savings === 'number' ? savings : 0))}</div>
+          <div style="font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.72);margin-top:14px;letter-spacing:0.04em;">Your savings + your spouse&rsquo;s widow-penalty avoided, combined.</div>
         </div>
       </div>
-      <div style="max-width:1300px;margin:32px auto 0;background:var(--ink-900);color:white;border-radius:14px;padding:40px 36px;text-align:center;border:1px solid rgba(255,255,255,0.08);">
-        <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold-400);margin-bottom:18px;">Total Household Tax Saved By Acting Now</div>
-        <div style="font-family:var(--font-serif);font-weight:700;font-size:104px;color:var(--gold-400);line-height:1;letter-spacing:-0.03em;">${fmtMoney((widowAnnual > 0 ? widowCum : 0) + (typeof savings === 'number' ? savings : 0))}</div>
-        <div style="font-family:var(--font-sans);font-size:15px;color:rgba(255,255,255,0.7);margin-top:18px;letter-spacing:0.04em;">Your savings + your spouse&rsquo;s widow-penalty avoided, combined &mdash; permanent dollars the IRS never gets.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1300px;margin:22px auto 0;align-items:stretch;">
+        <div style="background:#FBF9F4;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:28px 28px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:12px;">Tax Saved For You</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:60px;color:var(--gold-600);line-height:1;letter-spacing:-0.02em;">${saveStr}</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-subtle);margin-top:8px;letter-spacing:0.06em;text-transform:uppercase;">During your lifetime</div>
+          <p style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);line-height:1.5;margin:14px 0 0 0;font-weight:500;">Permanent tax savings from converting at lower brackets and using market dips, instead of paying RMD tax at the top.</p>
+        </div>
+        <div style="background:var(--ink-900);color:white;border-top:4px solid var(--gold-400);border-radius:10px;padding:28px 28px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:12px;">Tax Saved For Your Spouse</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:60px;color:var(--gold-400);line-height:1;letter-spacing:-0.02em;">${widowAnnual > 0 ? widowCumStr : '$0 widow tax'}</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.6);margin-top:8px;letter-spacing:0.06em;text-transform:uppercase;">After one of you passes</div>
+          <p style="font-family:var(--font-serif);font-size:15px;color:rgba(255,255,255,0.9);line-height:1.5;margin:14px 0 0 0;font-weight:500;">${widowAnnual > 0 ? `Widow-penalty avoided over ten years of single-filer status. Roth distributions don&rsquo;t count as taxable income.` : `Roth dollars don&rsquo;t generate any single-filer penalty. Whichever spouse is left keeps the same purchasing power.`}</p>
+        </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">18</div>
+      <div class="slide-number">19</div>
     </section>
   `);
 
   // SLIDE 17 — Legacy & Survivor (the real reason to convert)
   slides.push(`
-    <section class="slide" data-slide="19">
+    <section class="slide" data-slide="20">
       <div class="title-block">
         <div class="kicker">The Real Reason To Convert</div>
         <h2 class="title">This Isn&rsquo;t About You. It&rsquo;s About Them.</h2>
@@ -1938,13 +2003,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div class="compare-note" style="margin-top:28px;">Conservative blended estimate. Heir effective rate assumes ${heirRatePct} on a 10-year forced drain on top of peak-earning income; widow figures use single-filer brackets vs MFJ.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">19</div>
+      <div class="slide-number">20</div>
     </section>
   `);
 
   // SLIDE 18 — Do Nothing vs With Our Strategy
   slides.push(`
-    <section class="slide" data-slide="20">
+    <section class="slide" data-slide="21">
       <div class="title-block">
         <div class="kicker">The Choice</div>
         <h2 class="title">Do Nothing vs. With Our Strategy</h2>
@@ -1981,68 +2046,68 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div class="compare-note">Educational illustration. Actual results vary based on individual circumstances, market performance, and future tax law.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">20</div>
+      <div class="slide-number">21</div>
     </section>
   `);
 
-  // SLIDE 19 — White Glove Services (what's included)
+  // SLIDE 19 — White Glove Services (compressed to fit above the fold)
   slides.push(`
-    <section class="slide" data-slide="21">
-      <div class="title-block">
+    <section class="slide" data-slide="22">
+      <div class="title-block" style="margin-bottom:18px;">
         <div class="kicker">What&rsquo;s Included</div>
-        <h2 class="title">The White Glove Service</h2>
-        <p class="subtitle">Eight things we run on your plan every year &mdash; so the strategy you see today actually gets executed, year after year.</p>
+        <h2 class="title" style="margin-bottom:6px;">The White Glove Service</h2>
+        <p class="subtitle" style="font-size:15px;">Eight things we run on your plan every year, so the strategy actually gets executed.</p>
       </div>
-      <div class="grid-4">
-        <div class="box-card">
-          <div class="box-kicker"><span class="num">1</span>Conversion Timing</div>
-          <div class="box-title">Multi-Year Roth Sequencing</div>
-          <div class="box-body">We sequence conversions across years to fill the right brackets &mdash; never the wrong ones &mdash; and adjust as the law and your income shift.</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1300px;margin:0 auto;">
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">1 &middot; Conversion Timing</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Multi-Year Roth Sequencing</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Fill the right brackets every year, never the wrong ones.</div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker"><span class="num">2</span>Daily Monitoring</div>
-          <div class="box-title">Dip-Watching Engine</div>
-          <div class="box-body">We watch the market every trading day. When a real dip appears, we move &mdash; same-day &mdash; to convert more shares for the same tax.</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">2 &middot; Daily Monitoring</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Dip-Watching Engine</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">We watch every trading day. When a dip lands, we move same-day.</div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker"><span class="num">3</span>Loss Harvesting</div>
-          <div class="box-title">Conversions Paired With Losses</div>
-          <div class="box-body">The same dip that helps your conversion creates harvestable losses in your taxable account. We pair them to offset conversion tax.</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">3 &middot; Loss Harvesting</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Conversions Paired With Losses</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">The same dip funds the loss that offsets your conversion tax.</div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker"><span class="num">4</span>Asset Location</div>
-          <div class="box-title">Right Asset, Right Bucket</div>
-          <div class="box-body">Growth into Roth. Income into Traditional. Tax-efficient into Taxable. We rebalance across all three so the IRS never gets a dollar by accident.</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">4 &middot; Asset Location</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Right Asset, Right Bucket</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Growth into Roth. Income into Traditional. Tax-efficient into Taxable.</div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker"><span class="num">5</span>CPA Coordination</div>
-          <div class="box-title">We Sync With Your Tax Pro</div>
-          <div class="box-body">Every conversion ties out to a 1099-R and a Form 8606. We hand your CPA a clean package &mdash; no surprises at filing time.</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">5 &middot; CPA Coordination</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">We Sync With Your Tax Pro</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Clean 1099-R and 8606 package handed to your CPA &mdash; no surprises.</div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker"><span class="num">6</span>Quarterly Reviews</div>
-          <div class="box-title">You&rsquo;re Never Out Of The Loop</div>
-          <div class="box-body">Four review meetings a year. You see what we did, why, and what&rsquo;s coming next quarter. No black box.</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">6 &middot; Quarterly Reviews</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Never Out Of The Loop</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Four meetings a year. What we did, why, what&rsquo;s next.</div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker"><span class="num">7</span>RMD &amp; SS Planning</div>
-          <div class="box-title">Sequenced For The Lowest Tax</div>
-          <div class="box-body">We coordinate Social Security claiming, RMD drawdowns, and Roth withdrawals so the combined federal rate stays as low as legally possible.</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">7 &middot; RMD &amp; SS Planning</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Sequenced For The Lowest Tax</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">SS claiming, RMDs, and Roth draws coordinated for the lowest combined rate.</div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker"><span class="num">8</span>Estate Coordination</div>
-          <div class="box-title">Heirs Inherit Roth, Not Tax</div>
-          <div class="box-body">We work with your estate attorney to make sure beneficiary designations, trusts, and the 10-year rule all line up &mdash; so your kids get the money, not the IRS.</div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">8 &middot; Estate Coordination</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Heirs Inherit Roth, Not Tax</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Beneficiaries, trusts, and the 10-year rule lined up with your attorney.</div>
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">21</div>
+      <div class="slide-number">22</div>
     </section>
   `);
 
   // SLIDE 20 — CTA
   slides.push(`
-    <section class="slide" data-slide="22">
+    <section class="slide" data-slide="23">
       <div class="title-block">
         <div class="kicker">Next Steps</div>
         <h2 class="title">Ready to get started${name}?</h2>
@@ -2078,7 +2143,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">22</div>
+      <div class="slide-number">23</div>
     </section>
   `);
 
