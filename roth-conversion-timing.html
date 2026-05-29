@@ -2669,7 +2669,37 @@ function onGenerate(e) {
   document.getElementById('presentation-screen').classList.add('active');
   // Honor a #slide=N hash so a refresh / shared link restores the right slide.
   show(getSlideFromHash() || 1);
+  // Persist the inputs into the URL so a refresh restores the same values.
+  // Runs AFTER show(), so the current #slide=N hash is included.
+  persistInputsToUrl(inputs);
   requestAnimationFrame(() => renderCharts(inputs, sim));
+}
+
+// Encode the current inputs as URL query params so a refresh / share keeps
+// them. Sets auto=1 so the deck re-renders straight to the slide rather than
+// dumping the prospect back at the intake form.
+function persistInputsToUrl(inputs) {
+  try {
+    const params = new URLSearchParams();
+    params.set('auto', '1');
+    if (inputs.firstName) params.set('firstName', inputs.firstName);
+    if (inputs.balance) params.set('balance', String(Math.round(inputs.balance)));
+    if (inputs.currentAge) params.set('currentAge', String(inputs.currentAge));
+    if (inputs.filingStatus) params.set('filingStatus', inputs.filingStatus);
+    if (inputs.totalIncomeNeeds) params.set('totalIncomeNeeds', String(Math.round(inputs.totalIncomeNeeds)));
+    if (inputs.socialSecurity) params.set('socialSecurity', String(Math.round(inputs.socialSecurity)));
+    if (inputs.otherIncome) params.set('otherIncome', String(Math.round(inputs.otherIncome)));
+    if (inputs.annualWithdrawal) params.set('annualWithdrawal', String(Math.round(inputs.annualWithdrawal)));
+    if (inputs.growthRate) params.set('growthRate', String(+(inputs.growthRate * 100).toFixed(1)));
+    // Only persist inflationRate if non-default (4%) — keeps URLs short for the
+    // common case where nobody touched the Advanced disclosure.
+    const inflPct = +(inputs.inflationRate * 100).toFixed(1);
+    if (inputs.inflationRate != null && inflPct !== 4) {
+      params.set('inflationRate', String(inflPct));
+    }
+    const newUrl = window.location.pathname + '?' + params.toString() + window.location.hash;
+    history.replaceState(null, '', newUrl);
+  } catch (_) { /* no-op on file:// */ }
 }
 
 function goBackToInput() {
