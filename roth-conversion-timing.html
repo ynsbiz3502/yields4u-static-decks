@@ -2278,9 +2278,9 @@ function renderCharts(inputs, sim, savings) {
         labels: ages,
         datasets: [
           { label: 'Savings draw (fill the income gap)', data: savs, backgroundColor: 'rgba(108, 168, 207, 0.92)',
-            borderColor: '#4C8FBA', borderWidth: 0, barPercentage: 0.9, categoryPercentage: 0.7 },
+            borderColor: '#4C8FBA', borderWidth: 0, stack: 'draw', barPercentage: 0.92, categoryPercentage: 0.92 },
           { label: 'RMD (forced by IRS at 73+)', data: rmds, backgroundColor: 'rgba(232, 163, 61, 0.94)',
-            borderColor: '#D48E27', borderWidth: 0, barPercentage: 0.9, categoryPercentage: 0.7 }
+            borderColor: '#D48E27', borderWidth: 0, stack: 'draw', barPercentage: 0.92, categoryPercentage: 0.92 }
         ]
       },
       options: {
@@ -2290,11 +2290,14 @@ function renderCharts(inputs, sim, savings) {
           title: { display: true, text: `What Comes Out Of Your Portfolio, Year By Year`,
             color: '#0E0E0F', font: { size: 15, weight: '700', family: "'Playfair Display', Georgia, serif" }, padding: { bottom: 12 } },
           tooltip: { mode: 'index', intersect: false,
-            callbacks: { label: ctx => ctx.dataset.label + ': ' + fmtMoneyFull(ctx.parsed.y) } }
+            callbacks: {
+              label: ctx => ctx.dataset.label + ': ' + fmtMoneyFull(ctx.parsed.y),
+              footer: items => 'Total draw: ' + fmtMoneyFull(items.reduce((s, it) => s + it.parsed.y, 0))
+            } }
         },
         scales: {
-          x: { grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
-          y: { position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
+          x: { stacked: true, grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
+          y: { stacked: true, position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
                ticks: { callback: v => fmtMoney(v) }, title: { display: true, text: 'Annual Withdrawal' } }
         }
       }
