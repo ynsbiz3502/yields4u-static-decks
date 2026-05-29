@@ -1133,7 +1133,14 @@ function simulate(inputs) {
     const rmd = age >= rmdStart ? (bal / (ULT[age] || 8.9)) : 0;
     const targetDraw = Math.max(explicitDraw, gap);
     const irargrossDraw = Math.max(rmd, targetDraw);
-    const savingsDraw = Math.max(0, irargrossDraw - rmd);
+    // Two-bucket framing used by the slide-8 stacked chart:
+    //   savingsDraw = the household's lifestyle need from the IRA (capped at total draw)
+    //   rmdForced   = the slice of the IRS-forced RMD that exceeds that need
+    // Sum of the two = irargrossDraw (the actual $ leaving the IRA each year). This
+    // way the blue (savings) bar stays visible every year, even once RMDs cover the
+    // whole need, instead of vanishing the moment RMD >= gap.
+    const savingsDraw = Math.min(Math.max(0, gap), irargrossDraw);
+    const rmdForced = Math.max(0, irargrossDraw - savingsDraw);
 
     // Taxable income: all IRA draw is taxable, 85% of SS is taxable (simplification), plus otherIncome.
     const taxableInc = irargrossDraw + 0.85 * ssYear + otherIncome;
@@ -1147,7 +1154,7 @@ function simulate(inputs) {
     }
 
     yearly.push({
-      age, rmd, ssIncome: ssYear, needsIncome: needsYear,
+      age, rmd, rmdForced, ssIncome: ssYear, needsIncome: needsYear,
       savingsDraw, irargrossDraw, taxableInc, bracketPct,
       balance: bal,
     });
@@ -2270,16 +2277,16 @@ function renderCharts(inputs, sim, savings) {
   if (rmdSavEl && sim.yearly && sim.yearly.length) {
     const yrs = sim.yearly;
     const ages = yrs.map(y => y.age);
-    const rmds = yrs.map(y => y.rmd);
-    const savs = yrs.map(y => y.savingsDraw);
+    const savs = yrs.map(y => y.savingsDraw);     // lifestyle need from IRA (always shown)
+    const forced = yrs.map(y => y.rmdForced);     // RMD beyond the need (post-73 overshoot)
     chartInstances.rmdSav = new Chart(rmdSavEl, {
       type: 'bar',
       data: {
         labels: ages,
         datasets: [
-          { label: 'Savings draw (fill the income gap)', data: savs, backgroundColor: 'rgba(108, 168, 207, 0.92)',
+          { label: 'Savings draw for living expenses', data: savs, backgroundColor: 'rgba(108, 168, 207, 0.92)',
             borderColor: '#4C8FBA', borderWidth: 0, stack: 'draw', barPercentage: 0.92, categoryPercentage: 0.92 },
-          { label: 'RMD (forced by IRS at 73+)', data: rmds, backgroundColor: 'rgba(232, 163, 61, 0.94)',
+          { label: 'RMD forced above your need', data: forced, backgroundColor: 'rgba(232, 163, 61, 0.94)',
             borderColor: '#D48E27', borderWidth: 0, stack: 'draw', barPercentage: 0.92, categoryPercentage: 0.92 }
         ]
       },
