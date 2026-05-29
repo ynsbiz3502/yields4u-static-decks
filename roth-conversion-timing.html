@@ -2220,10 +2220,10 @@ function renderCharts(inputs, sim, savings) {
       data: {
         labels: ages,
         datasets: [
-          { label: 'Savings draw (fill the income gap)', data: savs, backgroundColor: 'rgba(45, 45, 50, 0.82)',
-            borderWidth: 0, stack: 'draw', barPercentage: 0.92, categoryPercentage: 0.92 },
-          { label: 'RMD (forced by IRS at 73+)', data: rmds, backgroundColor: 'rgba(232, 163, 61, 0.92)',
-            borderWidth: 0, stack: 'draw', barPercentage: 0.92, categoryPercentage: 0.92 }
+          { label: 'Savings draw (fill the income gap)', data: savs, backgroundColor: 'rgba(108, 168, 207, 0.92)',
+            borderColor: '#4C8FBA', borderWidth: 0, barPercentage: 0.9, categoryPercentage: 0.7 },
+          { label: 'RMD (forced by IRS at 73+)', data: rmds, backgroundColor: 'rgba(232, 163, 61, 0.94)',
+            borderColor: '#D48E27', borderWidth: 0, barPercentage: 0.9, categoryPercentage: 0.7 }
         ]
       },
       options: {
@@ -2236,8 +2236,8 @@ function renderCharts(inputs, sim, savings) {
             callbacks: { label: ctx => ctx.dataset.label + ': ' + fmtMoneyFull(ctx.parsed.y) } }
         },
         scales: {
-          x: { stacked: true, grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
-          y: { stacked: true, position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
+          x: { grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { maxTicksLimit: 14 }, title: { display: true, text: 'Age' } },
+          y: { position: 'left', grid: { color: 'rgba(14, 14, 15, 0.06)' },
                ticks: { callback: v => fmtMoney(v) }, title: { display: true, text: 'Annual Withdrawal' } }
         }
       }
