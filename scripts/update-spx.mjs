@@ -1,70 +1,71 @@
-// Fetches the last ~24 months of S&P 500 monthly closes from Stooq (no API key
-// needed) and writes them to data/spx-monthly.json. The Roth deck's slide 16
-// chart reads that file at page-load time. Run from the repo root:
+// Fetches the last few years of S&P 500 (^GSPC) monthly closes from Yahoo
+// Finance (no API key needed) and writes them to data/spx-monthly.json. The
+// Roth deck's slide-16 chart reads that file at page-load time.
 //
+// Run locally:
 //   node scripts/update-spx.mjs
 //
 // Designed for the monthly GitHub Action in .github/workflows/update-spx.yml.
+//
+// Notes:
+//   - Yahoo's monthly bar for the in-progress month includes a partial close
+//     that updates intraday. We drop it; the deck shouldn't show a close that
+//     could change tomorrow.
+//   - Window: every completed month from January of (currentYear - 2) through
+//     last month. So the chart always covers two full prior years + YTD.
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-const STOOQ_URL = 'https://stooq.com/q/d/l/?s=%5Espx&i=m';
+const YAHOO_URL = 'https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=1mo&range=5y';
 const OUT_PATH = path.join('data', 'spx-monthly.json');
-// Keep the previous two complete calendar years plus the current year's
-// completed months (YTD). At year-end this is ~36 months; in January it
-// drops to ~24. Wider window than the old fixed 24 because the deck now
-// shows a YTD callout for the current year alongside the two priors.
 const FULL_YEARS_KEPT = 2;
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-function parseCsv(text) {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) throw new Error('Stooq CSV had no data rows');
-  const headers = lines[0].split(',').map(s => s.trim().toLowerCase());
-  const dateIdx = headers.indexOf('date');
-  const closeIdx = headers.indexOf('close');
-  if (dateIdx < 0 || closeIdx < 0) {
-    throw new Error(`Stooq CSV missing required columns (got: ${headers.join(', ')})`);
+async function fetchYahoo() {
+  const res = await fetch(YAHOO_URL, {
+    headers: {
+      // Yahoo serves 401 to bare/curl-like UAs; mimic a generic browser.
+      'User-Agent': 'Mozilla/5.0 (compatible; roth-deck-spx-updater/1.0; +https://github.com/ynsbiz3502/yields4u-static-decks)',
+      'Accept': 'application/json',
+    },
+  });
+  if (!res.ok) throw new Error(`Yahoo HTTP ${res.status}`);
+  const json = await res.json();
+  const result = json && json.chart && json.chart.result && json.chart.result[0];
+  if (!result) throw new Error('Yahoo response missing chart.result[0]');
+  const timestamps = result.timestamp || [];
+  const closes = (result.indicators && result.indicators.quote && result.indicators.quote[0]
+    && result.indicators.quote[0].close) || [];
+  if (timestamps.length === 0 || closes.length === 0) {
+    throw new Error('Yahoo response had no timestamps/closes');
+  }
+  if (timestamps.length !== closes.length) {
+    throw new Error(`Yahoo timestamp/close length mismatch (${timestamps.length} vs ${closes.length})`);
   }
   const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(',');
-    const dateStr = cols[dateIdx];
-    const close = parseFloat(cols[closeIdx]);
-    if (!dateStr || !Number.isFinite(close)) continue;
-    const [yStr, moStr] = dateStr.split('-');
-    const y = parseInt(yStr, 10);
-    const mo = parseInt(moStr, 10);
-    if (!Number.isFinite(y) || !Number.isFinite(mo) || mo < 1 || mo > 12) continue;
-    rows.push({ y, mo, close, date: dateStr });
+  for (let i = 0; i < timestamps.length; i++) {
+    const close = closes[i];
+    if (close == null || !Number.isFinite(close)) continue;
+    const d = new Date(timestamps[i] * 1000);
+    rows.push({ y: d.getUTCFullYear(), mo: d.getUTCMonth() + 1, close, date: d.toISOString().slice(0, 10) });
   }
   return rows;
 }
 
 async function main() {
-  console.log(`Fetching ${STOOQ_URL}`);
-  const res = await fetch(STOOQ_URL, {
-    headers: { 'User-Agent': 'roth-deck-spx-updater/1.0 (+https://github.com/ynsbiz3502/yields4u-static-decks)' },
-  });
-  if (!res.ok) throw new Error(`Stooq HTTP ${res.status}`);
-  const csv = await res.text();
-  const rows = parseCsv(csv);
-  if (rows.length === 0) throw new Error('Stooq returned 0 usable rows');
+  console.log(`Fetching ${YAHOO_URL}`);
+  const rows = await fetchYahoo();
+  if (rows.length === 0) throw new Error('No usable rows after parse');
 
-  // Drop any row that's the in-progress current month (defensive — Stooq
-  // sometimes includes it before it has closed).
   const now = new Date();
   const currentYear = now.getUTCFullYear();
   const currentMonth = now.getUTCMonth() + 1;
+  // Drop the in-progress current month — its close is still moving.
   const completed = rows.filter(r => (r.y < currentYear) || (r.y === currentYear && r.mo < currentMonth));
-  if (completed.length === 0) throw new Error('No completed months found after cutoff filter');
+  if (completed.length === 0) throw new Error('No completed months after current-month filter');
 
-  // Window: start of (currentYear - FULL_YEARS_KEPT) through last completed
-  // month. So in May 2026 we keep Jan 2024 through Apr 2026, giving two full
-  // years (2024, 2025) plus YTD (Jan-Apr 2026). The series naturally grows
-  // through the year and resets near January when the oldest year falls out
-  // of the window.
+  // Window: Jan(currentYear - FULL_YEARS_KEPT) through last completed month.
   const startYear = currentYear - FULL_YEARS_KEPT;
   const windowed = completed.filter(r => r.y >= startYear);
   const trimmed = windowed.map(r => ({
@@ -74,8 +75,8 @@ async function main() {
 
   const out = {
     updated_at: new Date().toISOString(),
-    source: STOOQ_URL,
-    note: 'Auto-generated by scripts/update-spx.mjs from Stooq monthly closes. Hand-editing is OK; the scheduled workflow will overwrite on its next run.',
+    source: YAHOO_URL,
+    note: 'Auto-generated by scripts/update-spx.mjs from Yahoo Finance monthly closes for ^GSPC. Hand-editing is OK; the scheduled workflow will overwrite on its next run.',
     months: trimmed.length,
     series: trimmed,
   };
@@ -83,8 +84,10 @@ async function main() {
   await fs.mkdir(path.dirname(OUT_PATH), { recursive: true });
   await fs.writeFile(OUT_PATH, JSON.stringify(out, null, 2) + '\n');
   console.log(`Wrote ${trimmed.length} months to ${OUT_PATH}`);
-  console.log(`  first: ${trimmed[0].m} @ ${trimmed[0].v}`);
-  console.log(`  last:  ${trimmed[trimmed.length - 1].m} @ ${trimmed[trimmed.length - 1].v}`);
+  if (trimmed.length > 0) {
+    console.log(`  first: ${trimmed[0].m} @ ${trimmed[0].v}`);
+    console.log(`  last:  ${trimmed[trimmed.length - 1].m} @ ${trimmed[trimmed.length - 1].v}`);
+  }
 }
 
 main().catch(err => {
