@@ -1023,7 +1023,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
       <button class="nav-btn" id="prevBtn" aria-label="Previous slide">
         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </button>
-      <div class="slide-count"><span id="curSlide">1</span> / <span id="totSlide">19</span></div>
+      <div class="slide-count"><span id="curSlide">1</span> / <span id="totSlide">20</span></div>
       <button class="nav-btn" id="nextBtn" aria-label="Next slide">
         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
       </button>
@@ -1232,6 +1232,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const widowCum = typeof widow === 'object' ? widow.cumulative : widow * 10;
   const widowStr = fmtMoney(widowAnnual);
   const widowCumStr = fmtMoney(widowCum);
+  const annualWithdrawal = inputs.annualWithdrawal || 0;
+  const annualWithdrawalStr = annualWithdrawal > 0 ? fmtMoney(annualWithdrawal) : '$0';
+  const inflationPct = ((inputs.inflationRate != null ? inputs.inflationRate : 0.04) * 100).toFixed(1) + '%';
 
   const slides = [];
 
@@ -1268,7 +1271,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);margin-top:14px;">${inputs.filingStatus === 'MFJ' ? 'Brackets and standard deduction reflect joint filing' : 'Single-filer brackets in effect'}</div>
         </div>
       </div>
-      <p style="max-width:980px;margin:48px auto 0;font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--fg-muted);text-align:center;line-height:1.55;">Everything you&rsquo;re about to see is built from these four numbers. Change one, and the math changes &mdash; we&rsquo;ll show you that too.</p>
+      <div style="max-width:1080px;margin:32px auto 0;display:flex;justify-content:center;align-items:center;gap:36px;flex-wrap:wrap;font-family:var(--font-sans);font-size:14px;color:var(--fg-muted);">
+        <div style="display:flex;align-items:baseline;gap:10px;"><span style="font-weight:700;letter-spacing:0.14em;text-transform:uppercase;font-size:11px;color:var(--fg-subtle);">Annual Income</span><span style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);letter-spacing:-0.01em;">${annualWithdrawalStr}</span><span style="color:var(--fg-subtle);">drawn from the IRA</span></div>
+        <div style="display:flex;align-items:baseline;gap:10px;"><span style="font-weight:700;letter-spacing:0.14em;text-transform:uppercase;font-size:11px;color:var(--fg-subtle);">Inflation</span><span style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);letter-spacing:-0.01em;">${inflationPct}</span><span style="color:var(--fg-subtle);">applied to that income each year</span></div>
+      </div>
+      <p style="max-width:980px;margin:24px auto 0;font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--fg-muted);text-align:center;line-height:1.55;">Everything you&rsquo;re about to see is built from these numbers. Change one, and the math changes &mdash; we&rsquo;ll show you that too.</p>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">01</div>
     </section>
@@ -1284,24 +1291,24 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div class="grid-4">
         <div class="box-card">
-          <div class="box-kicker"><span class="num">1</span>How Much?</div>
-          <div class="box-title">What&rsquo;s the right amount to convert?</div>
-          <div class="box-body">How much of your ${balStr} IRA should we convert &mdash; and over how many years?</div>
+          <div class="box-kicker"><span class="num">1</span>Today &amp; Tomorrow</div>
+          <div class="box-title">Me, my taxes today and in the future.</div>
+          <div class="box-body">What does my tax picture look like today &mdash; and where is it heading once RMDs hit, my spouse files single, and my heirs inherit?</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">2</span>When?</div>
-          <div class="box-title">When&rsquo;s the right moment to move?</div>
-          <div class="box-body">Which years are the smartest to convert &mdash; and how do we use market dips when they show up?</div>
+          <div class="box-kicker"><span class="num">2</span>Does It Pay?</div>
+          <div class="box-title">Will doing Roth conversions save me money?</div>
+          <div class="box-body">On a ${balStr} IRA, what&rsquo;s the actual dollar difference between converting strategically and doing nothing?</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">3</span>What&rsquo;s the Cost?</div>
-          <div class="box-title">What does doing nothing cost?</div>
-          <div class="box-body">How big is the tax bill if we don&rsquo;t convert &mdash; for you, your spouse, and your heirs?</div>
+          <div class="box-kicker"><span class="num">3</span>Minimize</div>
+          <div class="box-title">How do I minimize the taxes I pay?</div>
+          <div class="box-body">How do we fill the right brackets, use market dips, and pair conversions with losses so every dollar of tax is the smallest dollar possible?</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">4</span>What&rsquo;s the Safety Net?</div>
-          <div class="box-title">How do we keep this on track?</div>
-          <div class="box-body">What guardrails make sure a tough year or a wrong assumption doesn&rsquo;t blow up the plan?</div>
+          <div class="box-kicker"><span class="num">4</span>Maximize</div>
+          <div class="box-title">How do I maximize the value I get from conversions?</div>
+          <div class="box-body">Beyond the tax saved &mdash; tax-free growth, no RMDs, widow protection, and tax-free inheritance for your kids. We engineer for all of it.</div>
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
@@ -1665,26 +1672,26 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="13">
       <div class="title-block">
         <div class="kicker">The Mechanic</div>
-        <h2 class="title">The Coke vs. Pepsi Trade</h2>
-        <p class="subtitle">How tax-loss harvesting works — and why the IRS allows it.</p>
+        <h2 class="title">More Shares, Same Tax</h2>
+        <p class="subtitle">Why converting during a dip accelerates your savings &mdash; without costing a dollar more in tax.</p>
       </div>
       <div class="coke-pepsi">
         <div class="cp-card sell">
-          <div class="cp-label">Sell Today</div>
-          <div class="cp-ticker">KO</div>
-          <div class="cp-meta">1,000 shares · position down $50/share</div>
-          <div class="cp-amount sell">-$50,000 realized loss</div>
+          <div class="cp-label">Normal Day</div>
+          <div class="cp-ticker">250</div>
+          <div class="cp-meta">$50,000 conversion &middot; shares at $200</div>
+          <div class="cp-amount sell">250 shares move to Roth</div>
         </div>
         <div class="cp-arrow">→</div>
         <div class="cp-card buy">
-          <div class="cp-label">Buy Same Day</div>
-          <div class="cp-ticker">PEP</div>
-          <div class="cp-meta">Different company. Similar exposure.</div>
-          <div class="cp-amount buy">Stay invested, capture rebound</div>
+          <div class="cp-label">Dip Day &mdash; 20% Off</div>
+          <div class="cp-ticker">312</div>
+          <div class="cp-meta">$50,000 conversion &middot; same shares at $160</div>
+          <div class="cp-amount buy">312 shares move to Roth &mdash; 25% more</div>
         </div>
       </div>
       <div class="cp-footer">
-        <strong>Why the IRS allows it:</strong> KO and PEP are different companies — not "substantially identical" under the wash-sale rule. The loss is real and deductible. The portfolio's sector/beta exposure barely shifts. This is the foundation for every dollar of tax-loss harvesting we do.
+        <strong>The same tax bill. 25% more shares converted.</strong> The conversion is taxed on the dollar amount you move &mdash; not the share count. When prices recover, every one of those extra shares grows tax-free inside your Roth, forever. That&rsquo;s how a 20% dip becomes a 25% acceleration of every dollar you&rsquo;ll ever pull out tax-free.
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">13</div>
@@ -1792,8 +1799,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <p style="font-family:var(--font-serif);font-size:17px;color:rgba(255,255,255,0.9);line-height:1.5;margin:0;font-weight:500;">${widowAnnual > 0 ? `Widow-penalty avoided over ten years of single-filer status. Roth distributions don&rsquo;t count as taxable income.` : `Roth dollars don&rsquo;t generate any single-filer penalty. Whichever spouse is left keeps the same purchasing power.`}</p>
         </div>
       </div>
-      <div style="max-width:1300px;margin:28px auto 0;background:var(--ink-900);color:white;border-radius:10px;padding:18px 28px;text-align:center;font-family:var(--font-sans);font-size:16px;">
-        Total household tax saved by acting now: <strong style="color:var(--gold-400);font-size:22px;">${fmtMoney((widowAnnual > 0 ? widowCum : 0) + (typeof savings === 'number' ? savings : 0))}</strong>
+      <div style="max-width:1300px;margin:32px auto 0;background:var(--ink-900);color:white;border-radius:14px;padding:40px 36px;text-align:center;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold-400);margin-bottom:18px;">Total Household Tax Saved By Acting Now</div>
+        <div style="font-family:var(--font-serif);font-weight:700;font-size:104px;color:var(--gold-400);line-height:1;letter-spacing:-0.03em;">${fmtMoney((widowAnnual > 0 ? widowCum : 0) + (typeof savings === 'number' ? savings : 0))}</div>
+        <div style="font-family:var(--font-sans);font-size:15px;color:rgba(255,255,255,0.7);margin-top:18px;letter-spacing:0.04em;">Your savings + your spouse&rsquo;s widow-penalty avoided, combined &mdash; permanent dollars the IRS never gets.</div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">16</div>
@@ -1887,9 +1896,64 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // SLIDE 19 — CTA
+  // SLIDE 19 — White Glove Services (what's included)
   slides.push(`
     <section class="slide" data-slide="19">
+      <div class="title-block">
+        <div class="kicker">What&rsquo;s Included</div>
+        <h2 class="title">The White Glove Service</h2>
+        <p class="subtitle">Eight things we run on your plan every year &mdash; so the strategy you see today actually gets executed, year after year.</p>
+      </div>
+      <div class="grid-4">
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">1</span>Conversion Timing</div>
+          <div class="box-title">Multi-Year Roth Sequencing</div>
+          <div class="box-body">We sequence conversions across years to fill the right brackets &mdash; never the wrong ones &mdash; and adjust as the law and your income shift.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">2</span>Daily Monitoring</div>
+          <div class="box-title">Dip-Watching Engine</div>
+          <div class="box-body">We watch the market every trading day. When a real dip appears, we move &mdash; same-day &mdash; to convert more shares for the same tax.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">3</span>Loss Harvesting</div>
+          <div class="box-title">Conversions Paired With Losses</div>
+          <div class="box-body">The same dip that helps your conversion creates harvestable losses in your taxable account. We pair them to offset conversion tax.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">4</span>Asset Location</div>
+          <div class="box-title">Right Asset, Right Bucket</div>
+          <div class="box-body">Growth into Roth. Income into Traditional. Tax-efficient into Taxable. We rebalance across all three so the IRS never gets a dollar by accident.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">5</span>CPA Coordination</div>
+          <div class="box-title">We Sync With Your Tax Pro</div>
+          <div class="box-body">Every conversion ties out to a 1099-R and a Form 8606. We hand your CPA a clean package &mdash; no surprises at filing time.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">6</span>Quarterly Reviews</div>
+          <div class="box-title">You&rsquo;re Never Out Of The Loop</div>
+          <div class="box-body">Four review meetings a year. You see what we did, why, and what&rsquo;s coming next quarter. No black box.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">7</span>RMD &amp; SS Planning</div>
+          <div class="box-title">Sequenced For The Lowest Tax</div>
+          <div class="box-body">We coordinate Social Security claiming, RMD drawdowns, and Roth withdrawals so the combined federal rate stays as low as legally possible.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">8</span>Estate Coordination</div>
+          <div class="box-title">Heirs Inherit Roth, Not Tax</div>
+          <div class="box-body">We work with your estate attorney to make sure beneficiary designations, trusts, and the 10-year rule all line up &mdash; so your kids get the money, not the IRS.</div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">19</div>
+    </section>
+  `);
+
+  // SLIDE 20 — CTA
+  slides.push(`
+    <section class="slide" data-slide="20">
       <div class="title-block">
         <div class="kicker">Next Steps</div>
         <h2 class="title">Ready to get started${name}?</h2>
@@ -1925,7 +1989,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">19</div>
+      <div class="slide-number">20</div>
     </section>
   `);
 
@@ -2131,7 +2195,7 @@ function renderCharts(inputs, sim, savings) {
  *  App logic
  * =============================================================== */
 let currentSlide = 1;
-const TOTAL_SLIDES = 19;
+const TOTAL_SLIDES = 20;
 
 function show(slideN) {
   slideN = Math.max(1, Math.min(TOTAL_SLIDES, slideN));
