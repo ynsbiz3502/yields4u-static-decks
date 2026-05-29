@@ -2618,21 +2618,48 @@ function renderCharts(inputs, sim, savings) {
     }
     const periods = findDrawdownPeriods(prices);
 
-    // Custom plugin: paint a gray vertical band for each drawdown period before
-    // the line is drawn, so the line rides on top of the shading.
-    const grayBandsPlugin = {
-      id: 'grayBands',
+    // Custom plugin: paint a light-red vertical band behind every drawdown
+    // period and stamp that period's max drawdown depth at the top of the band.
+    // Runs in beforeDatasetsDraw so the price line draws on top of the band but
+    // afterDatasetsDraw is used for the labels so they sit above the line.
+    const drawdownBandsPlugin = {
+      id: 'drawdownBands',
       beforeDatasetsDraw(chart) {
         const ctx = chart.ctx;
         const ca = chart.chartArea;
         const xScale = chart.scales.x;
         if (!xScale) return;
         ctx.save();
-        ctx.fillStyle = 'rgba(120, 120, 120, 0.18)';
+        ctx.fillStyle = 'rgba(168, 59, 46, 0.13)';
         periods.forEach(p => {
           const x1 = xScale.getPixelForValue(p.start);
           const x2 = xScale.getPixelForValue(p.end);
           ctx.fillRect(x1, ca.top, x2 - x1, ca.bottom - ca.top);
+        });
+        ctx.restore();
+      },
+      afterDatasetsDraw(chart) {
+        const ctx = chart.ctx;
+        const ca = chart.chartArea;
+        const xScale = chart.scales.x;
+        if (!xScale) return;
+        ctx.save();
+        ctx.fillStyle = '#A83B2E';
+        ctx.font = "bold 11px 'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        periods.forEach(p => {
+          // Max drawdown of this period = lowest close in the span vs the peak.
+          let minPrice = Infinity;
+          for (let k = p.start; k <= p.end; k++) minPrice = Math.min(minPrice, prices[k]);
+          const peak = prices[p.start];
+          const ddPct = ((minPrice - peak) / peak) * 100;
+          const x1 = xScale.getPixelForValue(p.start);
+          const x2 = xScale.getPixelForValue(p.end);
+          const width = x2 - x1;
+          // Skip very narrow bands where the label won't fit cleanly.
+          if (width < 26 || Math.abs(ddPct) < 0.5) return;
+          ctx.fillText(ddPct.toFixed(1) + '%', (x1 + x2) / 2, ca.top + 4);
         });
         ctx.restore();
       },
@@ -2678,7 +2705,7 @@ function renderCharts(inputs, sim, savings) {
           y: { grid: { color: 'rgba(14, 14, 15, 0.06)' }, ticks: { callback: v => v.toLocaleString() } },
         },
       },
-      plugins: [grayBandsPlugin],
+      plugins: [drawdownBandsPlugin],
     });
   }
 
