@@ -2296,6 +2296,61 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── Section divider: from the levers to the practice ───────────────
+  slides.push(`
+    <section class="slide" data-slide="practical-divider">
+      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
+        <div class="hook-hero" style="padding:0;">
+          <div class="kicker" style="text-align:center">From Theory To Practice</div>
+          <h1 class="hero-title">
+            How does this work,
+            <span class="accent">practically?</span>
+          </h1>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">20</div>
+    </section>
+  `);
+
+  // ── The practice opens with the Reveal ──────────────────────────────
+  slides.push(revealSlide);
+
+  // SLIDE 15 — Four Pillars
+  slides.push(`
+    <section class="slide" data-slide="20">
+      <div class="title-block">
+        <div class="kicker">The Complete System</div>
+        <h2 class="title">The Four Pillars</h2>
+        <p class="subtitle">How we turn Roth conversions into a complete tax optimization system.</p>
+      </div>
+      <div class="grid-4">
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">1</span>Pillar One</div>
+          <div class="box-title">Strategic Dip Conversions</div>
+          <div class="box-body">Convert during market drawdowns. Same tax bill moves up to 25% more shares into Roth — tax-free forever.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">2</span>Pillar Two</div>
+          <div class="box-title">Tax-Loss Harvesting</div>
+          <div class="box-body">Harvest losses during drawdowns. Offset the conversion tax. The loss funds the conversion.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">3</span>Pillar Three</div>
+          <div class="box-title">Asset Location</div>
+          <div class="box-body">Growth assets in Roth. Income assets in Traditional. Tax-efficient assets in Taxable. Right bucket, right asset.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">4</span>Pillar Four</div>
+          <div class="box-title">Execution Engine</div>
+          <div class="box-body">Daily monitoring, alert-driven response, coordinated CPA execution. We move fast when dips appear.</div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">20</div>
+    </section>
+  `);
+
   // SLIDE 16 — Under the index: individual constituents (2024 + 2025)
   // Each year shows the S&P 500 index figure plus a horizontal stacked bar
   // splitting the 500 stocks into green (positive) and red (negative) segments.
@@ -2375,46 +2430,115 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // ── ACT 3: What else moves your bracket ─────────────────────────────
-  slides.push(legRiskSlide);
-
-  // ── PITCH opens with the Reveal ─────────────────────────────────────
-  slides.push(revealSlide);
-
-  // SLIDE 15 — Four Pillars
+  // ── How we build your plan — the planning process itself ───────────
   slides.push(`
-    <section class="slide" data-slide="20">
+    <section class="slide" data-slide="plan-build">
       <div class="title-block">
-        <div class="kicker">The Complete System</div>
-        <h2 class="title">The Four Pillars</h2>
-        <p class="subtitle">How we turn Roth conversions into a complete tax optimization system.</p>
+        <div class="kicker">How We Create Your Plan</div>
+        <h2 class="title">Built From Your Actual Return</h2>
+        <p class="subtitle">Before a single dollar moves, your conversion roadmap is built &mdash; from your 1040, not a template.</p>
       </div>
       <div class="grid-4">
         <div class="box-card">
-          <div class="box-kicker"><span class="num">1</span>Pillar One</div>
-          <div class="box-title">Strategic Dip Conversions</div>
-          <div class="box-body">Convert during market drawdowns. Same tax bill moves up to 25% more shares into Roth — tax-free forever.</div>
+          <div class="box-kicker"><span class="num">1</span>Discover</div>
+          <div class="box-title">We Map Your 1040</div>
+          <div class="box-body">Every income source, every hidden tax bomb, and the bracket room they leave behind.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">2</span>Pillar Two</div>
-          <div class="box-title">Tax-Loss Harvesting</div>
-          <div class="box-body">Harvest losses during drawdowns. Offset the conversion tax. The loss funds the conversion.</div>
+          <div class="box-kicker"><span class="num">2</span>Project</div>
+          <div class="box-title">30 Years Of Brackets</div>
+          <div class="box-body">RMDs, Social Security, and survivor filing &mdash; projected forward so we see the expensive years coming.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">3</span>Pillar Three</div>
-          <div class="box-title">Asset Location</div>
-          <div class="box-body">Growth assets in Roth. Income assets in Traditional. Tax-efficient assets in Taxable. Right bucket, right asset.</div>
+          <div class="box-kicker"><span class="num">3</span>Design</div>
+          <div class="box-title">Your Conversion Roadmap</div>
+          <div class="box-body">Which bracket to fill, how much, and in which year &mdash; a written multi-year schedule.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">4</span>Pillar Four</div>
-          <div class="box-title">Execution Engine</div>
-          <div class="box-body">Daily monitoring, alert-driven response, coordinated CPA execution. We move fast when dips appear.</div>
+          <div class="box-kicker"><span class="num">4</span>Execute &amp; Adjust</div>
+          <div class="box-title">Then Life Happens</div>
+          <div class="box-body">Markets dip, laws change, income shifts. The plan is reviewed and re-tuned all year long.</div>
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">20</div>
+      <div class="slide-number">25</div>
     </section>
   `);
+
+  // SLIDE 19 — White Glove Services (compressed to fit above the fold)
+  slides.push(`
+    <section class="slide" data-slide="24">
+      <div class="title-block" style="margin-bottom:18px;">
+        <div class="kicker">What&rsquo;s Included</div>
+        <h2 class="title" style="margin-bottom:6px;">The White Glove Service</h2>
+        <p class="subtitle" style="font-size:15px;">Eight things we run on your plan every year, so the strategy actually gets executed.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1300px;margin:0 auto;">
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">1 &middot; Conversion Timing</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Multi-Year Roth Sequencing</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Fill the right brackets every year, never the wrong ones.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">2 &middot; Daily Monitoring</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Dip-Watching Engine</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">We watch every trading day. When a dip lands, we move same-day.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">3 &middot; Loss Harvesting</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Conversions Paired With Losses</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">The same dip funds the loss that offsets your conversion tax.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">4 &middot; Asset Location</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Right Asset, Right Bucket</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Growth into Roth. Income into Traditional. Tax-efficient into Taxable.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">5 &middot; CPA Coordination</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">We Sync With Your Tax Pro</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Clean 1099-R and 8606 package handed to your CPA &mdash; no surprises.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">6 &middot; Quarterly Reviews</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Never Out Of The Loop</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Four meetings a year. What we did, why, what&rsquo;s next.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">7 &middot; RMD &amp; SS Planning</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Sequenced For The Lowest Tax</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">SS claiming, RMDs, and Roth draws coordinated for the lowest combined rate.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
+          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">8 &middot; Estate Coordination</div>
+          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Heirs Inherit Roth, Not Tax</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Beneficiaries, trusts, and the 10-year rule lined up with your attorney.</div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">24</div>
+    </section>
+  `);
+
+  // ── Section divider: the cost of doing nothing ──────────────────────
+  slides.push(`
+    <section class="slide" data-slide="nothing-divider">
+      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
+        <div class="hook-hero" style="padding:0;">
+          <div class="kicker" style="text-align:center">The Cost Of Doing Nothing</div>
+          <h1 class="hero-title">
+            What happens if we do
+            <span class="accent">nothing?</span>
+          </h1>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">27</div>
+    </section>
+  `);
+
+  // ── The legislative risk: waiting bets on today's rates lasting ─────
+  slides.push(legRiskSlide);
 
   // SLIDE 16 — The Proof: 3-way comparison (Do Nothing vs Saved For You vs Saved For Your Spouse)
   slides.push(`
@@ -2544,61 +2668,6 @@ function buildSlides(inputs, sim, savings, heir, widow) {
 
   // Credibility trio — earned now, after the proof and the offer
   slides.push(..._credibilitySlides);
-
-  // SLIDE 19 — White Glove Services (compressed to fit above the fold)
-  slides.push(`
-    <section class="slide" data-slide="24">
-      <div class="title-block" style="margin-bottom:18px;">
-        <div class="kicker">What&rsquo;s Included</div>
-        <h2 class="title" style="margin-bottom:6px;">The White Glove Service</h2>
-        <p class="subtitle" style="font-size:15px;">Eight things we run on your plan every year, so the strategy actually gets executed.</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1300px;margin:0 auto;">
-        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
-          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">1 &middot; Conversion Timing</div>
-          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Multi-Year Roth Sequencing</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Fill the right brackets every year, never the wrong ones.</div>
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
-          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">2 &middot; Daily Monitoring</div>
-          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Dip-Watching Engine</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">We watch every trading day. When a dip lands, we move same-day.</div>
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
-          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">3 &middot; Loss Harvesting</div>
-          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Conversions Paired With Losses</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">The same dip funds the loss that offsets your conversion tax.</div>
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
-          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">4 &middot; Asset Location</div>
-          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Right Asset, Right Bucket</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Growth into Roth. Income into Traditional. Tax-efficient into Taxable.</div>
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
-          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">5 &middot; CPA Coordination</div>
-          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">We Sync With Your Tax Pro</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Clean 1099-R and 8606 package handed to your CPA &mdash; no surprises.</div>
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
-          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">6 &middot; Quarterly Reviews</div>
-          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Never Out Of The Loop</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Four meetings a year. What we did, why, what&rsquo;s next.</div>
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
-          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">7 &middot; RMD &amp; SS Planning</div>
-          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Sequenced For The Lowest Tax</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">SS claiming, RMDs, and Roth draws coordinated for the lowest combined rate.</div>
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
-          <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">8 &middot; Estate Coordination</div>
-          <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">Heirs Inherit Roth, Not Tax</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.45;">Beneficiaries, trusts, and the 10-year rule lined up with your attorney.</div>
-        </div>
-      </div>
-      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">24</div>
-    </section>
-  `);
 
   // SLIDE 20 — CLOSING PROCESS
   slides.push(`
