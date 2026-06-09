@@ -2194,24 +2194,29 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // "container". Gross-income scale: the standard deduction is the 0% zone at the bottom
   // and the bracket lines shift up by it. Both panels run to the top of the 24% bracket
   // and show the room still left to convert after the $100K. Line items are illustrative.
-  const convAmt1040 = 100000;
+  // Apples-to-apples: both panels carry the same Social Security and standard deduction.
+  // Sized so the contrast is exact: the packed bombs fill the brackets to the top of 22%,
+  // so the conversion lands entirely in 24%; the planned conversion fits entirely in 12%.
   const fs1040 = inputs.filingStatus;
+  const convAmt1040 = fs1040 === 'MFJ' ? 40000 : 20000;
   const sd1040 = STD_DED[fs1040];
   const br1040 = fs1040 === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
   const ssAmt1040 = fs1040 === 'MFJ' ? 50000 : 25000;
   const bombs1040 = fs1040 === 'MFJ'
-    ? [['Taxable interest', 25000], ['Ordinary dividends', 30000], ['Qualified dividends', 25000], ['Capital gains', 30000]]
-    : [['Taxable interest', 10000], ['Ordinary dividends', 12000], ['Qualified dividends', 10000], ['Capital gains', 12000]];
+    ? [['Taxable interest', 40000], ['Ordinary dividends', 40000], ['Qualified dividends', 37000], ['Capital gains', 40000]]
+    : [['Taxable interest', 20000], ['Ordinary dividends', 20000], ['Qualified dividends', 20000], ['Capital gains', 20000]];
   const bombTotal1040 = bombs1040.reduce((a, [, v]) => a + v, 0);
   const top24_1040 = sd1040 + br1040[3][0];   // gross income at the top of the 24% bracket
   const scale1040 = top24_1040 * 1.05;        // small headroom so the 32% zone peeks in
   const packedFloor1040 = sd1040 + ssAmt1040 + bombTotal1040;
   const leanFloor1040   = sd1040 + ssAmt1040;
   const convStr1040 = fmtMoney(convAmt1040);
-  // Effective rate on the $100K conversion, stacked on what's already on the return
-  const _rateOnConv1040 = (floor) => Math.round((computeTax(floor + convAmt1040, fs1040) - computeTax(floor, fs1040)) / convAmt1040 * 100);
-  const highRate1040 = _rateOnConv1040(packedFloor1040);
-  const lowRate1040  = _rateOnConv1040(leanFloor1040);
+  // Tax and effective rate on the conversion, stacked on what's already on the return
+  const _taxOnConv1040 = (floor) => Math.max(0, computeTax(floor + convAmt1040, fs1040) - computeTax(floor, fs1040));
+  const packedTax1040 = _taxOnConv1040(packedFloor1040);
+  const leanTax1040   = _taxOnConv1040(leanFloor1040);
+  const highRate1040 = Math.round(packedTax1040 / convAmt1040 * 100);
+  const lowRate1040  = Math.round(leanTax1040 / convAmt1040 * 100);
   const pct1040 = v => Math.max(0, Math.min(100, v / scale1040 * 100));
   function bracketColumn1040(withBombs) {
     let ribbon = '', lines = '', fills = '';
@@ -2268,7 +2273,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:12px;padding:16px 20px 14px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
             <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;">Before &mdash; The Packed Return</div>
-            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:#A83B2E;line-height:1;">${highRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax on the conversion</span></div>
+            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:#A83B2E;line-height:1;">${highRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">&middot; ${fmtMoneyFull(packedTax1040)} tax on the conversion</span></div>
           </div>
           <div style="position:relative;height:280px;background:#FCFBF7;border:1px solid var(--border);border-radius:8px;overflow:hidden;">${bracketColumn1040(true)}</div>
           <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">The <strong style="color:#A83B2E;">red items are the tax bombs</strong> &mdash; unplanned income that eats the cheap brackets before the conversion gets there.</div>
@@ -2276,14 +2281,14 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:16px 20px 14px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
             <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);">After &mdash; The Planned Year</div>
-            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--gold-600);line-height:1;">${lowRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax on the conversion</span></div>
+            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--gold-600);line-height:1;">${lowRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">&middot; ${fmtMoneyFull(leanTax1040)} tax on the conversion</span></div>
           </div>
           <div style="position:relative;height:280px;background:#FCFBF7;border:1px solid var(--border);border-radius:8px;overflow:hidden;">${bracketColumn1040(false)}</div>
-          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;"><strong style="color:var(--gold-600);">No bombs</strong> &mdash; only Social Security sits underneath, so the same conversion lands in the cheap brackets with room to spare.</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;"><strong style="color:var(--gold-600);">No bombs</strong> &mdash; same Social Security, same deduction. The whole conversion fits in the 12% bracket.</div>
         </div>
       </div>
       <div style="max-width:1150px;margin:16px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 28px;text-align:center;">
-        <span style="font-family:var(--font-serif);font-size:21px;color:white;line-height:1.4;">The difference isn&rsquo;t the conversion. <em style="color:var(--gold-400);font-style:italic;">It&rsquo;s the room you make for it.</em></span>
+        <span style="font-family:var(--font-serif);font-size:21px;color:white;line-height:1.4;">Same ${convStr1040} conversion. <em style="color:var(--gold-400);font-style:italic;">Half the tax</em> &mdash; ${fmtMoneyFull(packedTax1040 - leanTax1040)} kept in a single planned year.</span>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">1040</div>
