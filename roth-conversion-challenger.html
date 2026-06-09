@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roth Conversion — The Challenger Method — Yields For You</title>
+<title>Roth Conversion — Yields For You</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1017,7 +1017,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
       <div class="brand-mark">Y4</div>
       <div class="topbar-title">
         <div class="topbar-sub">Yields For You</div>
-        Roth Conversion — The Challenger Method
+        Roth Conversion
       </div>
     </div>
     <div class="topbar-center">
@@ -1527,6 +1527,27 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // Challenger reorder: hold the credibility trio (About YFY / Meet Team / About Leibel) for the pitch.
   const _credibilitySlides = slides.splice(2, 3);
 
+  // SECTION DIVIDER (title page) — poses the question the diagnostic run answers:
+  // "how big is the threat?" Deliberately withholds the specifics; the slides that
+  // follow (compound growth + the threats) are what quantify it. No cards here —
+  // we don't want to give away what's coming, just set up the question.
+  slides.push(`
+    <section class="slide" data-slide="2-divider">
+      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
+        <div class="hook-hero" style="padding:0;">
+          <div class="kicker" style="text-align:center">What&rsquo;s At Stake</div>
+          <h1 class="hero-title">
+            Before the strategy,
+            <span class="accent">how big is the threat &mdash; really?</span>
+          </h1>
+          <p class="hero-sub">We can&rsquo;t talk about what to do until we know what we&rsquo;re dealing with. So first${name}, let&rsquo;s put a hard number on it.</p>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">03</div>
+    </section>
+  `);
+
   // SLIDE 6 — Compound Growth Education (before threats)
   // Compute compound growth comparison numbers for the slide.
   const cgAgeNow = inputs.currentAge;
@@ -1632,6 +1653,25 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // SECTION DIVIDER (title page) — pivots from "money leaving the account" into the
+  // tax analysis. Poses the question the bracket-trajectory + lifetime-tax slides
+  // answer; deliberately shows no figures, just the question.
+  slides.push(`
+    <section class="slide" data-slide="8-divider">
+      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
+        <div class="hook-hero" style="padding:0;">
+          <div class="kicker" style="text-align:center">What It All Means</div>
+          <h1 class="hero-title">
+            So what does all this
+            <span class="accent">mean for our taxes?</span>
+          </h1>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">08</div>
+    </section>
+  `);
+
   // SLIDE 9 — Tax bracket trajectory: today's-dollar view + lifetime totals cards
   const totalIncomeStr = fmtMoney(sim.lifetimeTaxableInc || 0, true);
   const totalTaxStr = fmtMoney(sim.lifetimeFederalTax || 0, true);
@@ -1681,34 +1721,6 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">09</div>
-    </section>
-  `);
-
-  // SLIDE 10 — Threat #2: The 10-Year Rule (Your Kids)
-  slides.push(`
-    <section class="slide" data-slide="10">
-      <div class="title-block">
-        <div class="kicker">Threat 2 of 3 &mdash; Your Kids</div>
-        <h2 class="title">When you pass away, your kids get <em>just 10 years</em> to empty your IRA.</h2>
-      </div>
-      <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:64px;max-width:1240px;margin:36px auto 0;align-items:center;">
-        <div style="text-align:left;">
-          <div style="font-family:var(--font-sans);font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:14px;">Lost to the IRS</div>
-          <div style="font-family:var(--font-serif);font-weight:700;font-size:120px;color:var(--gold-600);line-height:1;letter-spacing:-0.02em;">${heirLost}</div>
-          <div style="font-family:var(--font-sans);font-size:18px;color:var(--fg-muted);margin-top:14px;line-height:1.5;">of your projected <strong>${heirBefore}</strong> IRA balance at age <strong>${heirAge}</strong> &mdash; year <strong>${heirYear}</strong>, about <strong>${heirYears} years</strong> from now.</div>
-          <div style="height:1px;background:var(--border);margin:24px 0;"></div>
-          <p style="font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.5;margin:0;font-weight:500;">After you&rsquo;re gone, the law says your kids must take everything out within 10 years. That money lands on top of the paycheck they&rsquo;re already earning. The bigger their paycheck, the <em style="color:var(--gold-600);font-style:italic;">bigger the tax bite.</em></p>
-        </div>
-        <div style="background:var(--paper-50,#FBF9F4);border:1px solid var(--border);border-left:4px solid var(--gold-400);border-radius:10px;padding:32px 28px;">
-          <div style="font-family:var(--font-sans);font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:18px;">What your kids actually keep</div>
-          <div style="font-family:var(--font-serif);font-weight:700;font-size:60px;color:var(--ink-900);line-height:1;">${heirAfter}</div>
-          <div style="font-family:var(--font-sans);font-size:15px;color:var(--fg-muted);margin-top:10px;line-height:1.5;">After Uncle Sam takes his ${heirRatePct} cut. Most of that disappears in the first few years &mdash; while they&rsquo;re still working.</div>
-          <div style="height:1px;background:var(--border);margin:18px 0;"></div>
-          <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);line-height:1.5;">Projected to age ${heirAge} (year ${heirYear}) at ${(inputs.growthRate*100).toFixed(1)}% annual growth from your current ${balStr}.</div>
-        </div>
-      </div>
-      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">10</div>
     </section>
   `);
 
@@ -1766,7 +1778,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     slides.push(`
     <section class="slide" data-slide="11">
       <div class="title-block">
-        <div class="kicker">Threat 3 of 3 &mdash; Your Spouse</div>
+        <div class="kicker">Threat 2 of 3 &mdash; Your Spouse</div>
         <h2 class="title">Same income. Same bills. <em>Higher bracket.</em></h2>
         <p class="subtitle">When one spouse passes, the survivor files as a single person. Tax bracket thresholds get cut nearly in half &mdash; so the exact same retirement income suddenly lands in a higher rate. That difference goes straight to the IRS, every year.</p>
       </div>
@@ -1822,7 +1834,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     slides.push(`
     <section class="slide" data-slide="12">
       <div class="title-block">
-        <div class="kicker">Threat 3 of 3 &mdash; Your Spouse</div>
+        <div class="kicker">Threat 2 of 3 &mdash; Your Spouse</div>
         <h2 class="title">Same income. Same chart. <em>Bigger brackets.</em></h2>
         <p class="subtitle">This is your exact same tax bracket projection &mdash; but filed as a single person. Watch how much more income lands in higher brackets when the thresholds get cut in half.</p>
       </div>
@@ -1865,6 +1877,35 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
     `);
   } // end MFJ-only widow trajectory gate
+
+  // SLIDE 10 — Threat #2: The 10-Year Rule (Your Kids). Moved to run AFTER the spouse slides so the
+  // threats build to the kids, leading straight into the "It's About Them" capstone below.
+  slides.push(`
+    <section class="slide" data-slide="10">
+      <div class="title-block">
+        <div class="kicker">Threat ${inputs.filingStatus === 'MFJ' ? '3' : '2'} of 3 &mdash; Your Kids</div>
+        <h2 class="title">When you pass away, your kids get <em>just 10 years</em> to empty your IRA.</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:64px;max-width:1240px;margin:36px auto 0;align-items:center;">
+        <div style="text-align:left;">
+          <div style="font-family:var(--font-sans);font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:14px;">Lost to the IRS</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:120px;color:var(--gold-600);line-height:1;letter-spacing:-0.02em;">${heirLost}</div>
+          <div style="font-family:var(--font-sans);font-size:18px;color:var(--fg-muted);margin-top:14px;line-height:1.5;">of your projected <strong>${heirBefore}</strong> IRA balance at age <strong>${heirAge}</strong> &mdash; year <strong>${heirYear}</strong>, about <strong>${heirYears} years</strong> from now.</div>
+          <div style="height:1px;background:var(--border);margin:24px 0;"></div>
+          <p style="font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.5;margin:0;font-weight:500;">After you&rsquo;re gone, the law says your kids must take everything out within 10 years. That money lands on top of the paycheck they&rsquo;re already earning. The bigger their paycheck, the <em style="color:var(--gold-600);font-style:italic;">bigger the tax bite.</em></p>
+        </div>
+        <div style="background:var(--paper-50,#FBF9F4);border:1px solid var(--border);border-left:4px solid var(--gold-400);border-radius:10px;padding:32px 28px;">
+          <div style="font-family:var(--font-sans);font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:18px;">What your kids actually keep</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:60px;color:var(--ink-900);line-height:1;">${heirAfter}</div>
+          <div style="font-family:var(--font-sans);font-size:15px;color:var(--fg-muted);margin-top:10px;line-height:1.5;">After Uncle Sam takes his ${heirRatePct} cut. Most of that disappears in the first few years &mdash; while they&rsquo;re still working.</div>
+          <div style="height:1px;background:var(--border);margin:18px 0;"></div>
+          <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);line-height:1.5;">Projected to age ${heirAge} (year ${heirYear}) at ${(inputs.growthRate*100).toFixed(1)}% annual growth from your current ${balStr}.</div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">10</div>
+    </section>
+  `);
 
   // Act 1 capstone — "It's About Them" (relocated here to close the "who are you optimizing for" arc)
   slides.push(`
@@ -1990,34 +2031,83 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `;
 
-  // SLIDE 11 — Markets Dip Constantly
+  // SECTION DIVIDER (title page) — the turn from problem to solution. Pivots out of the
+  // threats/"It's About Them" capstone into the opportunity section that follows.
   slides.push(`
-    <section class="slide" data-slide="15">
-      <div class="title-block">
-        <div class="kicker">The Opportunity In Plain Sight</div>
-        <h2 class="title">Markets Dip — Constantly</h2>
-        <p class="subtitle">You can't predict corrections. But you can count on them.</p>
+    <section class="slide" data-slide="solution-intro">
+      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
+        <div class="hook-hero" style="padding:0;">
+          <div class="kicker" style="text-align:center">The Solution</div>
+          <h1 class="hero-title">
+            Converting Is The Easy Part.
+            <span class="accent">Paying The Least In Taxes<br>Is The Real Trick</span>
+          </h1>
+        </div>
       </div>
-      <div class="grid-4">
-        <div class="box-card">
-          <div class="box-kicker">Frequent &amp; Mild</div>
-          <div class="box-title">5% Corrections — Every ~3.5 Months</div>
-          <div class="box-body">The market dips 5% on average every three to four months. Most investors don't even notice — but each one is a conversion opportunity.</div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">13</div>
+    </section>
+  `);
+
+  // SLIDE — Section roadmap: the three levers (teaser; details follow). Names the three
+  // "clocks" — the market, your return, tax law — without revealing the mechanism. Each
+  // detail slide that follows pays off one of these open loops.
+  slides.push(`
+    <section class="slide" data-slide="three-levers">
+      <div class="title-block" style="text-align:center;">
+        <div class="kicker">The Solution</div>
+        <h2 class="title" style="font-weight:700;">The Three Hidden Levers</h2>
+      </div>
+      <div style="max-width:1080px;margin:24px auto 0;display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:30px;padding:18px 10px;border-bottom:1px solid var(--border);">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:58px;line-height:1;letter-spacing:-0.03em;color:var(--gold-600);width:52px;text-align:center;flex-shrink:0;">1</div>
+          <div style="flex:1;"><div style="font-family:var(--font-serif);font-size:27px;font-weight:600;color:var(--ink-900);line-height:1.25;">The market.</div></div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker">Real Drawdowns</div>
-          <div class="box-title">10% Corrections — Every ~18 Months</div>
-          <div class="box-body">Roughly every year and a half, the market pulls back 10% or more. The news notices. Your statement notices. The tax code notices.</div>
+        <div style="display:flex;align-items:center;gap:30px;padding:18px 10px;border-bottom:1px solid var(--border);">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:58px;line-height:1;letter-spacing:-0.03em;color:var(--gold-600);width:52px;text-align:center;flex-shrink:0;">2</div>
+          <div style="flex:1;"><div style="font-family:var(--font-serif);font-size:27px;font-weight:600;color:var(--ink-900);line-height:1.25;">Your tax return.</div></div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker">Bear Territory</div>
-          <div class="box-title">20% Corrections — Every ~3.5 Years</div>
-          <div class="box-body">Statistically every 3.5 years — and the interval has been shrinking. Rare, painful, and the <em>biggest</em> conversion gifts.</div>
+        <div style="display:flex;align-items:center;gap:30px;padding:18px 10px;border-bottom:1px solid var(--border);">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:58px;line-height:1;letter-spacing:-0.03em;color:var(--gold-600);width:52px;text-align:center;flex-shrink:0;">3</div>
+          <div style="flex:1;"><div style="font-family:var(--font-serif);font-size:27px;font-weight:600;color:var(--ink-900);line-height:1.25;">The tax code itself.</div></div>
         </div>
-        <div class="box-card">
-          <div class="box-kicker">Hidden In Plain Sight</div>
-          <div class="box-title">Even In Up Years, 1 in 3 Stocks Finish Red</div>
-          <div class="box-body">Losses are always there — you just need a system to find them and turn them into tax savings.</div>
+        <div style="display:flex;align-items:center;gap:30px;padding:18px 28px;background:var(--ink-900);border-radius:12px;margin-top:16px;">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:52px;line-height:1;color:var(--gold-400);width:52px;text-align:center;flex-shrink:0;">&rarr;</div>
+          <div style="flex:1;"><div style="font-family:var(--font-serif);font-size:27px;font-weight:600;color:white;line-height:1.25;">Now &mdash; how we pull each one.</div></div>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">14</div>
+    </section>
+  `);
+
+  // SLIDE — Lever 1 opener: Buffett quote + market-correction frequency. Stats reuse the
+  // deck's existing 5%/10%/20% cadence (from the "Markets Dip" slide) for consistency.
+  slides.push(`
+    <section class="slide" data-slide="buffett-dips">
+      <div class="title-block" style="text-align:center;">
+        <div class="kicker">Lever 1 &mdash; The Market</div>
+      </div>
+      <div style="max-width:1040px;margin:6px auto 0;text-align:center;">
+        <div style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:44px;line-height:1.32;color:var(--ink-900);letter-spacing:-0.01em;">&ldquo;Be fearful when others are greedy, and <span style="color:var(--gold-600);">greedy when others are fearful.</span>&rdquo;</div>
+        <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--fg-subtle);margin-top:20px;">&mdash; Warren Buffett</div>
+      </div>
+      <p style="font-family:var(--font-serif);font-size:20px;color:var(--fg-muted);text-align:center;max-width:840px;margin:28px auto 0;line-height:1.5;">Every market drop is someone else being fearful. For a Roth conversion, that fear is a <em style="color:var(--gold-600);font-style:italic;">discount</em> &mdash; and the market hands you one constantly.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1140px;margin:36px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:28px 24px;text-align:center;">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:58px;color:var(--gold-600);line-height:1;letter-spacing:-0.02em;">5%</div>
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--fg-subtle);margin-top:14px;">A Routine Dip</div>
+          <div style="font-family:var(--font-sans);font-size:14px;color:var(--fg-muted);margin-top:8px;line-height:1.45;">On average every ~3.5 months. Most people never notice.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:28px 24px;text-align:center;">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:58px;color:var(--gold-600);line-height:1;letter-spacing:-0.02em;">10%</div>
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--fg-subtle);margin-top:14px;">A Real Correction</div>
+          <div style="font-family:var(--font-sans);font-size:14px;color:var(--fg-muted);margin-top:8px;line-height:1.45;">On average every ~18 months. The news notices.</div>
+        </div>
+        <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:10px;padding:28px 24px;text-align:center;">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:58px;color:var(--gold-400);line-height:1;letter-spacing:-0.02em;">20%</div>
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-400);margin-top:14px;">A Bear Market</div>
+          <div style="font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.72);margin-top:8px;line-height:1.45;">On average every ~3.5 years &mdash; the biggest gift of all.</div>
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
@@ -2030,8 +2120,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="16">
       <div class="title-block">
         <div class="kicker">The Raw Material</div>
-        <h2 class="title">The Losses Are Always There</h2>
-        <p class="subtitle">Even when the market is green, a meaningful slice of stocks finishes red. So how do you turn that into money?</p>
+        <h2 class="title">Even in up years, <em>30%</em> of stocks finish in the red.</h2>
+        <p class="subtitle">So how do you turn that into money?</p>
       </div>
       <div class="chart-holder" style="height:400px;"><canvas id="chart-neg"></canvas></div>
       <p style="font-size:13px; color:var(--text-2); margin-top:18px; max-width:860px;">
@@ -2070,6 +2160,115 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">17</div>
+    </section>
+  `);
+
+  // Lever 2 reframe: bracket context before the 1040 proof
+  slides.push(`
+    <section class="slide" data-slide="lever2-intro">
+      <div class="title-block" style="text-align:center;">
+        <div class="kicker">Lever 2 &mdash; Your Tax Return</div>
+        <h2 class="title">Perfect timing. Perfect price.<br><em>None of it matters in the wrong bracket.</em></h2>
+      </div>
+      <p style="font-family:var(--font-serif);font-size:20px;color:var(--fg-muted);text-align:center;max-width:880px;margin:0 auto;line-height:1.5;">Everything already on your 1040 stacks underneath your conversion &mdash; quietly setting the bracket it lands in.</p>
+      <div style="text-align:center;margin:34px auto 0;">
+        <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:16px;">The hidden tax bombs already on your return</div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:920px;margin:0 auto;">
+          <span style="display:inline-block;padding:8px 18px;border-radius:999px;background:#FEF2F2;border:1px solid #FBCFCF;color:#B91C1C;font-family:var(--font-sans);font-size:14px;font-weight:600;">Ordinary dividends</span>
+          <span style="display:inline-block;padding:8px 18px;border-radius:999px;background:#FEF2F2;border:1px solid #FBCFCF;color:#B91C1C;font-family:var(--font-sans);font-size:14px;font-weight:600;">Taxable interest</span>
+          <span style="display:inline-block;padding:8px 18px;border-radius:999px;background:#FEF2F2;border:1px solid #FBCFCF;color:#B91C1C;font-family:var(--font-sans);font-size:14px;font-weight:600;">Qualified dividends</span>
+          <span style="display:inline-block;padding:8px 18px;border-radius:999px;background:#FEF2F2;border:1px solid #FBCFCF;color:#B91C1C;font-family:var(--font-sans);font-size:14px;font-weight:600;">Capital gains</span>
+          <span style="display:inline-block;padding:8px 18px;border-radius:999px;background:#FEF2F2;border:1px solid #FBCFCF;color:#B91C1C;font-family:var(--font-sans);font-size:14px;font-weight:600;">RMDs</span>
+          <span style="display:inline-block;padding:8px 18px;border-radius:999px;background:#FEF2F2;border:1px solid #FBCFCF;color:#B91C1C;font-family:var(--font-sans);font-size:14px;font-weight:600;">Social Security</span>
+        </div>
+      </div>
+      <div style="max-width:980px;margin:36px auto 0;background:var(--ink-900);border-radius:12px;padding:22px 32px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:23px;color:white;line-height:1.4;">It&rsquo;s not how much you convert, or what price you got. <em style="color:var(--gold-400);font-style:italic;">It&rsquo;s the bracket you convert into.</em></span>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">20</div>
+    </section>
+  `);
+
+  // 1040 proof: before/after — the same conversion drawn against the bracket "container".
+  // Generic bracket zones (rate labels only, no dollar thresholds — illustrative),
+  // taxable-income scale shared across both panels so heights are comparable.
+  const convAmt1040 = 100000;
+  const fs1040 = inputs.filingStatus;
+  const _taxOnConv1040 = (other) => Math.max(0, computeTax(other + convAmt1040, fs1040) - computeTax(other, fs1040));
+  const lowRate1040  = Math.round(_taxOnConv1040(20000)  / convAmt1040 * 100);
+  const highRate1040 = Math.round(_taxOnConv1040(160000) / convAmt1040 * 100);
+  const convStr1040  = fmtMoney(convAmt1040);
+  const br1040 = fs1040 === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
+  const packedBase1040 = Math.max(0, 160000 - STD_DED[fs1040]);
+  const leanBase1040   = Math.max(0, 20000  - STD_DED[fs1040]);
+  const scale1040 = (packedBase1040 + convAmt1040) * 1.16;
+  const pct1040 = v => Math.max(0, Math.min(100, v / scale1040 * 100));
+  function bracketColumn1040(base, packed) {
+    const convTop = base + convAmt1040;
+    let bands = '', lines = '', fills = '';
+    let prev = 0, zi = 0;
+    for (const [max, rate] of br1040) {
+      if (prev >= scale1040) break;
+      const zTop = Math.min(max, scale1040);
+      const h = pct1040(zTop) - pct1040(prev);
+      bands += `<div style="position:absolute;left:0;right:0;bottom:${pct1040(prev).toFixed(2)}%;height:${h.toFixed(2)}%;${zi % 2 ? 'background:rgba(14,14,15,0.03);' : ''}"></div>`;
+      if (max < scale1040) lines += `<div style="position:absolute;left:0;right:0;bottom:${pct1040(max).toFixed(2)}%;border-top:1px dashed rgba(14,14,15,0.30);"></div>`;
+      bands += `<div style="position:absolute;left:10px;bottom:${(pct1040(prev) + h / 2).toFixed(2)}%;transform:translateY(50%);font-family:var(--font-sans);font-size:11px;font-weight:700;color:var(--ink-400);letter-spacing:0.04em;">${Math.round(rate * 100)}%</div>`;
+      prev = zTop; zi++;
+    }
+    if (base > 0) {
+      fills += `<div style="position:absolute;left:32%;width:52%;bottom:0;height:${pct1040(base).toFixed(2)}%;background:#A6A6AB;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:center;overflow:hidden;">${pct1040(base) > 12 ? '<span style="font-family:var(--font-sans);font-size:12px;font-weight:700;color:white;text-align:center;line-height:1.35;">Income already<br>on the return</span>' : ''}</div>`;
+    }
+    // Split the conversion at the highest bracket line it crosses (packed panel only)
+    const spillAt1040 = packed ? br1040.reduce((acc, [max]) => (max > base && max < convTop ? max : acc), null) : null;
+    const goldTop = spillAt1040 || convTop;
+    fills += `<div style="position:absolute;left:32%;width:52%;bottom:${pct1040(base).toFixed(2)}%;height:${(pct1040(goldTop) - pct1040(base)).toFixed(2)}%;background:var(--gold-400);${base > 0 ? '' : 'border-radius:6px 6px 0 0;'}display:flex;align-items:center;justify-content:center;"><span style="font-family:var(--font-sans);font-size:12px;font-weight:700;color:#3B2A07;text-align:center;line-height:1.35;">${convStr1040}<br>conversion</span></div>`;
+    if (spillAt1040) {
+      fills += `<div style="position:absolute;left:32%;width:52%;bottom:${pct1040(spillAt1040).toFixed(2)}%;height:${(pct1040(convTop) - pct1040(spillAt1040)).toFixed(2)}%;background:#A83B2E;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:center;"><span style="font-family:var(--font-sans);font-size:11px;font-weight:700;color:white;text-align:center;line-height:1.3;">Forced into the<br>next bracket</span></div>`;
+    }
+    if (!packed) {
+      const roomBracket = br1040.find(([max]) => max > convTop);
+      if (roomBracket) {
+        const roomDollars = roomBracket[0] - convTop;
+        const roomTop = Math.min(roomBracket[0], scale1040);
+        if (pct1040(roomTop) - pct1040(convTop) > 5) {
+          fills += `<div style="position:absolute;left:32%;width:52%;bottom:${pct1040(convTop).toFixed(2)}%;height:${(pct1040(roomTop) - pct1040(convTop)).toFixed(2)}%;border:2px dashed var(--gold-500);border-bottom:none;border-radius:6px 6px 0 0;background:repeating-linear-gradient(135deg, rgba(212,142,39,0.08) 0 7px, rgba(212,142,39,0.20) 7px 12px);display:flex;align-items:center;justify-content:center;"><span style="font-family:var(--font-sans);font-size:12.5px;font-weight:700;color:var(--gold-700);text-align:center;line-height:1.4;">&uarr; ${fmtMoneyFull(roomDollars)} of room<br>left in this bracket</span></div>`;
+        }
+      }
+    }
+    return bands + fills + lines;
+  }
+  slides.push(`
+    <section class="slide" data-slide="1040">
+      <div class="title-block">
+        <div class="kicker">The Lever Everyone Forgets</div>
+        <h2 class="title">The same conversion. <em>Wildly different tax bills.</em></h2>
+        <p class="subtitle">The same ${convStr1040} conversion. The only difference is what&rsquo;s already on the return underneath it.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;max-width:1150px;margin:14px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:12px;padding:16px 20px 14px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
+            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;">Before &mdash; The Packed Return</div>
+            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:#A83B2E;line-height:1;">${highRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax</span></div>
+          </div>
+          <div style="position:relative;height:280px;background:#FCFBF7;border:1px solid var(--border);border-radius:8px;overflow:hidden;">${bracketColumn1040(packedBase1040, true)}</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">Dividends, interest, RMDs and Social Security fill the brackets first &mdash; your conversion gets whatever bracket is left.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:16px 20px 14px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
+            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);">After &mdash; The Planned Year</div>
+            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--gold-600);line-height:1;">${lowRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax</span></div>
+          </div>
+          <div style="position:relative;height:280px;background:#FCFBF7;border:1px solid var(--border);border-radius:8px;overflow:hidden;">${bracketColumn1040(leanBase1040, false)}</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">Keep the floor low and the same conversion lands in the cheap brackets &mdash; with room left to convert even more.</div>
+        </div>
+      </div>
+      <div style="max-width:1150px;margin:16px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 28px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:21px;color:white;line-height:1.4;">The difference isn&rsquo;t the conversion. <em style="color:var(--gold-400);font-style:italic;">It&rsquo;s the room you make for it.</em></span>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">1040</div>
     </section>
   `);
 
@@ -2154,45 +2353,6 @@ function buildSlides(inputs, sim, savings, heir, widow) {
 
   // ── ACT 3: What else moves your bracket ─────────────────────────────
   slides.push(legRiskSlide);
-
-  // Act 3 — the rest of your 1040 is the biggest lever on conversion tax
-  const convAmt1040 = 100000;
-  const fs1040 = inputs.filingStatus;
-  const _taxOnConv1040 = (other) => Math.max(0, computeTax(other + convAmt1040, fs1040) - computeTax(other, fs1040));
-  const lowRate1040  = Math.round(_taxOnConv1040(20000)  / convAmt1040 * 100);
-  const highRate1040 = Math.round(_taxOnConv1040(160000) / convAmt1040 * 100);
-  const convStr1040  = fmtMoney(convAmt1040);
-  slides.push(`
-    <section class="slide" data-slide="1040">
-      <div class="title-block">
-        <div class="kicker">The Lever Everyone Forgets</div>
-        <h2 class="title">The same conversion. <em>Wildly different tax bills.</em></h2>
-        <p class="subtitle">A Roth conversion isn&rsquo;t taxed in a vacuum. It stacks on top of everything else on your 1040 &mdash; Social Security, pensions, dividends, capital gains, RMDs. The more income underneath it, the higher the brackets your conversion lands in. Here&rsquo;s the same ${convStr1040} conversion, taxed against rising &ldquo;other income.&rdquo;</p>
-      </div>
-      <div style="max-width:1300px;margin:6px auto 0;">
-        <div class="chart-holder" style="height:296px;"><canvas id="chart-1040-stack"></canvas></div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1300px;margin:14px auto 0;font-family:var(--font-sans);">
-        <div style="background:#FAFAF9;border:1px solid var(--border);border-radius:14px;padding:18px 22px;">
-          <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:var(--text-2);text-transform:uppercase;margin-bottom:6px;">Stacked on low income</div>
-          <div style="font-size:30px;font-weight:700;color:var(--ink-900);font-family:var(--font-serif);line-height:1;">${lowRate1040}%</div>
-          <div style="font-size:13px;color:var(--text-2);margin-top:4px;">effective tax on the ${convStr1040} conversion</div>
-        </div>
-        <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:14px;padding:18px 22px;">
-          <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:#B91C1C;text-transform:uppercase;margin-bottom:6px;">Stacked on high income</div>
-          <div style="font-size:30px;font-weight:700;color:#B91C1C;font-family:var(--font-serif);line-height:1;">${highRate1040}%</div>
-          <div style="font-size:13px;color:#B91C1C;opacity:0.8;margin-top:4px;">same conversion, ${Math.max(1, highRate1040 - lowRate1040)} points more on every dollar</div>
-        </div>
-        <div style="background:var(--ink-900);border-radius:14px;padding:18px 22px;">
-          <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:var(--gold-400);text-transform:uppercase;margin-bottom:6px;">The Takeaway</div>
-          <div style="font-size:20px;font-weight:700;color:#fff;font-family:var(--font-serif);line-height:1.2;margin-bottom:6px;">We manage the whole return</div>
-          <div style="font-size:13px;color:rgba(255,255,255,0.72);">Timing the conversion around the rest of your 1040 &mdash; SS, gains, RMDs &mdash; is where the real savings live.</div>
-        </div>
-      </div>
-      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">1040</div>
-    </section>
-  `);
 
   // ── PITCH opens with the Reveal ─────────────────────────────────────
   slides.push(revealSlide);
@@ -3412,42 +3572,6 @@ function renderCharts(inputs, sim, savings) {
   }
 
   // ---- 1040 stacking chart (Act 3): effective tax on a fixed conversion vs other income ----
-  const stack1040El = document.getElementById('chart-1040-stack');
-  if (stack1040El) {
-    const fs1040 = inputs.filingStatus;
-    const conv1040 = 100000;
-    const others1040 = [0, 20000, 40000, 60000, 80000, 100000, 140000, 180000, 220000];
-    const rates1040 = others1040.map(o => {
-      const t = Math.max(0, computeTax(o + conv1040, fs1040) - computeTax(o, fs1040));
-      return Math.round(t / conv1040 * 100);
-    });
-    const labels1040 = others1040.map(o => '$' + Math.round(o / 1000) + 'K');
-    if (chartInstances.stack1040) { chartInstances.stack1040.destroy(); chartInstances.stack1040 = null; }
-    chartInstances.stack1040 = new Chart(stack1040El, {
-      type: 'bar',
-      data: {
-        labels: labels1040,
-        datasets: [{
-          label: 'Effective tax on a $100K conversion',
-          data: rates1040,
-          backgroundColor: rates1040.map(r => r >= 28 ? '#E05252' : (r >= 20 ? '#E8A33D' : '#C9A84C')),
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + '% effective on the conversion' } }
-        },
-        scales: {
-          x: { grid: { display: false }, title: { display: true, text: 'Other income already on your 1040', font: { family: 'var(--font-sans)', size: 11 } }, ticks: { font: { size: 11 } } },
-          y: { grid: { color: 'rgba(0,0,0,0.06)' }, title: { display: true, text: 'Tax on the conversion', font: { family: 'var(--font-sans)', size: 11 } }, ticks: { callback: v => v + '%', font: { size: 11 } } }
-        }
-      }
-    });
-  }
-
   // ---- Proof / savings chart (slide 14) ----
   const proofEl = document.getElementById('chart-proof');
   if (proofEl) {
