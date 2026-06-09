@@ -2214,47 +2214,48 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const lowRate1040  = _rateOnConv1040(leanFloor1040);
   const pct1040 = v => Math.max(0, Math.min(100, v / scale1040 * 100));
   function bracketColumn1040(withBombs) {
-    const floor1040 = withBombs ? packedFloor1040 : leanFloor1040;
-    const convTop1040 = floor1040 + convAmt1040;
-    let slices = '', lines = '', overlays = '';
-    // Band colors match the slide-9 bracket-trajectory chart palette
-    const zoneRgb1040 = { 0: '204,192,168', 0.10: '74,138,107', 0.12: '74,138,107', 0.22: '201,162,59', 0.24: '216,138,62', 0.32: '194,90,62', 0.35: '168,59,46', 0.37: '168,59,46' };
-    // 0% standard-deduction band, then bracket bands shifted up by the deduction
-    const zones = [[sd1040, 0]].concat(br1040.map(([max, rate]) => [sd1040 + max, rate]));
-    // Dashed threshold lines + rate labels on a plain background, like slide 9
+    let ribbon = '', lines = '', fills = '';
+    // Bracket "thermometer" ribbon on the left — same palette and grouping as the slide-9 chart
+    const ribbonZones1040 = [
+      { top: sd1040,                rgb: '204,192,168', fg: '#6B5E45', label: '0%' },
+      { top: sd1040 + br1040[1][0], rgb: '74,138,107',  fg: 'white',   label: '10&ndash;12%' },
+      { top: sd1040 + br1040[2][0], rgb: '201,162,59',  fg: 'white',   label: '22%' },
+      { top: sd1040 + br1040[3][0], rgb: '216,138,62',  fg: 'white',   label: '24%' },
+      { top: Infinity,              rgb: '194,90,62',   fg: 'white',   label: '32%' }
+    ];
     let prev = 0;
-    for (const [zMax, rate] of zones) {
+    for (const z of ribbonZones1040) {
       if (prev >= scale1040) break;
-      const zTop = Math.min(zMax, scale1040);
+      const zTop = Math.min(z.top, scale1040);
       const h = pct1040(zTop) - pct1040(prev);
-      if (zMax < scale1040) lines += `<div style="position:absolute;left:0;right:0;bottom:${pct1040(zMax).toFixed(2)}%;border-top:1px dashed rgba(14,14,15,${zMax === top24_1040 ? '0.45' : '0.22'});"></div>`;
-      lines += `<div style="position:absolute;left:8px;bottom:${(pct1040(prev) + h / 2).toFixed(2)}%;transform:translateY(50%);font-family:var(--font-sans);font-size:11px;font-weight:700;color:var(--ink-400);letter-spacing:0.04em;">${Math.round(rate * 100)}%</div>`;
+      ribbon += `<div style="position:absolute;left:0;width:13%;bottom:${pct1040(prev).toFixed(2)}%;height:${h.toFixed(2)}%;background:rgba(${z.rgb},0.92);display:flex;align-items:center;justify-content:center;overflow:hidden;">${h >= 3 ? `<span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:${z.fg};letter-spacing:0.02em;">${z.label}</span>` : ''}</div>`;
+      if (z.top < scale1040) lines += `<div style="position:absolute;left:0;right:0;bottom:${pct1040(z.top).toFixed(2)}%;border-top:1px dashed rgba(14,14,15,${z.top === top24_1040 ? '0.45' : '0.22'});"></div>`;
       prev = zTop;
     }
-    // The gross-income bar (income + conversion), sliced by bracket band — same as a slide-9 bar
-    prev = 0;
-    for (const [zMax, rate] of zones) {
-      if (prev >= convTop1040) break;
-      const sTop = Math.min(zMax, convTop1040);
-      const h = pct1040(sTop) - pct1040(prev);
-      if (h > 0) slices += `<div style="position:absolute;left:30%;width:56%;bottom:${pct1040(prev).toFixed(2)}%;height:${h.toFixed(2)}%;background:rgba(${zoneRgb1040[rate]},0.92);"></div>`;
-      prev = sTop;
+    // Line items: neutral income in tan/gray, the tax bombs in red, the conversion in gold
+    const segs = [
+      { label: 'Standard deduction', amt: sd1040, bg: '#CCC0A8', fg: '#4A4234' },
+      { label: 'Social Security', amt: ssAmt1040, bg: '#9A9A9F', fg: 'white' }
+    ];
+    if (withBombs) bombs1040.forEach(([label, amt], i) => segs.push({ label, amt, bg: i % 2 ? '#A83B2E' : '#C0564A', fg: 'white' }));
+    segs.push({ label: convStr1040 + ' Roth conversion', amt: convAmt1040, bg: 'var(--gold-400)', fg: '#3B2A07', conv: true });
+    let acc = 0;
+    for (const s of segs) {
+      const b = pct1040(acc), h = pct1040(acc + s.amt) - pct1040(acc);
+      const fontSz = s.conv ? 13 : (h < 5 ? 9.5 : 10.5);
+      fills += `<div style="position:absolute;left:24%;width:64%;bottom:${b.toFixed(2)}%;height:${h.toFixed(2)}%;background:${s.bg};display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.35);">${h >= 3.2 ? `<span style="font-family:var(--font-sans);font-size:${fontSz}px;font-weight:700;color:${s.fg};white-space:nowrap;">${s.label}${s.conv ? '' : ' &middot; ' + fmtMoney(s.amt)}</span>` : ''}</div>`;
+      acc += s.amt;
     }
-    // Pill labels: what's already on the return vs the planned conversion
-    const pill1040 = (centerV, text, gold) => `<div style="position:absolute;left:30%;width:56%;bottom:${pct1040(centerV).toFixed(2)}%;transform:translateY(50%);display:flex;justify-content:center;"><span style="background:${gold ? 'var(--ink-900)' : 'rgba(14,14,15,0.75)'};color:${gold ? 'var(--gold-400)' : 'white'};font-family:var(--font-sans);font-size:${gold ? 12 : 10.5}px;font-weight:700;padding:4px 12px;border-radius:999px;white-space:nowrap;">${text}</span></div>`;
-    overlays += `<div style="position:absolute;left:30%;width:56%;bottom:${pct1040(floor1040).toFixed(2)}%;height:${(pct1040(convTop1040) - pct1040(floor1040)).toFixed(2)}%;border:2.5px solid var(--ink-900);border-radius:3px;box-sizing:border-box;"></div>`;
-    overlays += pill1040(floor1040 / 2, 'Already on your return');
-    overlays += pill1040((floor1040 + convTop1040) / 2, convStr1040 + ' Roth conversion', true);
     // Room still left to convert before maxing out the 24% bracket (both panels)
-    const roomDollars = top24_1040 - convTop1040;
+    const roomDollars = top24_1040 - acc;
     if (roomDollars > 0) {
-      const b = pct1040(convTop1040), h = pct1040(top24_1040) - pct1040(convTop1040);
+      const b = pct1040(acc), h = pct1040(top24_1040) - pct1040(acc);
       const roomLabel = h >= 10
         ? `&uarr; ${fmtMoneyFull(roomDollars)} of room<br>left in the 24% bracket`
         : `&uarr; ${fmtMoneyFull(roomDollars)} left`;
-      overlays += `<div style="position:absolute;left:30%;width:56%;bottom:${b.toFixed(2)}%;height:${h.toFixed(2)}%;border:2px dashed var(--gold-500);border-bottom:none;border-radius:6px 6px 0 0;background:repeating-linear-gradient(135deg, rgba(212,142,39,0.08) 0 7px, rgba(212,142,39,0.20) 7px 12px);display:flex;align-items:center;justify-content:center;"><span style="font-family:var(--font-sans);font-size:${h >= 10 ? 12.5 : 10}px;font-weight:700;color:var(--gold-700);text-align:center;line-height:1.4;">${roomLabel}</span></div>`;
+      fills += `<div style="position:absolute;left:24%;width:64%;bottom:${b.toFixed(2)}%;height:${h.toFixed(2)}%;border:2px dashed var(--gold-500);border-bottom:none;border-radius:6px 6px 0 0;background:repeating-linear-gradient(135deg, rgba(212,142,39,0.08) 0 7px, rgba(212,142,39,0.20) 7px 12px);display:flex;align-items:center;justify-content:center;"><span style="font-family:var(--font-sans);font-size:${h >= 10 ? 12.5 : 10}px;font-weight:700;color:var(--gold-700);text-align:center;line-height:1.4;">${roomLabel}</span></div>`;
     }
-    return slices + lines + overlays;
+    return ribbon + lines + fills;
   }
   slides.push(`
     <section class="slide" data-slide="1040">
@@ -2270,7 +2271,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:#A83B2E;line-height:1;">${highRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax on the conversion</span></div>
           </div>
           <div style="position:relative;height:280px;background:#FCFBF7;border:1px solid var(--border);border-radius:8px;overflow:hidden;">${bracketColumn1040(true)}</div>
-          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">Interest, dividends and capital gains claim the cheap brackets first &mdash; the conversion gets shoved up into the 24% bracket.</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">The <strong style="color:#A83B2E;">red items are the tax bombs</strong> &mdash; unplanned income that eats the cheap brackets before the conversion gets there.</div>
         </div>
         <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:16px 20px 14px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
@@ -2278,7 +2279,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--gold-600);line-height:1;">${lowRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax on the conversion</span></div>
           </div>
           <div style="position:relative;height:280px;background:#FCFBF7;border:1px solid var(--border);border-radius:8px;overflow:hidden;">${bracketColumn1040(false)}</div>
-          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">Only Social Security sits underneath &mdash; the same conversion lands in the cheap brackets, with room left to convert even more.</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;"><strong style="color:var(--gold-600);">No bombs</strong> &mdash; only Social Security sits underneath, so the same conversion lands in the cheap brackets with room to spare.</div>
         </div>
       </div>
       <div style="max-width:1150px;margin:16px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 28px;text-align:center;">
