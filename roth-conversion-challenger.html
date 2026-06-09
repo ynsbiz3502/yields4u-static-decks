@@ -2190,28 +2190,28 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // 1040 proof: before/after — how much room is left to convert below the top of the
-  // 24% bracket. Gross-income scale: the standard deduction is the 0% zone at the bottom
-  // and the bracket lines shift up by it. Both panels run to the top of the 24% bracket;
-  // the hatched room (the amount available to convert) is the hero number.
+  // 1040 proof: before/after — a planned $100K conversion drawn against the bracket
+  // "container". Gross-income scale: the standard deduction is the 0% zone at the bottom
+  // and the bracket lines shift up by it. Both panels run to the top of the 24% bracket
+  // and show the room still left to convert after the $100K. Line items are illustrative.
+  const convAmt1040 = 100000;
   const fs1040 = inputs.filingStatus;
   const sd1040 = STD_DED[fs1040];
   const br1040 = fs1040 === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
   const ssAmt1040 = fs1040 === 'MFJ' ? 50000 : 25000;
   const bombs1040 = fs1040 === 'MFJ'
-    ? [['Taxable interest', 25000], ['Ordinary dividends', 30000], ['Qualified dividends', 25000], ['Capital gains', 30000], ['RMDs', 40000]]
-    : [['Taxable interest', 10000], ['Ordinary dividends', 12000], ['Qualified dividends', 10000], ['Capital gains', 12000], ['RMDs', 14000]];
+    ? [['Taxable interest', 25000], ['Ordinary dividends', 30000], ['Qualified dividends', 25000], ['Capital gains', 30000]]
+    : [['Taxable interest', 10000], ['Ordinary dividends', 12000], ['Qualified dividends', 10000], ['Capital gains', 12000]];
   const bombTotal1040 = bombs1040.reduce((a, [, v]) => a + v, 0);
   const top24_1040 = sd1040 + br1040[3][0];   // gross income at the top of the 24% bracket
   const scale1040 = top24_1040 * 1.05;        // small headroom so the 32% zone peeks in
   const packedFloor1040 = sd1040 + ssAmt1040 + bombTotal1040;
   const leanFloor1040   = sd1040 + ssAmt1040;
-  const packedRoom1040  = top24_1040 - packedFloor1040;
-  const leanRoom1040    = top24_1040 - leanFloor1040;
-  // Effective rate if you convert the entire room, up to the top of the 24% bracket
-  const _rateOnRoom1040 = (floor, room) => Math.round((computeTax(floor + room, fs1040) - computeTax(floor, fs1040)) / room * 100);
-  const highRate1040 = _rateOnRoom1040(packedFloor1040, packedRoom1040);
-  const lowRate1040  = _rateOnRoom1040(leanFloor1040, leanRoom1040);
+  const convStr1040 = fmtMoney(convAmt1040);
+  // Effective rate on the $100K conversion, stacked on what's already on the return
+  const _rateOnConv1040 = (floor) => Math.round((computeTax(floor + convAmt1040, fs1040) - computeTax(floor, fs1040)) / convAmt1040 * 100);
+  const highRate1040 = _rateOnConv1040(packedFloor1040);
+  const lowRate1040  = _rateOnConv1040(leanFloor1040);
   const pct1040 = v => Math.max(0, Math.min(100, v / scale1040 * 100));
   function bracketColumn1040(withBombs) {
     let bands = '', lines = '', fills = '';
@@ -2227,23 +2227,28 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       bands += `<div style="position:absolute;left:8px;bottom:${(pct1040(prev) + h / 2).toFixed(2)}%;transform:translateY(50%);font-family:var(--font-sans);font-size:11px;font-weight:700;color:var(--ink-400);letter-spacing:0.04em;">${Math.round(rate * 100)}%</div>`;
       prev = zTop; zi++;
     }
-    // Stacked line items, bottom-up (labels only — the room carries the dollar figure)
+    // Stacked line items, bottom-up
     const segs = [
       { label: 'Standard deduction', amt: sd1040, bg: '#CFCFD3', fg: '#3A3A3E' },
       { label: 'Social Security', amt: ssAmt1040, bg: '#9A9A9F', fg: 'white' }
     ];
     if (withBombs) bombs1040.forEach(([label, amt], i) => segs.push({ label, amt, bg: i % 2 ? '#A83B2E' : '#C0564A', fg: 'white' }));
+    segs.push({ label: convStr1040 + ' Roth conversion', amt: convAmt1040, bg: 'var(--gold-400)', fg: '#3B2A07', conv: true });
     let acc = 0;
     for (const s of segs) {
       const b = pct1040(acc), h = pct1040(acc + s.amt) - pct1040(acc);
-      fills += `<div style="position:absolute;left:30%;width:56%;bottom:${b.toFixed(2)}%;height:${h.toFixed(2)}%;background:${s.bg};display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.35);">${h >= 3.2 ? `<span style="font-family:var(--font-sans);font-size:${h < 5 ? 9.5 : 10.5}px;font-weight:700;color:${s.fg};white-space:nowrap;">${s.label}</span>` : ''}</div>`;
+      const fontSz = s.conv ? 13 : (h < 5 ? 9.5 : 10.5);
+      fills += `<div style="position:absolute;left:30%;width:56%;bottom:${b.toFixed(2)}%;height:${h.toFixed(2)}%;background:${s.bg};display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.35);">${h >= 3.2 ? `<span style="font-family:var(--font-sans);font-size:${fontSz}px;font-weight:700;color:${s.fg};white-space:nowrap;">${s.label}${s.conv ? '' : ' &middot; ' + fmtMoney(s.amt)}</span>` : ''}</div>`;
       acc += s.amt;
     }
-    // The hero: room available for Roth conversion, up to the top of the 24% bracket
+    // Room still left to convert before maxing out the 24% bracket (both panels)
     const roomDollars = top24_1040 - acc;
     if (roomDollars > 0) {
       const b = pct1040(acc), h = pct1040(top24_1040) - pct1040(acc);
-      fills += `<div style="position:absolute;left:30%;width:56%;bottom:${b.toFixed(2)}%;height:${h.toFixed(2)}%;border:2px dashed var(--gold-500);border-bottom:none;border-radius:6px 6px 0 0;background:repeating-linear-gradient(135deg, rgba(212,142,39,0.08) 0 7px, rgba(212,142,39,0.20) 7px 12px);display:flex;align-items:center;justify-content:center;"><span style="font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--gold-700);text-align:center;line-height:1.45;"><span style="font-family:var(--font-serif);font-size:26px;letter-spacing:-0.01em;">${fmtMoneyFull(roomDollars)}</span><br>available for Roth conversion<br>up to the top of the 24% bracket</span></div>`;
+      const roomLabel = h >= 10
+        ? `&uarr; ${fmtMoneyFull(roomDollars)} of room<br>left in the 24% bracket`
+        : `&uarr; ${fmtMoneyFull(roomDollars)} left`;
+      fills += `<div style="position:absolute;left:30%;width:56%;bottom:${b.toFixed(2)}%;height:${h.toFixed(2)}%;border:2px dashed var(--gold-500);border-bottom:none;border-radius:6px 6px 0 0;background:repeating-linear-gradient(135deg, rgba(212,142,39,0.08) 0 7px, rgba(212,142,39,0.20) 7px 12px);display:flex;align-items:center;justify-content:center;"><span style="font-family:var(--font-sans);font-size:${h >= 10 ? 12.5 : 10}px;font-weight:700;color:var(--gold-700);text-align:center;line-height:1.4;">${roomLabel}</span></div>`;
     }
     return bands + fills + lines;
   }
@@ -2251,25 +2256,25 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="1040">
       <div class="title-block">
         <div class="kicker">The Lever Everyone Forgets</div>
-        <h2 class="title">The same brackets. <em>Wildly different room to convert.</em></h2>
-        <p class="subtitle">Everything already on your 1040 decides how much you can convert before the 24% bracket tops out. Illustrative numbers &mdash; every return is different.</p>
+        <h2 class="title">The same conversion. <em>Wildly different tax bills.</em></h2>
+        <p class="subtitle">The same ${convStr1040} planned conversion. The only difference is what&rsquo;s already on the return underneath it. Illustrative numbers &mdash; every return is different.</p>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;max-width:1150px;margin:14px auto 0;">
         <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:12px;padding:16px 20px 14px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
             <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#A83B2E;">Before &mdash; The Packed Return</div>
-            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:#A83B2E;line-height:1;">${highRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax, converting it all</span></div>
+            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:#A83B2E;line-height:1;">${highRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax on the conversion</span></div>
           </div>
           <div style="position:relative;height:280px;background:#FCFBF7;border:1px solid var(--border);border-radius:8px;overflow:hidden;">${bracketColumn1040(true)}</div>
-          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">Interest, dividends, gains and RMDs claim the cheap brackets first &mdash; the room that&rsquo;s left sits almost entirely in the 24% bracket.</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">Interest, dividends and capital gains claim the cheap brackets first &mdash; the conversion gets shoved up into the 24% bracket.</div>
         </div>
         <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:16px 20px 14px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;">
             <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);">After &mdash; The Planned Year</div>
-            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--gold-600);line-height:1;">${lowRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax, converting it all</span></div>
+            <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--gold-600);line-height:1;">${lowRate1040}%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-subtle);margin-left:6px;">effective tax on the conversion</span></div>
           </div>
           <div style="position:relative;height:280px;background:#FCFBF7;border:1px solid var(--border);border-radius:8px;overflow:hidden;">${bracketColumn1040(false)}</div>
-          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">Only Social Security sits underneath &mdash; ${fmtMoneyFull(leanRoom1040 - packedRoom1040)} more room to convert, and the conversion climbs through the cheap brackets first.</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);margin-top:10px;line-height:1.45;">Only Social Security sits underneath &mdash; the same conversion lands in the cheap brackets, with room left to convert even more.</div>
         </div>
       </div>
       <div style="max-width:1150px;margin:16px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 28px;text-align:center;">
