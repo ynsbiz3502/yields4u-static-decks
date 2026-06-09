@@ -2215,17 +2215,20 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const pct1040 = v => Math.max(0, Math.min(100, v / scale1040 * 100));
   function bracketColumn1040(withBombs) {
     let bands = '', lines = '', fills = '';
+    // Zone colors match the slide-9 bracket-trajectory chart palette
+    const zoneRgb1040 = { 0: '204,192,168', 0.10: '74,138,107', 0.12: '74,138,107', 0.22: '201,162,59', 0.24: '216,138,62', 0.32: '194,90,62', 0.35: '168,59,46', 0.37: '168,59,46' };
     // 0% standard-deduction zone, then bracket zones shifted up by the deduction
     const zones = [[sd1040, 0]].concat(br1040.map(([max, rate]) => [sd1040 + max, rate]));
-    let prev = 0, zi = 0;
+    let prev = 0;
     for (const [zMax, rate] of zones) {
       if (prev >= scale1040) break;
       const zTop = Math.min(zMax, scale1040);
       const h = pct1040(zTop) - pct1040(prev);
-      bands += `<div style="position:absolute;left:0;right:0;bottom:${pct1040(prev).toFixed(2)}%;height:${h.toFixed(2)}%;${zi % 2 ? 'background:rgba(14,14,15,0.03);' : ''}"></div>`;
+      const zc = zoneRgb1040[rate];
+      bands += `<div style="position:absolute;left:0;right:0;bottom:${pct1040(prev).toFixed(2)}%;height:${h.toFixed(2)}%;background:rgba(${zc},0.30);"></div>`;
       if (zMax < scale1040) lines += `<div style="position:absolute;left:0;right:0;bottom:${pct1040(zMax).toFixed(2)}%;border-top:1px dashed rgba(14,14,15,${zMax === top24_1040 ? '0.50' : '0.30'});"></div>`;
-      bands += `<div style="position:absolute;left:8px;bottom:${(pct1040(prev) + h / 2).toFixed(2)}%;transform:translateY(50%);font-family:var(--font-sans);font-size:11px;font-weight:700;color:var(--ink-400);letter-spacing:0.04em;">${Math.round(rate * 100)}%</div>`;
-      prev = zTop; zi++;
+      bands += `<div style="position:absolute;left:8px;bottom:${(pct1040(prev) + h / 2).toFixed(2)}%;transform:translateY(50%);font-family:var(--font-sans);font-size:11px;font-weight:700;color:rgb(${rate === 0 ? '146,134,108' : zc});letter-spacing:0.04em;">${Math.round(rate * 100)}%</div>`;
+      prev = zTop;
     }
     // Stacked line items, bottom-up
     const segs = [
