@@ -780,8 +780,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-family: var(--font-serif); font-weight: 600; color: var(--ink-900);
   font-size: 18px; font-variant-numeric: tabular-nums;
 }
-.compare-cell.val.bad  { color: var(--danger); }
-.compare-cell.val.good { color: var(--success); }
+.compare-cell.val.bad  { color: var(--danger); background: rgba(168,59,46,0.05); }
+.compare-cell.val.good { color: var(--success); background: rgba(46,125,91,0.10); font-weight: 700; }
 .compare-cell:last-child, .compare-grid > div:nth-last-child(-n+3) { border-bottom: none; }
 .compare-note {
   font-family: var(--font-serif); font-style: italic;
@@ -2875,20 +2875,12 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div class="compare-cell val bad">22–32%</div>
         <div class="compare-cell val good">10–15%</div>
 
-        <div class="compare-cell row-label">Peak RMDs</div>
-        <div class="compare-cell val bad">${peak}/yr — forced at top brackets</div>
-        <div class="compare-cell val good">Eliminated or reduced</div>
-
-        <div class="compare-cell row-label">Top Bracket</div>
-        <div class="compare-cell val bad">Up to 37%</div>
-        <div class="compare-cell val good">12–22%</div>
-
-        <div class="compare-cell row-label">SS Taxation</div>
-        <div class="compare-cell val bad">Up to 85% taxable</div>
+        <div class="compare-cell row-label">Social Security Taxed</div>
+        <div class="compare-cell val bad">Up to 85%</div>
         <div class="compare-cell val good">Lower or 0%</div>
 
         <div class="compare-cell row-label">Heirs Inherit</div>
-        <div class="compare-cell val bad">Taxable IRA, drain in 10 yrs</div>
+        <div class="compare-cell val bad">Taxable IRA, drained in 10 yrs</div>
         <div class="compare-cell val good">Tax-free Roth</div>
 
         <div class="compare-cell row-label">Conversion Window</div>
