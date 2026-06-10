@@ -2919,12 +2919,20 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div style="max-width:1180px;margin:18px auto 0;background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:22px 28px;">
         <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:16px;">With Yields For You</div>
-        <div style="display:flex;align-items:center;gap:16px;font-family:var(--font-sans);font-size:14px;font-weight:700;">
-          <span style="background:var(--gold-400);color:var(--ink-900);border-radius:8px;padding:10px 20px;">You</span>
-          <span style="color:var(--gold-400);font-size:22px;">&#8644;</span>
-          <span style="background:var(--gold-400);color:var(--ink-900);border-radius:8px;padding:10px 20px;">The same small team</span>
+        <div style="display:flex;align-items:center;gap:26px;flex-wrap:wrap;">
+          <span style="background:var(--gold-400);color:var(--ink-900);border-radius:8px;padding:11px 22px;font-family:var(--font-sans);font-size:15px;font-weight:700;">You</span>
+          <span style="color:var(--gold-400);font-size:26px;">&#8644;</span>
+          <div style="display:flex;gap:26px;">
+            ${team.map(t => `
+              <div style="text-align:center;">
+                ${t.p ? `<img src="${t.p}" alt="${t.n}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-400);display:block;margin:0 auto;">` : `<div style="width:64px;height:64px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-weight:800;font-family:var(--font-sans);font-size:18px;margin:0 auto;">${t.i}</div>`}
+                <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;color:#fff;margin-top:8px;">${t.n}</div>
+                <div style="font-family:var(--font-sans);font-size:10.5px;color:var(--gold-400);letter-spacing:0.04em;text-transform:uppercase;">${t.r}</div>
+              </div>
+            `).join('')}
+          </div>
         </div>
-        <div style="font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.75);margin-top:13px;">The person who pitched you is the person who runs it &mdash; the same faces every quarter, for the life of your plan.</div>
+        <div style="font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.75);margin-top:18px;">The person who pitched you is the person who runs it &mdash; you&rsquo;ll know us by name, every quarter, for the life of your plan.</div>
       </div>
       <div style="max-width:1180px;margin:22px auto 0;text-align:center;">
         <span style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.5;">Small isn&rsquo;t the risk. <em style="color:var(--gold-600);font-style:italic;">It&rsquo;s the reason you get a relationship instead of a call center.</em></span>
