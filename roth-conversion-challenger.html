@@ -1569,16 +1569,16 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="6">
       <div class="title-block">
-        <div class="kicker">First, A Little Math Magic</div>
-        <h2 class="title">Your money <em>keeps growing</em> &mdash; until the IRS taps the brakes.</h2>
-        <p class="subtitle">Compound growth is the most powerful force in your retirement plan. Here&rsquo;s what it looks like on your ${balStr} IRA &mdash; with and without the drag of forced withdrawals.</p>
+        <div class="kicker">Why Roth Conversions?</div>
+        <h2 class="title">Because at 73, your IRA stops being <em>entirely yours.</em></h2>
+        <p class="subtitle">The reason this whole strategy exists is three letters: RMD &mdash; the Required Minimum Distribution. Here&rsquo;s what it does to your ${balStr} nest egg.</p>
       </div>
       <div style="display:grid;grid-template-columns:1.05fr 1fr;gap:48px;max-width:1300px;margin:32px auto 0;align-items:center;">
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:420px;"><canvas id="chart-compound"></canvas></div>
         <div style="display:flex;flex-direction:column;gap:18px;">
           <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-400);border-radius:10px;padding:22px 26px;">
-            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:10px;">How compounding works</div>
-            <p style="font-family:var(--font-serif);font-size:18px;color:var(--ink-900);line-height:1.5;margin:0;">Every year, your IRA grows by about <strong>${(inputs.growthRate*100).toFixed(1)}%</strong>. The next year it grows on the bigger number. After enough years, the growth on your growth becomes bigger than the original balance.</p>
+            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:10px;">What&rsquo;s an RMD?</div>
+            <p style="font-family:var(--font-serif);font-size:18px;color:var(--ink-900);line-height:1.5;margin:0;">Starting at age 73, the IRS requires you to pull money out of your IRA every year &mdash; whether you need it or not. They set the percentage, it rises as you age, and every dollar comes out taxed as ordinary income.</p>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
             <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:18px 16px;text-align:center;">
@@ -1607,15 +1607,15 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="7">
       <div class="title-block">
         <div class="kicker">Threat 1 of 3 &mdash; Your IRA</div>
-        <h2 class="title">The government makes you take money out &mdash; <em>and taxes every dollar.</em></h2>
+        <h2 class="title">So how big is the bite, <em>really?</em></h2>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:64px;max-width:1300px;margin:36px auto 0;align-items:center;">
         <div style="text-align:left;">
-          <div style="font-family:var(--font-sans);font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:14px;">Your worst tax year</div>
+          <div style="font-family:var(--font-sans);font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:14px;">Your worst single year</div>
           <div style="font-family:var(--font-serif);font-weight:700;font-size:104px;color:var(--gold-600);line-height:1;letter-spacing:-0.02em;">${peak}</div>
           <div style="font-family:var(--font-sans);font-size:18px;color:var(--fg-muted);margin-top:14px;line-height:1.5;">in forced withdrawals at the peak. On your <strong>${balStr}</strong> IRA.</div>
           <div style="height:1px;background:var(--border);margin:30px 0;"></div>
-          <p style="font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.5;margin:0;font-weight:500;">Starting at age 73, the IRS forces you to take money out of your IRA every year. The older you get, the <em style="color:var(--gold-600);font-style:italic;">more</em> they make you take. By age 95, almost 1 out of every 9 dollars must come out.</p>
+          <p style="font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.5;margin:0;font-weight:500;">It starts small &mdash; about 1 dollar out of every 26 at age 73. It doesn&rsquo;t stay small. The percentage rises every single year, and by 95 the IRS is forcing out almost <em style="color:var(--gold-600);font-style:italic;">1 of every 9 dollars</em>. On a growing balance, that&rsquo;s a bigger slice of a bigger pie.</p>
         </div>
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:440px;"><canvas id="chart-rmd"></canvas></div>
       </div>
@@ -1633,17 +1633,17 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="8">
       <div class="title-block">
-        <div class="kicker">Threat 1 &mdash; Continued</div>
-        <h2 class="title">RMDs aren&rsquo;t the only money leaving your portfolio.</h2>
-        <p class="subtitle">You need <strong>${needsStr}</strong>/yr to live on. Social Security covers <strong>${ssStr}</strong>. Everything else has to come out of your savings &mdash; and inflation pushes that draw up every single year.</p>
+        <div class="kicker">Devil&rsquo;s Advocate</div>
+        <h2 class="title">&ldquo;Wouldn&rsquo;t we take that money out anyway?&rdquo;</h2>
+        <p class="subtitle">Fair question. You need <strong>${needsStr}</strong>/yr to live on, and Social Security covers <strong>${ssStr}</strong> &mdash; so yes, you&rsquo;d be drawing from savings either way. Watch what happens at 73.</p>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1.15fr;gap:48px;max-width:1300px;margin:32px auto 0;align-items:center;">
         <div style="text-align:left;">
           <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:14px;">What you actually pull out</div>
-          <p style="font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;margin:0 0 18px 0;font-weight:500;">Before age 73 there&rsquo;s no RMD &mdash; but you still need to live, so every dollar of the gap between your income needs and Social Security comes out of savings. Then at 73 the IRS makes you take even more, whether you need it or not.</p>
+          <p style="font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;margin:0 0 18px 0;font-weight:500;">The problem was never that money comes out &mdash; you were always going to spend in retirement. The problem is that at 73, the IRS starts deciding <em style="color:var(--gold-600);font-style:italic;">how much</em> comes out. And their formula has never seen your budget.</p>
           <div style="display:flex;flex-direction:column;gap:14px;">
-            <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--ink-700);border-radius:8px;padding:14px 18px;"><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-700);font-weight:700;margin-bottom:4px;">Savings draw &mdash; pre-RMD</div><div style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);">Fills the gap between Social Security and what you actually need to spend, every year.</div></div>
-            <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--gold-600);border-radius:8px;padding:14px 18px;"><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);font-weight:700;margin-bottom:4px;">RMD &mdash; ages 73 to 95</div><div style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);">Forced minimum. Grows every year. Often more than you actually need &mdash; and every dollar is taxed.</div></div>
+            <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--ink-700);border-radius:8px;padding:14px 18px;"><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-700);font-weight:700;margin-bottom:4px;">What you&rsquo;d take anyway</div><div style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);">The gap between Social Security and your real spending. Out either way, RMD or no RMD.</div></div>
+            <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--gold-600);border-radius:8px;padding:14px 18px;"><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);font-weight:700;margin-bottom:4px;">What the IRS forces on top</div><div style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);">Withdrawals beyond what you need &mdash; taken on their schedule, taxed at your worst rates, whether you want them or not.</div></div>
           </div>
         </div>
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:460px;"><canvas id="chart-rmd-vs-savings"></canvas></div>
