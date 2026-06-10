@@ -1972,7 +1972,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="title-block">
         <div class="kicker">The Legislative Risk</div>
         <h2 class="title"><span style="text-decoration:line-through;color:var(--ink-300);">What if</span> <em style="color:var(--gold-600);">When</em> Congress raises tax rates&hellip; how will that impact us?</h2>
-        <p class="subtitle">Today&rsquo;s top U.S. tax rate &mdash; 37% &mdash; is near the lowest in our history, and among the lowest in the developed world. Japan taxes its highest earners at 56%, France at 55%, Canada at 54%, Germany at 47%, and the U.K. at 45%. There&rsquo;s far more room for rates to climb than to fall. Select a scenario to see your lifetime burden as each bracket shifts up.</p>
+        <p class="subtitle">Today&rsquo;s top U.S. tax rate &mdash; 37% &mdash; is near the lowest in our history, and among the lowest in the developed world. Japan taxes its highest earners at 56%, France at 55%, Canada at 54%, Germany at 47%, and the U.K. at 45%. There&rsquo;s far more room for rates to climb than to fall. <strong id="rate-dynamic-line" style="color:var(--ink-900);">Even a moderate 20% increase in tax rates would add significantly to your lifetime tax bill.</strong></p>
       </div>
       <div style="display:flex;justify-content:center;margin:10px 0 6px;">
         <div style="display:inline-flex;background:#FAFAF9;border:1px solid var(--border);border-radius:999px;padding:3px;font-family:var(--font-sans);font-size:12px;font-weight:600;letter-spacing:0.06em;gap:2px;">
@@ -3931,7 +3931,19 @@ function renderCharts(inputs, sim, savings) {
       if (extraEl)  extraEl.textContent  = shift === 0 ? '$0' : fmtMoney(extraLife, true);
       if (extraSub) extraSub.textContent = shift === 0
         ? 'select a scenario above'
-        : '+' + Math.round(shift * 100) + ' pt rate increase scenario';
+        : '+' + Math.round(shift * 100) + '% rate increase scenario';
+      const dynEl = document.getElementById('rate-dynamic-line');
+      if (dynEl) {
+        const pct = Math.round(shift * 100);
+        if (shift === 0) {
+          dynEl.textContent = 'At today’s historically low rates, your lifetime federal tax bill is ' + fmtMoney(totalLife, true) + '.';
+        } else {
+          const lead = shift <= 0.1 ? 'Even a modest ' + pct + '% increase'
+                     : shift <= 0.2 ? 'Even a moderate ' + pct + '% increase'
+                     : 'A ' + pct + '% increase';
+          dynEl.textContent = lead + ' in tax rates would cost you an extra ' + fmtMoney(extraLife, true) + ' in lifetime taxes.';
+        }
+      }
       if (chartInstances.rateInc && chartInstances.rateInc.canvas === rateIncEl) {
         // Same canvas (tab switch) — just update data, no destroy
         chartInstances.rateInc.data.datasets[0].data = baseData;
