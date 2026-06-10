@@ -1669,11 +1669,12 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="8-divider">
       <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
         <div class="hook-hero" style="padding:0;">
-          <div class="kicker" style="text-align:center">What It All Means</div>
+          <div class="kicker" style="text-align:center">The Only Question That Matters</div>
           <h1 class="hero-title">
-            So what does all this
-            <span class="accent">mean for our taxes?</span>
+            Will all of this cost us
+            <span class="accent">more in taxes?</span>
           </h1>
+          <p class="hero-sub">Because if RMDs don&rsquo;t actually raise the bill, Roth conversions aren&rsquo;t worth the trouble. Let&rsquo;s check.</p>
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
@@ -2008,30 +2009,43 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   `;
 
   // Reveal — defined here, pushed to open the pitch (after Act 3)
+  // Recap stats: the three numbers that answer "why convert?"
+  // Bracket climb is measured against TODAY's brackets on the nominal income —
+  // the same basis as the lifetime-tax figures shown on the threat slides.
+  const rmdBeyondNeed = sim.yearly.reduce((a, y) => a + (y.rmdForced || 0), 0);
+  const _recapBr = inputs.filingStatus === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
+  const _bracketToday = (taxableInc) => {
+    const t = Math.max(0, taxableInc - STD_DED[inputs.filingStatus]);
+    let r = 0.10;
+    for (const [maxT, rate] of _recapBr) { r = rate; if (t <= maxT) break; }
+    return Math.round(r * 100);
+  };
+  const todayBracketPct = _bracketToday(sim.yearly[0] ? sim.yearly[0].taxableInc : 0);
+  const peakBracketPct = Math.max(...sim.yearly.map(y => _bracketToday(y.taxableInc)));
   const revealSlide = `
     <section class="slide" data-slide="14">
       <div class="hook-hero">
-        <div class="kicker" style="text-align:center">The Strategy</div>
+        <div class="kicker" style="text-align:center">Let&rsquo;s Recap</div>
         <h1 class="hero-title">
-          Turning Tax-Deferred
-          <span class="accent">Into Tax-Free</span>
+          So why do Roth conversions?
+          <span class="accent">Three numbers${name}.</span>
         </h1>
-        <p class="hero-sub">There&rsquo;s a way to defuse all three threats at once${name}. We&rsquo;ll show you how on your ${balStr} IRA.</p>
+        <p class="hero-sub">Everything we just walked through, on your ${balStr} IRA &mdash; the money you&rsquo;ll be forced to take, the brackets it pushes you into, and what it costs your kids.</p>
         <div class="hook-stats">
           <div class="hook-stat">
-            <div class="stat-label">Lifetime Forced RMDs</div>
-            <div class="stat-val">${lifeRMD}</div>
-            <div class="stat-meta">Age ${rmdAge} &rarr; 95 at ${(inputs.growthRate*100).toFixed(1)}% growth</div>
+            <div class="stat-label">Forced Out Beyond Your Need</div>
+            <div class="stat-val">${fmtMoney(rmdBeyondNeed)}</div>
+            <div class="stat-meta">RMDs above your living expenses, age ${rmdAge} &rarr; 95</div>
           </div>
           <div class="hook-stat">
-            <div class="stat-label">Lifetime Tax Bill</div>
-            <div class="stat-val">${lifeTax}</div>
-            <div class="stat-meta">On RMDs alone, doing nothing</div>
+            <div class="stat-label">Your Bracket Climbs</div>
+            <div class="stat-val">${todayBracketPct}% &rarr; ${peakBracketPct}%</div>
+            <div class="stat-meta">Today vs your peak RMD year, at today&rsquo;s brackets</div>
           </div>
           <div class="hook-stat">
-            <div class="stat-label">Peak-Year RMD</div>
-            <div class="stat-val">${peak}</div>
-            <div class="stat-meta">Single-year forced withdrawal</div>
+            <div class="stat-label">Your Kids&rsquo; Tax Bill</div>
+            <div class="stat-val">${fmtMoney(heir.lost)}</div>
+            <div class="stat-meta">Lost to the 10-year forced drain at their peak earning rates</div>
           </div>
         </div>
       </div>
@@ -2039,6 +2053,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="slide-number">14</div>
     </section>
   `;
+
+  // ── Recap: the three numbers that answer "why convert?" — closes the threat act ──
+  slides.push(revealSlide);
 
   // SECTION DIVIDER (title page) — the turn from problem to solution. Pivots out of the
   // threats/"It's About Them" capstone into the opportunity section that follows.
@@ -2321,9 +2338,6 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="slide-number">20</div>
     </section>
   `);
-
-  // ── The practice opens with the Reveal ──────────────────────────────
-  slides.push(revealSlide);
 
   // SLIDE 15 — Four Pillars
   slides.push(`
