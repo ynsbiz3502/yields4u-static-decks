@@ -2579,18 +2579,37 @@ function buildSlides(inputs, sim, savings, heir, widow) {
 
   // ── Section divider: from the levers to the practice ───────────────
   slides.push(`
-    <section class="slide" data-slide="practical-divider">
-      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
-        <div class="hook-hero" style="padding:0;">
-          <div class="kicker" style="text-align:center">From Theory To Practice</div>
-          <h1 class="hero-title">
-            How does this work,
-            <span class="accent">practically?</span>
-          </h1>
+    <section class="slide" data-slide="the-turn">
+      <div class="title-block">
+        <div class="kicker">The Turn</div>
+        <h2 class="title">You can&rsquo;t control tax rates. <em>You control when you pay them.</em></h2>
+        <p class="subtitle">That <strong id="turn-prize" style="color:var(--ink-900);">&mdash;</strong> from the last slide isn&rsquo;t a loss you have to accept. It&rsquo;s the prize &mdash; and it&rsquo;s still on the table.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1100px;margin:30px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:12px;padding:26px 32px;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:16px;">Out Of Your Hands</div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:16px;color:var(--ink-700);line-height:1.5;display:flex;flex-direction:column;gap:12px;">
+            <li style="display:flex;align-items:center;gap:12px;"><span style="color:#A83B2E;font-weight:800;">&times;</span>Tax rates</li>
+            <li style="display:flex;align-items:center;gap:12px;"><span style="color:#A83B2E;font-weight:800;">&times;</span>Congress</li>
+            <li style="display:flex;align-items:center;gap:12px;"><span style="color:#A83B2E;font-weight:800;">&times;</span>The national debt</li>
+            <li style="display:flex;align-items:center;gap:12px;"><span style="color:#A83B2E;font-weight:800;">&times;</span>The quiet benefit cuts</li>
+          </ul>
+        </div>
+        <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:26px 32px;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:16px;">In Your Hands</div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:16px;color:#fff;line-height:1.5;display:flex;flex-direction:column;gap:12px;">
+            <li style="display:flex;align-items:center;gap:12px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span><strong>When</strong>&nbsp;you pay</li>
+            <li style="display:flex;align-items:center;gap:12px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span><strong>How much</strong>&nbsp;at a time</li>
+            <li style="display:flex;align-items:center;gap:12px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span><strong>Which account</strong>&nbsp;it sits in</li>
+            <li style="display:flex;align-items:center;gap:12px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span><strong>Who</strong>&nbsp;inherits the bill</li>
+          </ul>
         </div>
       </div>
+      <div style="max-width:1100px;margin:28px auto 0;background:var(--ink-900);border-radius:12px;padding:20px 32px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:21px;color:white;line-height:1.5;">Already feel in control? There&rsquo;s a date on the IRS calendar for your money. It&rsquo;s called a <em>Required</em> Minimum Distribution &mdash; <em style="color:var(--gold-400);font-style:italic;">the word tells you who&rsquo;s in charge.</em></span>
+      </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">20</div>
+      <div class="slide-number">29</div>
     </section>
   `);
 
@@ -2598,28 +2617,28 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="20">
       <div class="title-block">
-        <div class="kicker">The Complete System</div>
-        <h2 class="title">The Four Pillars</h2>
-        <p class="subtitle">How we turn Roth conversions into a complete tax optimization system.</p>
+        <div class="kicker">Taking Control &mdash; The Levers</div>
+        <h2 class="title">Congress has one lever. <em>You have four.</em></h2>
+        <p class="subtitle">When, how much, where &mdash; and the engine that makes the first three real.</p>
       </div>
       <div class="grid-4">
         <div class="box-card">
-          <div class="box-kicker"><span class="num">1</span>Pillar One</div>
+          <div class="box-kicker"><span class="num">1</span>Lever One</div>
           <div class="box-title">Strategic Dip Conversions</div>
           <div class="box-body">Convert during market drawdowns. Same tax bill moves up to 25% more shares into Roth — tax-free forever.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">2</span>Pillar Two</div>
+          <div class="box-kicker"><span class="num">2</span>Lever Two</div>
           <div class="box-title">Tax-Loss Harvesting</div>
           <div class="box-body">Harvest losses during drawdowns. Offset the conversion tax. The loss funds the conversion.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">3</span>Pillar Three</div>
+          <div class="box-kicker"><span class="num">3</span>Lever Three</div>
           <div class="box-title">Asset Location</div>
           <div class="box-body">Growth assets in Roth. Income assets in Traditional. Tax-efficient assets in Taxable. Right bucket, right asset.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">4</span>Pillar Four</div>
+          <div class="box-kicker"><span class="num">4</span>Lever Four</div>
           <div class="box-title">Execution Engine</div>
           <div class="box-body">Daily monitoring, alert-driven response, coordinated CPA execution. We move fast when dips appear.</div>
         </div>
@@ -2633,9 +2652,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="plan-build">
       <div class="title-block">
-        <div class="kicker">How We Create Your Plan</div>
-        <h2 class="title">Built From Your Actual Return</h2>
-        <p class="subtitle">Before a single dollar moves, your conversion roadmap is built &mdash; from your 1040, not a template.</p>
+        <div class="kicker">Taking Control &mdash; The Map</div>
+        <h2 class="title">Your control panel is <em>your 1040.</em></h2>
+        <p class="subtitle">You can&rsquo;t control what you can&rsquo;t see. Before a single dollar moves, your conversion roadmap is built &mdash; from your actual return, not a template.</p>
       </div>
       <div class="grid-4">
         <div class="box-card">
@@ -2664,13 +2683,46 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── Wedge: one 1040, one kitchen — why every account must be under our roof ──
+  slides.push(`
+    <section class="slide" data-slide="all-assets">
+      <div class="title-block">
+        <div class="kicker">Taking Control &mdash; One Kitchen</div>
+        <h2 class="title">One tax return. <em>One chef.</em></h2>
+        <p class="subtitle">Every account you own pours into the same 1040 &mdash; no matter who manages it. A bracket filled to the dollar can&rsquo;t survive a cook we don&rsquo;t know about.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1240px;margin:34px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 28px;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:10px;">One Pot</div>
+          <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);line-height:1.3;margin-bottom:8px;">Every account, same return</div>
+          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);line-height:1.5;">Dividends, interest, and gains from every account land on the same 1040. The tax bombs don&rsquo;t care who manages them.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:12px;padding:24px 28px;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:10px;">A Second Chef</div>
+          <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);line-height:1.3;margin-bottom:8px;">One trade can blow the plan</div>
+          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);line-height:1.5;">A capital-gain distribution at another firm in November shoves the conversion we sized in March into the next bracket &mdash; and nobody made a mistake.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--info);border-radius:12px;padding:24px 28px;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--info);margin-bottom:10px;">Bracket-Fill Is Exact</div>
+          <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);line-height:1.3;margin-bottom:8px;">To the dollar, or not at all</div>
+          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);line-height:1.5;">Filling a bracket to the dollar means controlling the dollars. Estimates from accounts we can&rsquo;t see aren&rsquo;t a plan &mdash; they&rsquo;re a hope.</div>
+        </div>
+      </div>
+      <div style="max-width:1150px;margin:30px auto 0;background:var(--ink-900);border-radius:12px;padding:20px 32px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:21px;color:white;line-height:1.5;">Most advisors want all your assets <em>for the fee.</em> We need them for the bracket &mdash; <em style="color:var(--gold-400);font-style:italic;">we manage the investments to manage the tax bill.</em></span>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">32</div>
+    </section>
+  `);
+
   // SLIDE 19 — White Glove Services (compressed to fit above the fold)
   slides.push(`
     <section class="slide" data-slide="24">
       <div class="title-block" style="margin-bottom:18px;">
-        <div class="kicker">What&rsquo;s Included</div>
+        <div class="kicker">Taking Control &mdash; Year-Round</div>
         <h2 class="title" style="margin-bottom:6px;">The White Glove Service</h2>
-        <p class="subtitle" style="font-size:15px;">Eight things we run on your plan every year, so the strategy actually gets executed.</p>
+        <p class="subtitle" style="font-size:15px;">Eight things we run all year, so the control you just took doesn&rsquo;t quietly slip back.</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1300px;margin:0 auto;">
         <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:16px 18px;">
@@ -2723,7 +2775,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="wedge-permission">
       <div class="title-block">
-        <div class="kicker">Why You Haven&rsquo;t Heard This Before</div>
+        <div class="kicker">Why Nobody Handed You The Controls</div>
         <h2 class="title">Your advisor isn&rsquo;t <em>allowed</em> to tell you this.</h2>
         <p class="subtitle">Most firms &mdash; including the biggest names in the country &mdash; prohibit their advisors from giving tax advice. Not because they aren&rsquo;t smart. Because compliance says no.</p>
       </div>
@@ -2753,7 +2805,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="wedge-platform">
       <div class="title-block">
-        <div class="kicker">The Tools Nobody Else Has</div>
+        <div class="kicker">Why Almost Nobody Can Run It</div>
         <h2 class="title">This strategy needs software that didn&rsquo;t exist. <em>So I built it.</em></h2>
         <p class="subtitle">Daily dip-watching across 500 stocks. Bracket math projected thirty years forward. Conversions timed against your actual 1040. You can&rsquo;t run that on a spreadsheet and a quarterly meeting.</p>
       </div>
@@ -2775,7 +2827,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div style="max-width:1150px;margin:30px auto 0;background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:12px;padding:18px 28px;text-align:center;">
-        <span style="font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.45;">Everyone can describe this strategy. <em style="color:var(--gold-600);font-style:italic;">Almost nobody is built to run it.</em></span>
+        <span style="font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.45;">Everyone can describe this strategy. <em style="color:var(--gold-600);font-style:italic;">Almost nobody is instrumented to run it.</em></span>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">33</div>
@@ -2790,10 +2842,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="nothing-divider">
       <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
         <div class="hook-hero" style="padding:0;">
-          <div class="kicker" style="text-align:center">The Cost Of Doing Nothing</div>
+          <div class="kicker" style="text-align:center">The Default Setting</div>
           <h1 class="hero-title">
-            What happens if we do
-            <span class="accent">nothing?</span>
+            Do nothing &mdash; and Congress
+            <span class="accent">decides for you.</span>
           </h1>
         </div>
       </div>
@@ -2806,8 +2858,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="21">
       <div class="title-block">
-        <div class="kicker">The Math</div>
-        <h2 class="title">The Proof: <em>Where The Savings Land</em></h2>
+        <div class="kicker">The Prize, Claimed</div>
+        <h2 class="title">What taking control is <em>worth</em></h2>
         <p class="subtitle">On your ${balStr} IRA, here&rsquo;s the same money, three different outcomes &mdash; depending on whether we plan or we wait.</p>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:24px;max-width:1300px;margin:30px auto 0;align-items:stretch;">
@@ -2849,8 +2901,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="23">
       <div class="title-block">
         <div class="kicker">The Choice</div>
-        <h2 class="title">Do Nothing vs. With Our Strategy</h2>
-        <p class="subtitle">The impact of proactive Roth conversion timing over a 30-year retirement on your ${balStr} IRA.</p>
+        <h2 class="title">Their timing <em>vs. yours</em></h2>
+        <p class="subtitle">The left column is what happens on their schedule. The right column is what happens on yours &mdash; over a 30-year retirement on your ${balStr} IRA.</p>
       </div>
       <div class="compare-grid">
         <div class="compare-cell head"></div>
@@ -2887,46 +2939,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // ── All-assets wedge: the strategy needs the whole 1040 under one roof ──
-  slides.push(`
-    <section class="slide" data-slide="all-assets">
-      <div class="title-block">
-        <div class="kicker">All-In, Literally</div>
-        <h2 class="title">We can&rsquo;t optimize <em>half</em> a tax return.</h2>
-        <p class="subtitle">Every account you own feeds the same 1040 &mdash; no matter who manages it. To control the bracket, we have to see and manage the whole picture.</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1240px;margin:34px auto 0;">
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 28px;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:10px;">One 1040</div>
-          <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);line-height:1.3;margin-bottom:8px;">Every account, same return</div>
-          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);line-height:1.5;">Dividends, interest, and gains from every account land on the same return. The tax bombs don&rsquo;t care who manages them.</div>
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:12px;padding:24px 28px;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:10px;">A Stranger&rsquo;s Trade</div>
-          <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);line-height:1.3;margin-bottom:8px;">One sale can blow the plan</div>
-          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);line-height:1.5;">A capital-gain distribution at another firm in November can shove the conversion we sized in March into the next bracket.</div>
-        </div>
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--info);border-radius:12px;padding:24px 28px;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--info);margin-bottom:10px;">Bracket-Fill Is Exact</div>
-          <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);line-height:1.3;margin-bottom:8px;">To the dollar, or not at all</div>
-          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);line-height:1.5;">Filling a bracket to the dollar means controlling the dollars. Estimates from accounts we can&rsquo;t see aren&rsquo;t a plan.</div>
-        </div>
-      </div>
-      <div style="max-width:1150px;margin:30px auto 0;background:var(--ink-900);border-radius:12px;padding:20px 32px;text-align:center;">
-        <span style="font-family:var(--font-serif);font-size:21px;color:white;line-height:1.5;">That&rsquo;s why White Glove is all your assets under one roof, one fee &mdash; <em style="color:var(--gold-400);font-style:italic;">we manage the investments to manage the tax bill.</em></span>
-      </div>
-      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">40</div>
-    </section>
-  `);
-
   // Pitch — fee frame: 1.5% all-in vs what a well-run strategy saves
   slides.push(`
     <section class="slide" data-slide="fee">
       <div class="title-block">
         <div class="kicker">What It Costs</div>
         <h2 class="title">One fee. <em>1.5%, all-in.</em></h2>
-        <p class="subtitle">No conversion fees. No per-trade charges. No surprise add-ons. One transparent 1.5% covers everything &mdash; investment management, conversion timing, tax-return coordination, and quarterly reviews.</p>
+        <p class="subtitle">No conversion fees. No per-trade charges. No surprise add-ons. One transparent 1.5% covers everything &mdash; investment management, conversion timing, tax-return coordination, and quarterly reviews. One fee, because it&rsquo;s one kitchen.</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1060px;margin:18px auto 0;">
         <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:10px;padding:14px 20px;">
@@ -3023,7 +3042,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div class="cta-contact">
         <div class="cta-contact-text">
-          <h3>Let&rsquo;s get your plan started.</h3>
+          <h3>Who picks the dates &mdash; you, or Congress?</h3>
           <p>Your first conversion can happen within 30 days &mdash; tax timing engaged from day one.</p>
         </div>
         <div class="cta-contact-actions">
@@ -3932,6 +3951,14 @@ function renderCharts(inputs, sim, savings) {
       if (extraSub) extraSub.textContent = shift === 0
         ? 'select a scenario above'
         : '+' + Math.round(shift * 100) + '% rate increase scenario';
+      // The Turn slide quotes "that number from the last slide" — keep it in
+      // sync with the selected scenario. Current Rates would read $0, which
+      // breaks the prize framing, so fall back to the +20% figure there.
+      const prizeEl = document.getElementById('turn-prize');
+      if (prizeEl) {
+        const prizeFallback = (riExtra[0.2] || []).reduce((s, t) => s + Math.round(t), 0);
+        prizeEl.textContent = fmtMoney(shift === 0 ? prizeFallback : extraLife, true);
+      }
       const dynEl = document.getElementById('rate-dynamic-line');
       if (dynEl) {
         const pct = Math.round(shift * 100);
