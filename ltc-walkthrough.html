@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Care, Your Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+--gold-50:#FBF3E1;--gold-100:#F6E4B8;--gold-300:#EABC5C;--gold-400:#E8A33D;--gold-500:#D48E27;--gold-600:#B1711B;--gold-700:#8A5612;
+--ink-900:#0E0E0F;--ink-800:#1A1A1C;--ink-700:#2A2A2D;--ink-600:#4A4A4E;--ink-500:#6B6B70;--ink-400:#8F8F94;--ink-300:#B8B8BC;--ink-200:#DCDCDE;--ink-100:#EDEDEE;
+--paper-0:#FFFFFF;--paper-50:#FBF9F4;--paper-100:#F5F1E8;--paper-200:#EDE6D5;
+--success:#2E7D5B;--warning:#C98A1E;--danger:#A83B2E;--info:#2F5673;
+--font-sans:'Montserrat',Arial,sans-serif;--font-serif:'Playfair Display',Georgia,serif;--font-body:'Source Sans 3',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--ink-700);font-family:var(--font-body);color:var(--ink-900);line-height:1.62;-webkit-font-smoothing:antialiased;}
+.doc{width:1000px;margin:24px auto;background:var(--paper-50);box-shadow:0 18px 50px rgba(0,0,0,.35);padding:0 0 64px;}
+.inner{padding:0 72px;}
+.eyebrow{font-family:var(--font-sans);font-weight:700;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-600);}
+h1{font-family:var(--font-serif);font-weight:700;font-size:46px;line-height:1.06;letter-spacing:-.02em;}
+h2{font-family:var(--font-serif);font-weight:600;font-size:30px;line-height:1.16;letter-spacing:-.01em;}
+h3{font-family:var(--font-sans);font-weight:700;font-size:15px;letter-spacing:.02em;}
+.lead{font-size:20px;line-height:1.6;color:var(--ink-700);}
+p{margin:0 0 14px;font-size:16.5px;}
+.muted{color:var(--ink-600);}
+.gold-rule{display:block;width:64px;height:3px;background:var(--gold-400);border:none;margin:16px 0 0;}
+.controlbar{position:sticky;top:0;z-index:30;background:var(--paper-50);border-bottom:1px solid var(--ink-200);}
+.controlbar .inner{display:flex;justify-content:space-between;align-items:center;padding-top:18px;padding-bottom:18px;}
+.brand{font-family:var(--font-serif);font-weight:700;font-size:20px;letter-spacing:.04em;color:var(--ink-900);}
+.brand span{color:var(--gold-500);}
+.toggle{display:inline-flex;background:var(--paper-200);border-radius:999px;padding:4px;gap:2px;}
+.toggle button{font-family:var(--font-sans);font-weight:600;font-size:13px;letter-spacing:.03em;border:none;background:transparent;color:var(--ink-600);padding:8px 20px;border-radius:999px;cursor:pointer;transition:all .18s cubic-bezier(.22,.61,.36,1);}
+.toggle button.active{background:var(--ink-900);color:var(--gold-400);}
+.modehint{font-family:var(--font-sans);font-size:11px;letter-spacing:.04em;color:var(--ink-400);margin-top:4px;text-align:right;}
+.hero{padding-top:48px;}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:30px 0 0;}
+.metric{background:var(--paper-0);border:1px solid var(--ink-200);border-top:3px solid var(--gold-400);border-radius:8px;padding:20px 22px;box-shadow:0 1px 2px rgba(14,14,15,.05);}
+.metric .label{font-family:var(--font-sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-500);font-weight:600;}
+.metric .value{font-family:var(--font-serif);font-size:36px;font-weight:700;color:var(--ink-900);margin-top:6px;line-height:1;}
+.metric .value.good{color:var(--success);}
+.metric .sub{font-size:13.5px;color:var(--ink-600);margin-top:9px;line-height:1.45;}
+.verdict{background:var(--ink-900);color:var(--paper-0);border-radius:12px;padding:34px 40px;margin:30px 0 0;}
+.verdict .eyebrow{color:var(--gold-400);}
+.verdict h2{color:var(--paper-0);margin-top:12px;font-size:33px;}
+.verdict p{color:var(--ink-200);font-size:17px;margin:14px 0 0;}
+.verdict .pull{font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:23px;color:var(--gold-300);margin-top:18px;line-height:1.4;}
+.section{margin-top:52px;}
+.sec-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.sec-eyebrow .step{font-family:var(--font-serif);font-weight:700;font-size:15px;color:var(--paper-0);background:var(--gold-500);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;}
+.chartwrap{background:var(--paper-0);border:1px solid var(--ink-200);border-radius:10px;padding:24px 26px 18px;box-shadow:0 1px 2px rgba(14,14,15,.05);margin-top:18px;}
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-family:var(--font-sans);font-size:12.5px;color:var(--ink-600);font-weight:500;}
+.legend span{display:flex;align-items:center;gap:7px;}
+.legend i{width:16px;height:3px;display:inline-block;border-radius:2px;}
+.chartbox{position:relative;width:100%;height:300px;}
+.takeaways{margin-top:8px;}
+.takeaway{display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--paper-200);}
+.takeaway:last-child{border-bottom:none;}
+.takeaway .mark{flex:none;width:26px;height:26px;border-radius:50%;background:var(--gold-50);border:2px solid var(--gold-400);color:var(--gold-700);display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:2px;}
+.takeaway .t{font-size:17px;line-height:1.5;}
+.takeaway .t b{font-family:var(--font-sans);font-weight:700;}
+details{margin-top:16px;border:1px solid var(--ink-200);border-radius:8px;background:var(--paper-0);overflow:hidden;}
+summary{list-style:none;cursor:pointer;font-family:var(--font-sans);font-weight:600;font-size:13.5px;letter-spacing:.03em;color:var(--ink-700);padding:14px 20px;display:flex;align-items:center;gap:10px;background:var(--paper-100);transition:background .15s;}
+summary::-webkit-details-marker{display:none;}
+summary:hover{background:var(--paper-200);}
+summary .chev{transition:transform .2s;color:var(--gold-600);font-size:13px;}
+details[open] summary .chev{transform:rotate(90deg);}
+.details-body{padding:22px 24px;}
+.assume{display:grid;grid-template-columns:1fr 1fr;gap:8px 30px;}
+.assume .row{display:flex;justify-content:space-between;gap:16px;font-size:14.5px;padding:6px 0;border-bottom:1px solid var(--paper-200);}
+.assume .k{color:var(--ink-600);}
+.assume .v{font-family:var(--font-sans);font-weight:600;color:var(--ink-900);text-align:right;}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px;}
+caption{text-align:left;font-family:var(--font-sans);font-weight:700;font-size:13.5px;color:var(--ink-900);padding:14px 0 8px;caption-side:top;}
+caption:first-child{padding-top:0;}
+th,td{padding:7px 11px;text-align:right;font-variant-numeric:tabular-nums;}
+th{background:var(--ink-900);color:var(--paper-0);font-family:var(--font-sans);font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;}
+th:first-child,td:first-child{text-align:left;}
+tbody tr:nth-child(even){background:var(--paper-100);}
+tbody td{border-top:1px solid var(--ink-100);}
+tfoot td{background:var(--paper-200);font-family:var(--font-sans);font-weight:700;border-top:2px solid var(--ink-300);}
+.oop{color:var(--danger);font-weight:600;}.rem{color:var(--success);font-weight:600;}.ltc{color:var(--gold-600);}
+.asset-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--paper-200);font-size:15px;}
+.asset-row .tag{font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:.04em;padding:2px 9px;border-radius:999px;margin-left:10px;}
+.tag-rmd{background:var(--gold-100);color:var(--gold-700);}
+.tag-none{background:var(--ink-100);color:var(--ink-500);}
+.asset-row .v{font-family:var(--font-sans);font-weight:600;}
+.waterfall{margin-top:6px;}
+.step-row{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--paper-200);}
+.step-row:last-child{border-bottom:none;}
+.step-row .badge{flex:none;width:32px;height:32px;border-radius:50%;background:var(--ink-900);color:var(--gold-400);font-family:var(--font-serif);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.step-row .txt{font-size:15.5px;line-height:1.5;}
+.step-row .txt b{font-family:var(--font-sans);font-weight:700;font-size:15px;}
+.close{border-radius:12px;padding:32px 40px;margin-top:26px;}
+.close.client{background:var(--gold-50);border:1px solid var(--gold-300);border-left:5px solid var(--gold-500);}
+.close.prospect{background:var(--ink-900);}
+.close.prospect .eyebrow{color:var(--gold-400);}
+.close.prospect h2,.close.prospect p{color:var(--paper-0);}
+.close.prospect p{color:var(--ink-200);}
+.close h2{margin-top:8px;}
+.close p{margin-top:12px;font-size:16.5px;}
+.cta{display:inline-block;margin-top:18px;font-family:var(--font-sans);font-weight:700;font-size:14px;letter-spacing:.03em;padding:13px 28px;border-radius:6px;background:var(--gold-400);color:var(--ink-900);border:none;}
+.close.prospect .cta{box-shadow:0 8px 24px rgba(232,163,61,.28);}
+.disc{font-size:11px;color:var(--ink-400);line-height:1.6;margin-top:30px;font-style:italic;}
+.footer{margin-top:18px;padding-top:18px;border-top:1px solid var(--ink-200);display:flex;justify-content:space-between;font-family:var(--font-sans);font-size:11px;color:var(--ink-400);letter-spacing:.03em;}
+body.mode-client .prospect-only{display:none;}
+body.mode-prospect .client-only{display:none;}
+@media print{body{background:#fff;}.doc{margin:0;box-shadow:none;width:auto;}.controlbar{position:static;}.toggle,.modehint{display:none;}details{break-inside:avoid;}}
+</style>
+</head>
+<body class="mode-client">
+
+<div class="doc">
+
+  <div class="controlbar">
+    <div class="inner">
+      <div class="brand">YIELDS<span>4</span>U</div>
+      <div>
+        <div class="toggle" role="tablist" aria-label="View mode">
+          <button id="btn-client" class="active" onclick="setMode('client')">Client view</button>
+          <button id="btn-prospect" onclick="setMode('prospect')">Prospect view</button>
+        </div>
+        <div class="modehint" id="modehint">Walk-through mode &middot; for discussion</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inner">
+
+    <!-- ===================== TEACH ===================== -->
+    <div class="hero">
+      <div class="sec-eyebrow"><span class="eyebrow">The reframe</span></div>
+      <h1 id="hero-title">Your Care, Your Plan</h1>
+      <p class="muted" style="margin-top:6px;font-size:14px;letter-spacing:.04em;text-transform:uppercase;" id="hero-subtitle">Prepared for <span id="full-name">our client</span></p>
+      <span class="gold-rule"></span>
+
+      <p class="lead client-only" style="margin-top:22px;max-width:760px;">
+        You came to us worried about one thing: running out of money if you ever need years of care.
+        So we ran your real accounts against the most expensive care, for longer than most people ever need it.
+        You don't run out &mdash; in any version we tested. The thing that actually deserves your attention is somewhere you weren't looking.
+      </p>
+      <p class="lead prospect-only" style="margin-top:22px;max-width:760px;">
+        Most people in your position are asking the wrong question. They ask "will I run out of money?" &mdash; so that's
+        what we tested first, against the most expensive care, run longer than most people ever need it. You don't run out.
+        Which means the real exposure &mdash; the one nobody has put in front of you &mdash; is sitting somewhere else entirely.
+      </p>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="label">What you have today</div>
+          <div class="value" id="m-household">$1.33M</div>
+          <div class="sub">Investments, annuities, life insurance value, and home equity.</div>
+        </div>
+        <div class="metric">
+          <div class="label">Left after the longest, costliest care</div>
+          <div class="value good" id="m-ending">$394K</div>
+          <div class="sub">After eight straight years of skilled nursing &mdash; far longer than most ever need.</div>
+        </div>
+        <div class="metric">
+          <div class="label">Care coverage already paid for</div>
+          <div class="value" id="m-coverage">$569K</div>
+          <div class="sub">A dedicated long-term-care policy plus life insurance that can pay for care.</div>
+        </div>
+      </div>
+
+      <div class="verdict">
+        <span class="eyebrow">The verdict</span>
+        <h2>You're not at risk of running out of money.<br>You're at risk of leaving the plan unwritten.</h2>
+        <p class="client-only">
+          You've funded your care from three directions &mdash; your own assets, a long-term-care policy, and life insurance
+          that can be turned toward care. What you don't have yet is the one-page plan that says which dollars get used, in what
+          order, and who makes the call. Without it, the people you love would have to improvise the hardest financial decisions
+          of their lives during the worst week of yours.
+        </p>
+        <p class="prospect-only">
+          You've funded your care from three directions &mdash; assets, a long-term-care policy, and life insurance with care riders.
+          But three things in your plan are completely unmanaged right now: there's no funding sequence, no one has verified who inherits
+          what, and your care benefit quietly loses ground to inflation every year it isn't reviewed. Any one of them can cost your family
+          six figures. None of them is on anyone's desk today.
+        </p>
+        <p class="pull client-only">"You've done everything right. Now let's decide which dollars do the work."</p>
+        <p class="pull prospect-only">"Most people find these gaps too late to fix them cheaply. You're finding out now."</p>
+      </div>
+    </div>
+
+    <!-- ===================== TAILOR ===================== -->
+    <div class="section">
+      <div class="sec-eyebrow"><span class="step">1</span><span class="eyebrow">Your numbers, not a brochure's</span></div>
+      <h2>Here's your money against the care &mdash; for years.</h2>
+      <p class="muted" style="margin-top:12px;max-width:780px;">
+        Each line is a different care situation, run on your actual accounts at today's dollars. Notice what they all have
+        in common: they stay up. Only eight unbroken years of the most intensive nursing care bends the curve down &mdash;
+        and even then you finish with several hundred thousand dollars.
+      </p>
+
+      <div class="chartwrap">
+        <div class="legend">
+          <span><i style="background:#1D9E75;"></i><span id="series1-label">Assisted living, 5 years</span></span>
+          <span><i style="background:#378ADD;"></i><span id="series2-label">Memory care, 10 years</span></span>
+          <span><i style="background:#B1711B;"></i><span id="series3-label">Memory care, 8 years</span></span>
+          <span><i style="background:#A83B2E;border-radius:0;height:0;border-top:3px dashed #A83B2E;"></i><span id="series4-label">Skilled nursing, 8 years</span></span>
+        </div>
+        <div class="chartbox">
+          <canvas id="ltc" role="img" aria-label="Line chart of resources remaining by age across four long-term-care scenarios.">Resources remaining by age across four care scenarios.</canvas>
+        </div>
+      </div>
+
+      <details>
+        <summary><span class="chev">&#9654;</span> See what we assumed</summary>
+        <div class="details-body">
+          <div class="assume">
+            <div class="row"><span class="k">Resources available today</span><span class="v" id="a-resources">$1,334,809</span></div>
+            <div class="row"><span class="k">Care-cost inflation</span><span class="v" id="a-care-inflation">4.5% / yr</span></div>
+            <div class="row"><span class="k">Growth on remaining balance</span><span class="v" id="a-growth-rate">4.0% / yr</span></div>
+            <div class="row"><span class="k">Guaranteed income (net)</span><span class="v" id="a-income">$3,460 / mo &middot; +2.5%/yr</span></div>
+            <div class="row"><span class="k">Assisted living (2026)</span><span class="v" id="a-assisted-cost">$5,000 / mo</span></div>
+            <div class="row"><span class="k">Memory care (2026)</span><span class="v" id="a-memory-cost">$6,700 / mo</span></div>
+            <div class="row"><span class="k">Skilled nursing (2026)</span><span class="v" id="a-skilled-cost">$9,500 / mo</span></div>
+            <div class="row"><span class="k">Long-term-care policy</span><span class="v" id="a-ltc-policy">$6,000/mo &middot; 36 mo &middot; 90-day wait</span></div>
+            <div class="row"><span class="k">LTC inflation rider</span><span class="v" id="a-ltc-rider">None &mdash; benefit is level</span></div>
+            <div class="row"><span class="k">Home equity</span><span class="v" id="a-home-equity">$300K &mdash; sold on permanent move</span></div>
+          </div>
+          <p class="muted" style="font-size:12.5px;margin:14px 0 0;font-style:italic;" id="region-hint">Care costs reflect regional averages for your area. We'll swap in the real figure from the community you choose.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="chev">&#9654;</span> See your full balance sheet &mdash; and what's actually subject to RMDs</summary>
+        <div class="details-body">
+          <div class="asset-row" id="asset-row-1"><span><span class="asset-label">Cash &amp; inheritance (savings @ 4%)</span><span class="tag tag-none">No RMD</span></span><span class="v">$262,093</span></div>
+          <div class="asset-row" id="asset-row-2"><span><span class="asset-label">Brokerage &mdash; managed account</span><span class="tag tag-none">No RMD</span></span><span class="v">$179,440</span></div>
+          <div class="asset-row" id="asset-row-3"><span><span class="asset-label">Traditional IRA &mdash; variable annuity</span><span class="tag tag-rmd">RMD applies</span></span><span class="v">$200,605</span></div>
+          <div class="asset-row" id="asset-row-4"><span><span class="asset-label">Roth IRA (three funds)</span><span class="tag tag-none">No RMD</span></span><span class="v">$192,909</span></div>
+          <div class="asset-row" id="asset-row-5"><span><span class="asset-label">Non-qualified deferred annuity</span><span class="tag tag-none">No RMD</span></span><span class="v">$54,947</span></div>
+          <div class="asset-row" id="asset-row-6"><span><span class="asset-label">Life insurance &mdash; accumulated value</span><span class="tag tag-none">No RMD</span></span><span class="v">$158,088</span></div>
+          <div class="asset-row" id="asset-row-7"><span><span class="asset-label">Primary residence (estimated)</span><span class="tag tag-none">No RMD</span></span><span class="v">$300,000</span></div>
+          <div class="asset-row" id="asset-row-total" style="border-bottom:none;font-family:var(--font-sans);font-weight:700;padding-top:12px;"><span>Total</span><span class="v">$1,348,082</span></div>
+          <p class="muted" style="font-size:13.5px;margin:14px 0 0;" id="rmd-note">Only the <b style="font-family:var(--font-sans);"><span id="rmd-account">$200,605 Traditional IRA</span></b> is subject to required minimum distributions &mdash; starting in <span id="rmd-year">2028</span> at roughly <span id="rmd-amount">$8,500/yr</span>, not the larger figure you may have heard. Your Roth and your annuity money are not.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="section">
+      <div class="sec-eyebrow"><span class="step">2</span><span class="eyebrow">What the years actually look like</span></div>
+      <h2>Three things the numbers make plain.</h2>
+      <div class="takeaways">
+        <div class="takeaway"><span class="mark">&#10003;</span><div class="t"><b>Your income and your insurance carry the early years.</b> For the first three years of care, your pension, Social Security, and your long-term-care policy cover most of the bill before your savings are touched.</div></div>
+        <div class="takeaway"><span class="mark">&#10003;</span><div class="t"><b>The pressure starts in year four &mdash; when the policy runs out.</b> Your long-term-care policy pays for 36 months, then stops. That's the moment the full cost lands on your own resources, and it's the moment a plan matters most.</div></div>
+        <div class="takeaway"><span class="mark">&#10003;</span><div class="t"><b>Even then, you don't run out &mdash; and your estate likely survives.</b> In every realistic path, the life insurance is never touched. The legacy you said wasn't a priority ends up protected anyway.</div></div>
+      </div>
+
+      <details>
+        <summary><span class="chev">&#9654;</span> Show the year-by-year detail (two scenarios)</summary>
+        <div class="details-body">
+          <table>
+            <caption id="memory-table-caption">Memory care &mdash; 8 years from age 85</caption>
+            <thead><tr><th>Age</th><th>Year</th><th>Care cost</th><th>Income</th><th>LTC policy</th><th>Out of pocket</th><th>Remaining</th></tr></thead>
+            <tbody id="memory-table-body">
+              <tr><td>85</td><td>2040</td><td>148,896</td><td>58,667</td><td class="ltc">54,000</td><td class="oop">36,230</td><td class="rem">1,350,920</td></tr>
+              <tr><td>86</td><td>2041</td><td>155,597</td><td>60,133</td><td class="ltc">72,000</td><td class="oop">23,463</td><td class="rem">1,380,988</td></tr>
+              <tr><td>87</td><td>2042</td><td>162,599</td><td>61,637</td><td class="ltc">72,000</td><td class="oop">28,962</td><td class="rem">1,406,642</td></tr>
+              <tr><td>88</td><td>2043</td><td>169,915</td><td>63,178</td><td class="ltc">18,000</td><td class="oop">88,738</td><td class="rem">1,372,530</td></tr>
+              <tr><td>89</td><td>2044</td><td>177,562</td><td>64,757</td><td>0</td><td class="oop">112,805</td><td class="rem">1,312,197</td></tr>
+              <tr><td>90</td><td>2045</td><td>185,552</td><td>66,376</td><td>0</td><td class="oop">119,176</td><td class="rem">1,242,942</td></tr>
+              <tr><td>91</td><td>2046</td><td>193,902</td><td>68,035</td><td>0</td><td class="oop">125,866</td><td class="rem">1,164,083</td></tr>
+              <tr><td>92</td><td>2047</td><td>202,627</td><td>69,736</td><td>0</td><td class="oop">132,891</td><td class="rem">1,074,893</td></tr>
+            </tbody>
+            <tfoot id="memory-table-foot"><tr><td colspan="2">8-year total</td><td>1,396,650</td><td>512,519</td><td class="ltc">216,000</td><td class="oop">668,131</td><td class="rem">1,074,893</td></tr></tfoot>
+          </table>
+          <table>
+            <caption id="skilled-table-caption">Skilled nursing &mdash; 8 years from age 85 (the worst case)</caption>
+            <thead><tr><th>Age</th><th>Year</th><th>Care cost</th><th>Income</th><th>LTC policy</th><th>Out of pocket</th><th>Remaining</th></tr></thead>
+            <tbody id="skilled-table-body">
+              <tr><td>85</td><td>2040</td><td>211,122</td><td>58,667</td><td class="ltc">54,000</td><td class="oop">98,455</td><td class="rem">1,287,355</td></tr>
+              <tr><td>86</td><td>2041</td><td>220,622</td><td>60,133</td><td class="ltc">72,000</td><td class="oop">88,489</td><td class="rem">1,248,454</td></tr>
+              <tr><td>87</td><td>2042</td><td>230,550</td><td>61,637</td><td class="ltc">72,000</td><td class="oop">96,914</td><td class="rem">1,199,392</td></tr>
+              <tr><td>88</td><td>2043</td><td>240,925</td><td>63,178</td><td class="ltc">18,000</td><td class="oop">159,747</td><td class="rem">1,084,451</td></tr>
+              <tr><td>89</td><td>2044</td><td>251,767</td><td>64,757</td><td>0</td><td class="oop">187,010</td><td class="rem">936,792</td></tr>
+              <tr><td>90</td><td>2045</td><td>263,096</td><td>66,376</td><td>0</td><td class="oop">196,720</td><td class="rem">773,306</td></tr>
+              <tr><td>91</td><td>2046</td><td>274,935</td><td>68,035</td><td>0</td><td class="oop">206,900</td><td class="rem">592,883</td></tr>
+              <tr><td>92</td><td>2047</td><td>287,307</td><td>69,736</td><td>0</td><td class="oop">217,571</td><td class="rem">394,341</td></tr>
+            </tbody>
+            <tfoot id="skilled-table-foot"><tr><td colspan="2">8-year total</td><td>1,980,325</td><td>512,519</td><td class="ltc">216,000</td><td class="oop">1,251,806</td><td class="rem">394,341</td></tr></tfoot>
+          </table>
+        </div>
+      </details>
+    </div>
+
+    <!-- ===================== TAKE CONTROL ===================== -->
+    <div class="section">
+      <div class="sec-eyebrow"><span class="step">3</span><span class="eyebrow">The move</span></div>
+      <h2 class="client-only">The plan that turns "you're fine" into "you're handled."</h2>
+      <h2 class="prospect-only">This is what having a plan actually looks like.</h2>
+      <p class="muted" style="margin-top:12px;max-width:790px;">
+        Knowing the money lasts is not the same as knowing which dollars to spend. Here's the order we put the pieces in &mdash;
+        so no one has to guess under pressure, and so you never pay a dollar of tax you didn't have to.
+      </p>
+
+      <div class="waterfall">
+        <div class="step-row"><span class="badge">1</span><div class="txt"><b>Cash bridges the first 90 days.</b> Your policy pays nothing for three months. We set aside cash so no one sells investments in a panic.</div></div>
+        <div class="step-row"><span class="badge">2</span><div class="txt"><b>The long-term-care policy carries months 4 through 39.</b> <span id="waterfall-policy-amount">$6,000 a month</span> you've already paid for &mdash; it does the heavy lifting early, then hands off.</div></div>
+        <div class="step-row"><span class="badge">3</span><div class="txt"><b>Savings are spent in the right tax order.</b> Brokerage and cash first, the IRA next, and the Roth last &mdash; so your tax-free money keeps growing as your reserve.</div></div>
+        <div class="step-row"><span class="badge">4</span><div class="txt"><b>The home funds the long stay.</b> When a move becomes permanent, the house becomes the engine that carries a multi-year stay.</div></div>
+        <div class="step-row"><span class="badge">5</span><div class="txt"><b>Life insurance is the last line &mdash; and usually stays untouched.</b> Which is how you end up leaving something behind without ever planning to.</div></div>
+      </div>
+
+      <div class="close client client-only">
+        <span class="eyebrow">What's next</span>
+        <h2>Let's build it together.</h2>
+        <p>At your next review we'll lock the funding order in writing, confirm your beneficiaries line up with it, get a real quote
+        from the community you have in mind, and earmark the accounts that make up your care fund. An afternoon's work now is the
+        difference between a plan your family can follow and a scramble they'll never forget.</p>
+        <span class="cta">We'll walk through it at your next review</span>
+      </div>
+
+      <div class="close prospect prospect-only">
+        <span class="eyebrow">What's next</span>
+        <h2>This is what we do &mdash; before it's too late to do it cheaply.</h2>
+        <p>Most advisors hand you a portfolio and a smile. We hand you the plan your family actually runs when you can't.
+        The funding order, the beneficiary alignment, the policy review, the tax sequence &mdash; built once, kept current, and
+        sitting ready the day it's needed. You've seen the depth. The only question left is whether you want it working for you.</p>
+        <span class="cta">Let's build your plan</span>
+      </div>
+    </div>
+
+    <p class="disc" id="disclosure-line">Prepared by Yields4U for discussion. Figures are projections based on the stated assumptions and your
+    most recent statements; actual results vary with markets, care costs, health, and tax law. Educational analysis &mdash;
+    not a guarantee of future results, and not legal or tax advice. Care benchmarks reflect 2026 regional averages.</p>
+    <div class="footer">
+      <span>YIELDS4U &middot; LOW RISK, LOW VOLATILITY RETIREMENT SOLUTIONS</span>
+      <span>CONFIDENTIAL</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function setMode(m){
+  document.body.className='mode-'+m;
+  document.getElementById('btn-client').classList.toggle('active',m==='client');
+  document.getElementById('btn-prospect').classList.toggle('active',m==='prospect');
+  document.getElementById('modehint').textContent = m==='client' ? 'Walk-through mode · for discussion' : 'Walk-through mode · demonstrating value';
+}
+
+/* ===============================================================
+ *  URL parameter ingestion
+ *  All params are optional. Defaults preserve the original Maloney
+ *  prototype numbers so the deck still renders if no params are passed.
+ *
+ *  --- Identity / region ---
+ *    firstName, lastName     name on the cover
+ *    region                  short region label ("Wisconsin")
+ *    regionHint              custom region-source hint
+ *    statementDate           recent-statements date ("December 31, 2025")
+ *
+ *  --- Hero metric cards ---
+ *    householdAssets         total assets headline ($1,334,809 or "$1.33M")
+ *    endingBalance           after-worst-case balance ($394,000)
+ *    careCoverage            care coverage already paid for ($569,000)
+ *
+ *  --- Assumptions panel ---
+ *    resourcesAvailable      shown as "$1,334,809"
+ *    careInflation           e.g. 4.5 -> "4.5% / yr"
+ *    growthRate              e.g. 4.0 -> "4.0% / yr"
+ *    monthlyIncome           e.g. 3460 -> "$3,460 / mo"
+ *    incomeGrowthRate        e.g. 2.5 -> "+2.5%/yr"
+ *    assistedCost            monthly assisted-living cost (5000)
+ *    memoryCost              monthly memory-care cost (6700)
+ *    skilledCost             monthly skilled-nursing cost (9500)
+ *    ltcPolicyText           free-form text override for the LTC policy row
+ *    ltcPolicyMonthly        monthly LTC benefit (6000) – also drives waterfall
+ *    ltcPolicyMonths         coverage duration in months (36)
+ *    ltcPolicyWaitDays       elimination period in days (90)
+ *    ltcRiderText            free-form text override for the rider row
+ *    homeEquity              home equity value ($300,000)
+ *
+ *  --- Balance sheet ---
+ *    balanceSheet            JSON array of rows: [{label, value, rmd}]
+ *                            or comma-separated value list matching defaults order
+ *    balanceSheetTotal       total row value (auto-summed if omitted)
+ *    rmdAccountLabel         e.g. "$200,605 Traditional IRA"
+ *    rmdStartYear            e.g. "2028"
+ *    rmdAmount               e.g. "$8,500/yr"
+ *
+ *  --- Year-by-year tables ---
+ *    memoryTable             JSON array of rows for the memory-care table:
+ *                            [[age, year, careCost, income, ltc, oop, remaining], ...]
+ *    skilledTable            JSON array of rows for the skilled-nursing table
+ *    memoryStartAge          headline age for memory caption (85)
+ *    memoryDuration          headline duration for memory caption (8)
+ *    skilledStartAge         headline age for skilled caption (85)
+ *    skilledDuration         headline duration for skilled caption (8)
+ *
+ *  --- Chart series ---
+ *    series1Label..series4Label   legend labels
+ *    series1Data..series4Data     JSON array of [age, value] pairs
+ *    chartMinAge / chartMaxAge    x-axis bounds (83 / 93)
+ *    chartMaxValue                y-axis max (1700000)
+ * =============================================================== */
+
+function fmtCompactMoney(raw){
+  if (raw === null || raw === undefined || raw === '') return null;
+  var s = String(raw).trim();
+  if (/[MK]\s*$/i.test(s)) return s.startsWith('$') ? s : '$' + s;
+  var n = parseFloat(s.replace(/[^0-9.\-]/g,''));
+  if (isNaN(n)) return null;
+  if (n >= 1000000) return '$' + (Math.round(n/10000)/100).toFixed(2).replace(/\.?0+$/,'') + 'M';
+  if (n >= 1000)    return '$' + Math.round(n/1000) + 'K';
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+
+function fmtFullMoney(raw){
+  if (raw === null || raw === undefined || raw === '') return null;
+  var s = String(raw).trim();
+  if (s.startsWith('$') && /[A-Za-z]/.test(s)) return s;
+  var n = parseFloat(s.replace(/[^0-9.\-]/g,''));
+  if (isNaN(n)) return null;
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+
+function parseNum(raw){
+  if (raw === null || raw === undefined || raw === '') return null;
+  var n = parseFloat(String(raw).replace(/[^0-9.\-]/g,''));
+  return isNaN(n) ? null : n;
+}
+
+function parseJsonOrCsv(raw){
+  if (!raw) return null;
+  var s = String(raw).trim();
+  if (!s) return null;
+  try {
+    if (s.charAt(0) === '[' || s.charAt(0) === '{') return JSON.parse(s);
+  } catch(e){ /* fall through */ }
+  // comma-separated numbers
+  return s.split(',').map(function(x){ return parseFloat(x.trim()); }).filter(function(n){ return !isNaN(n); });
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+}
+
+function fmtTableNum(n){
+  return Math.round(n).toLocaleString('en-US');
+}
+
+/* ===============================================================
+ *  Default values (Maloney prototype) — exposed as globals so the
+ *  chart renderer below can pick up any URL-supplied overrides.
+ * =============================================================== */
+var CHART_DEFAULTS = {
+  s1: {label: 'Assisted living, 5yr', data: [[85,1334809],[86,1389513],[87,1461455],[88,1532473],[89,1547435],[90,1540122]], color: '#1D9E75', point: 'circle', dash: null},
+  s2: {label: 'Memory care 83, 10yr', data: [[83,1334809],[84,1360850],[85,1401750],[86,1439198],[87,1417905],[88,1371485],[89,1317308],[90,1254766],[91,1183214],[92,1101965],[93,1010291]], color: '#378ADD', point: 'rect', dash: null},
+  s3: {label: 'Memory care 85, 8yr', data: [[85,1334809],[86,1350920],[87,1380988],[88,1406642],[89,1372530],[90,1312197],[91,1242942],[92,1164083],[93,1074893]], color: '#B1711B', point: 'triangle', dash: null},
+  s4: {label: 'Skilled nursing 85, 8yr', data: [[85,1334809],[86,1287355],[87,1248454],[88,1199392],[89,1084451],[90,936792],[91,773306],[92,592883],[93,394341]], color: '#A83B2E', point: 'rectRot', dash: [6,4]},
+  minAge: 83,
+  maxAge: 93,
+  maxValue: 1700000
+};
+
+var DEFAULT_BALANCE_SHEET = [
+  {label: 'Cash &amp; inheritance (savings @ 4%)', value: 262093, rmd: false},
+  {label: 'Brokerage &mdash; managed account',     value: 179440, rmd: false},
+  {label: 'Traditional IRA &mdash; variable annuity', value: 200605, rmd: true},
+  {label: 'Roth IRA (three funds)',                 value: 192909, rmd: false},
+  {label: 'Non-qualified deferred annuity',         value: 54947,  rmd: false},
+  {label: 'Life insurance &mdash; accumulated value', value: 158088, rmd: false},
+  {label: 'Primary residence (estimated)',          value: 300000, rmd: false}
+];
+
+var DEFAULT_MEMORY_TABLE = [
+  [85,2040,148896,58667,54000,36230,1350920],
+  [86,2041,155597,60133,72000,23463,1380988],
+  [87,2042,162599,61637,72000,28962,1406642],
+  [88,2043,169915,63178,18000,88738,1372530],
+  [89,2044,177562,64757,0,112805,1312197],
+  [90,2045,185552,66376,0,119176,1242942],
+  [91,2046,193902,68035,0,125866,1164083],
+  [92,2047,202627,69736,0,132891,1074893]
+];
+
+var DEFAULT_SKILLED_TABLE = [
+  [85,2040,211122,58667,54000,98455,1287355],
+  [86,2041,220622,60133,72000,88489,1248454],
+  [87,2042,230550,61637,72000,96914,1199392],
+  [88,2043,240925,63178,18000,159747,1084451],
+  [89,2044,251767,64757,0,187010,936792],
+  [90,2045,263096,66376,0,196720,773306],
+  [91,2046,274935,68035,0,206900,592883],
+  [92,2047,287307,69736,0,217571,394341]
+];
+
+/* Active series objects — chart renderer reads from these so URL overrides apply. */
+var CHART_STATE = {
+  s1: Object.assign({}, CHART_DEFAULTS.s1),
+  s2: Object.assign({}, CHART_DEFAULTS.s2),
+  s3: Object.assign({}, CHART_DEFAULTS.s3),
+  s4: Object.assign({}, CHART_DEFAULTS.s4),
+  minAge: CHART_DEFAULTS.minAge,
+  maxAge: CHART_DEFAULTS.maxAge,
+  maxValue: CHART_DEFAULTS.maxValue
+};
+
+function renderBalanceSheet(rows, totalOverride){
+  // Rebuild the asset-row markup into the existing container.
+  // Strategy: locate the first asset-row, walk up to its parent, replace all
+  // .asset-row children (except the total) with the new rows.
+  var firstRow = document.getElementById('asset-row-1');
+  if (!firstRow) return;
+  var container = firstRow.parentNode;
+  var totalRow = document.getElementById('asset-row-total');
+
+  // Remove existing data rows (asset-row-1..7) but keep the total row in place.
+  var existing = container.querySelectorAll('.asset-row');
+  existing.forEach(function(el){
+    if (el !== totalRow) container.removeChild(el);
+  });
+
+  var total = 0;
+  rows.forEach(function(row, idx){
+    var div = document.createElement('div');
+    div.className = 'asset-row';
+    div.id = 'asset-row-' + (idx + 1);
+    var label = row.label || '';
+    var value = parseNum(row.value);
+    if (value === null) value = 0;
+    total += value;
+    var tagHtml = row.rmd
+      ? '<span class="tag tag-rmd">RMD applies</span>'
+      : '<span class="tag tag-none">No RMD</span>';
+    div.innerHTML =
+      '<span><span class="asset-label">' + label + '</span>' + tagHtml + '</span>' +
+      '<span class="v">' + fmtFullMoney(value) + '</span>';
+    container.insertBefore(div, totalRow);
+  });
+
+  var totalVal = parseNum(totalOverride);
+  if (totalVal === null) totalVal = total;
+  if (totalRow){
+    var valSpan = totalRow.querySelector('.v');
+    if (valSpan) valSpan.textContent = fmtFullMoney(totalVal);
+  }
+}
+
+function renderProjectionTable(bodyId, footId, rows){
+  var body = document.getElementById(bodyId);
+  var foot = document.getElementById(footId);
+  if (!body || !rows || !rows.length) return;
+  // Build new body.
+  var bodyHtml = '';
+  var totalCare = 0, totalIncome = 0, totalLtc = 0, totalOop = 0, lastRemaining = 0;
+  rows.forEach(function(r){
+    // r expected: [age, year, careCost, income, ltc, oop, remaining]
+    if (!Array.isArray(r) || r.length < 7) return;
+    var age = r[0], year = r[1], care = +r[2], income = +r[3], ltc = +r[4], oop = +r[5], rem = +r[6];
+    totalCare += care; totalIncome += income; totalLtc += ltc; totalOop += oop; lastRemaining = rem;
+    var ltcCell = ltc > 0
+      ? '<td class="ltc">' + fmtTableNum(ltc) + '</td>'
+      : '<td>0</td>';
+    bodyHtml +=
+      '<tr><td>' + escapeHtml(String(age)) + '</td><td>' + escapeHtml(String(year)) + '</td>' +
+      '<td>' + fmtTableNum(care) + '</td>' +
+      '<td>' + fmtTableNum(income) + '</td>' +
+      ltcCell +
+      '<td class="oop">' + fmtTableNum(oop) + '</td>' +
+      '<td class="rem">' + fmtTableNum(rem) + '</td></tr>';
+  });
+  body.innerHTML = bodyHtml;
+  if (foot){
+    foot.innerHTML =
+      '<tr><td colspan="2">' + rows.length + '-year total</td>' +
+      '<td>' + fmtTableNum(totalCare) + '</td>' +
+      '<td>' + fmtTableNum(totalIncome) + '</td>' +
+      '<td class="ltc">' + fmtTableNum(totalLtc) + '</td>' +
+      '<td class="oop">' + fmtTableNum(totalOop) + '</td>' +
+      '<td class="rem">' + fmtTableNum(lastRemaining) + '</td></tr>';
+  }
+}
+
+(function applyParams(){
+  var p = new URLSearchParams(window.location.search);
+
+  /* --- Identity / region --- */
+  var firstName = p.get('firstName');
+  var lastName  = p.get('lastName');
+  var nameEl = document.getElementById('full-name');
+  var nameParts = [firstName, lastName].filter(function(x){ return x && x.trim(); });
+  if (nameParts.length){
+    nameEl.textContent = nameParts.join(' ');
+    document.title = 'Your Care, Your Plan — ' + nameParts.join(' ');
+  }
+
+  /* --- Hero metric cards --- */
+  var hh = fmtCompactMoney(p.get('householdAssets'));
+  if (hh) document.getElementById('m-household').textContent = hh;
+
+  var ending = fmtCompactMoney(p.get('endingBalance'));
+  if (ending) document.getElementById('m-ending').textContent = ending;
+
+  var cov = fmtCompactMoney(p.get('careCoverage'));
+  if (cov) document.getElementById('m-coverage').textContent = cov;
+
+  /* --- Region hint + disclosure --- */
+  var region = p.get('region');
+  var hint = p.get('regionHint');
+  if (hint){
+    document.getElementById('region-hint').textContent =
+      'Care costs reflect your region (' + hint + '). We’ll swap in the real figure from the community you choose.';
+  } else if (region){
+    document.getElementById('region-hint').textContent =
+      'Care costs reflect ' + region + ' regional averages. We’ll swap in the real figure from the community you choose.';
+  }
+
+  var stmt = p.get('statementDate');
+  var discEl = document.getElementById('disclosure-line');
+  if (stmt){
+    discEl.innerHTML = discEl.innerHTML.replace(/most recent statements/, escapeHtml(stmt) + ' statements');
+  }
+  if (region){
+    discEl.innerHTML = discEl.innerHTML.replace(/2026 regional averages/, '2026 ' + escapeHtml(region) + ' regional averages');
+  }
+
+  /* --- Assumptions panel --- */
+  var resources = p.get('resourcesAvailable');
+  if (resources){
+    var r = fmtFullMoney(resources);
+    if (r) document.getElementById('a-resources').textContent = r;
+  }
+  var careInfl = p.get('careInflation');
+  if (careInfl){
+    var ci = parseNum(careInfl);
+    if (ci !== null) document.getElementById('a-care-inflation').textContent = ci + '% / yr';
+  }
+  var growth = p.get('growthRate');
+  if (growth){
+    var g = parseNum(growth);
+    if (g !== null) document.getElementById('a-growth-rate').textContent = g.toFixed(1) + '% / yr';
+  }
+  var monthlyIncome = p.get('monthlyIncome');
+  var incomeGrowth = p.get('incomeGrowthRate');
+  if (monthlyIncome || incomeGrowth){
+    var mi = parseNum(monthlyIncome);
+    var ig = parseNum(incomeGrowth);
+    var miText = mi !== null ? '$' + Math.round(mi).toLocaleString('en-US') + ' / mo' : '$3,460 / mo';
+    var igText = ig !== null ? ' · +' + ig + '%/yr' : ' · +2.5%/yr';
+    document.getElementById('a-income').textContent = miText + igText;
+  }
+  var assistedCost = p.get('assistedCost');
+  if (assistedCost){
+    var ac = parseNum(assistedCost);
+    if (ac !== null) document.getElementById('a-assisted-cost').textContent = '$' + Math.round(ac).toLocaleString('en-US') + ' / mo';
+  }
+  var memoryCost = p.get('memoryCost');
+  if (memoryCost){
+    var mc = parseNum(memoryCost);
+    if (mc !== null) document.getElementById('a-memory-cost').textContent = '$' + Math.round(mc).toLocaleString('en-US') + ' / mo';
+  }
+  var skilledCost = p.get('skilledCost');
+  if (skilledCost){
+    var sc = parseNum(skilledCost);
+    if (sc !== null) document.getElementById('a-skilled-cost').textContent = '$' + Math.round(sc).toLocaleString('en-US') + ' / mo';
+  }
+  var policyText = p.get('ltcPolicyText');
+  var policyMonthly = p.get('ltcPolicyMonthly');
+  var policyMonths = p.get('ltcPolicyMonths');
+  var policyWait = p.get('ltcPolicyWaitDays');
+  if (policyText){
+    document.getElementById('a-ltc-policy').textContent = policyText;
+  } else if (policyMonthly || policyMonths || policyWait){
+    var pm = parseNum(policyMonthly);
+    var pmo = parseNum(policyMonths);
+    var pw = parseNum(policyWait);
+    var parts = [];
+    parts.push((pm !== null ? '$' + Math.round(pm).toLocaleString('en-US') : '$6,000') + '/mo');
+    parts.push((pmo !== null ? Math.round(pmo) : 36) + ' mo');
+    parts.push((pw !== null ? Math.round(pw) : 90) + '-day wait');
+    document.getElementById('a-ltc-policy').textContent = parts.join(' · ');
+  }
+  var riderText = p.get('ltcRiderText');
+  if (riderText){
+    document.getElementById('a-ltc-rider').textContent = riderText;
+  }
+  var homeEquity = p.get('homeEquity');
+  if (homeEquity){
+    var he = parseNum(homeEquity);
+    if (he !== null){
+      var compact = he >= 1000 ? '$' + Math.round(he/1000) + 'K' : '$' + Math.round(he).toLocaleString('en-US');
+      document.getElementById('a-home-equity').textContent = compact + ' — sold on permanent move';
+    }
+  }
+
+  /* --- Waterfall step 2 (LTC monthly) --- */
+  if (policyMonthly){
+    var pm2 = parseNum(policyMonthly);
+    if (pm2 !== null){
+      document.getElementById('waterfall-policy-amount').textContent =
+        '$' + Math.round(pm2).toLocaleString('en-US') + ' a month';
+    }
+  }
+
+  /* --- Balance sheet --- */
+  var bsRaw = p.get('balanceSheet');
+  var bsTotal = p.get('balanceSheetTotal');
+  var bsRows = null;
+  if (bsRaw){
+    try {
+      var parsed = JSON.parse(bsRaw);
+      if (Array.isArray(parsed)){
+        // Two acceptable forms: [{label,value,rmd}] or [[label,value,rmd]]
+        bsRows = parsed.map(function(item){
+          if (item && typeof item === 'object' && !Array.isArray(item)) return item;
+          if (Array.isArray(item)) return {label: item[0], value: item[1], rmd: !!item[2]};
+          return null;
+        }).filter(Boolean);
+      }
+    } catch(e){
+      // Try comma-separated values mapped onto default labels.
+      var vals = bsRaw.split(',').map(function(x){ return parseFloat(x.trim()); }).filter(function(n){ return !isNaN(n); });
+      if (vals.length === DEFAULT_BALANCE_SHEET.length){
+        bsRows = DEFAULT_BALANCE_SHEET.map(function(d, i){
+          return {label: d.label, value: vals[i], rmd: d.rmd};
+        });
+      }
+    }
+  }
+  if (bsRows && bsRows.length){
+    renderBalanceSheet(bsRows, bsTotal);
+  } else if (bsTotal){
+    // Only the total was overridden — keep existing rows but update the total cell.
+    var tv = parseNum(bsTotal);
+    var tr = document.getElementById('asset-row-total');
+    if (tv !== null && tr){
+      var tvSpan = tr.querySelector('.v');
+      if (tvSpan) tvSpan.textContent = fmtFullMoney(tv);
+    }
+  }
+
+  var rmdAcct = p.get('rmdAccountLabel');
+  if (rmdAcct) document.getElementById('rmd-account').textContent = rmdAcct;
+  var rmdYear = p.get('rmdStartYear');
+  if (rmdYear) document.getElementById('rmd-year').textContent = rmdYear;
+  var rmdAmt = p.get('rmdAmount');
+  if (rmdAmt) document.getElementById('rmd-amount').textContent = rmdAmt;
+
+  /* --- Year-by-year tables --- */
+  function parseTableParam(raw){
+    if (!raw) return null;
+    try {
+      var parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length && Array.isArray(parsed[0])) return parsed;
+    } catch(e){}
+    return null;
+  }
+  var memTbl = parseTableParam(p.get('memoryTable'));
+  var skTbl  = parseTableParam(p.get('skilledTable'));
+  if (memTbl) renderProjectionTable('memory-table-body', 'memory-table-foot', memTbl);
+  if (skTbl)  renderProjectionTable('skilled-table-body', 'skilled-table-foot', skTbl);
+
+  var memStart = p.get('memoryStartAge'), memDur = p.get('memoryDuration');
+  if (memStart || memDur){
+    var ms = memStart || '85', md = memDur || '8';
+    document.getElementById('memory-table-caption').innerHTML =
+      'Memory care &mdash; ' + escapeHtml(md) + ' years from age ' + escapeHtml(ms);
+  }
+  var skStart = p.get('skilledStartAge'), skDur = p.get('skilledDuration');
+  if (skStart || skDur){
+    var ss = skStart || '85', sd = skDur || '8';
+    document.getElementById('skilled-table-caption').innerHTML =
+      'Skilled nursing &mdash; ' + escapeHtml(sd) + ' years from age ' + escapeHtml(ss) + ' (the worst case)';
+  }
+
+  /* --- Chart series + axes --- */
+  ['s1','s2','s3','s4'].forEach(function(key, idx){
+    var n = idx + 1;
+    var labelP = p.get('series' + n + 'Label');
+    var dataP  = p.get('series' + n + 'Data');
+    if (labelP){
+      CHART_STATE[key].label = labelP;
+      var legendEl = document.getElementById('series' + n + '-label');
+      if (legendEl) legendEl.textContent = labelP;
+    }
+    if (dataP){
+      try {
+        var parsed = JSON.parse(dataP);
+        if (Array.isArray(parsed) && parsed.length && Array.isArray(parsed[0])){
+          CHART_STATE[key].data = parsed.map(function(pt){ return [+pt[0], +pt[1]]; });
+        }
+      } catch(e){ /* leave default */ }
+    }
+  });
+  var minAge = parseNum(p.get('chartMinAge'));
+  var maxAge = parseNum(p.get('chartMaxAge'));
+  var maxVal = parseNum(p.get('chartMaxValue'));
+  if (minAge !== null) CHART_STATE.minAge = minAge;
+  if (maxAge !== null) CHART_STATE.maxAge = maxAge;
+  if (maxVal !== null) CHART_STATE.maxValue = maxVal;
+})();
+
+/* ===============================================================
+ *  Chart render (after applyParams so overrides take effect)
+ * =============================================================== */
+const fmt=v=>(v<0?'-':'')+'$'+Math.abs(Math.round(v/1000))+'K';
+new Chart(document.getElementById('ltc'),{
+ type:'line',
+ data:{datasets:[
+  {label:CHART_STATE.s1.label,data:CHART_STATE.s1.data,borderColor:CHART_STATE.s1.color,backgroundColor:CHART_STATE.s1.color,tension:.3,pointRadius:3,pointStyle:CHART_STATE.s1.point,borderWidth:2.5},
+  {label:CHART_STATE.s2.label,data:CHART_STATE.s2.data,borderColor:CHART_STATE.s2.color,backgroundColor:CHART_STATE.s2.color,tension:.3,pointRadius:3,pointStyle:CHART_STATE.s2.point,borderWidth:2.5},
+  {label:CHART_STATE.s3.label,data:CHART_STATE.s3.data,borderColor:CHART_STATE.s3.color,backgroundColor:CHART_STATE.s3.color,tension:.3,pointRadius:3,pointStyle:CHART_STATE.s3.point,borderWidth:2.5},
+  {label:CHART_STATE.s4.label,data:CHART_STATE.s4.data,borderColor:CHART_STATE.s4.color,backgroundColor:CHART_STATE.s4.color,borderDash:CHART_STATE.s4.dash||[6,4],tension:.3,pointRadius:3,pointStyle:CHART_STATE.s4.point,borderWidth:2.5}
+ ]},
+ options:{responsive:true,maintainAspectRatio:false,parsing:{xAxisKey:'0',yAxisKey:'1'},
+  plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>'Age '+i[0].parsed.x,label:c=>c.dataset.label+': '+fmt(c.parsed.y)}}},
+  scales:{x:{type:'linear',min:CHART_STATE.minAge,max:CHART_STATE.maxAge,title:{display:true,text:'Age',font:{family:'Montserrat',size:12}},ticks:{stepSize:1,font:{family:'Montserrat'}},grid:{color:'#EDEDEE'}},
+   y:{min:0,max:CHART_STATE.maxValue,title:{display:true,text:'Resources remaining',font:{family:'Montserrat',size:12}},ticks:{callback:fmt,font:{family:'Montserrat'}},grid:{color:'#EDEDEE'}}}}
+});
+window.addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(d=>d.open=true));
+</script>
+</body>
+</html>

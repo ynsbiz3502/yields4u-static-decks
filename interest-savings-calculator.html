@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Interest Savings Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root{
+    --paper:#FAF7F0;
+    --surface:#FFFFFF;
+    --ink:#211D17;
+    --muted:#6E665A;
+    --hair:#E4DCCB;
+    --cost:#C0502B;
+    --cost-soft:#F6EAE3;
+    --save:#0F6E56;
+    --save-soft:#E2F0EA;
+    --accent:#0F6E56;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Hanken Grotesk",system-ui,sans-serif;
+    font-feature-settings:"tnum" 1;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:48px 24px 64px;}
+  header{margin-bottom:32px;animation:rise .6s ease both;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 10px;}
+  h1{font-family:"Fraunces",serif;font-weight:500;font-size:clamp(30px,5vw,46px);line-height:1.05;margin:0 0 12px;letter-spacing:-.01em;}
+  .lede{font-size:17px;color:var(--muted);max-width:60ch;margin:0;}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:24px;}
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:22px 32px;margin-bottom:24px;animation:rise .6s .05s ease both;}
+  .scenarios{display:grid;grid-template-columns:1fr 1fr;gap:16px 32px;margin-bottom:6px;}
+  .field label{display:block;font-size:13px;color:var(--muted);font-weight:500;margin-bottom:8px;}
+  .row{display:flex;align-items:center;gap:14px;}
+  input[type=range]{flex:1;appearance:none;-webkit-appearance:none;height:4px;border-radius:4px;background:var(--hair);outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--hair);}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--surface);}
+  .num{width:104px;}
+  .num input{width:100%;font-family:inherit;font-feature-settings:"tnum" 1;font-size:15px;font-weight:500;color:var(--ink);text-align:right;padding:7px 10px;border:1px solid var(--hair);border-radius:8px;background:var(--paper);}
+  .num input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--save-soft);}
+  .scen-name{width:100%;font-family:inherit;font-size:15px;font-weight:500;padding:8px 11px;border:1px solid var(--hair);border-radius:8px;background:var(--paper);color:var(--ink);}
+  .scen-name:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--save-soft);}
+  .scen-name.cost{border-left:3px solid var(--cost);}
+  .scen-name.save{border-left:3px solid var(--save);}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:28px 0;animation:rise .6s .1s ease both;}
+  .stat{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px 20px;}
+  .stat.hero{background:var(--save-soft);border-color:#CDE6DD;}
+  .stat .k{font-size:12.5px;color:var(--muted);font-weight:500;margin-bottom:6px;}
+  .stat.hero .k{color:var(--save);}
+  .stat .v{font-family:"Fraunces",serif;font-weight:500;font-size:30px;line-height:1;letter-spacing:-.01em;}
+  .stat.hero .v{color:var(--save);}
+  .stat .sub{font-size:12px;color:var(--muted);margin-top:6px;}
+  .chartcard{animation:rise .6s .15s ease both;}
+  .chart-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:18px;}
+  .legend{display:flex;gap:18px;font-size:13px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:7px;}
+  .swatch{width:16px;height:3px;border-radius:2px;display:inline-block;}
+  .swatch.dash{height:0;border-top:3px dashed var(--save);}
+  .toggle{display:inline-flex;border:1px solid var(--hair);border-radius:9px;overflow:hidden;}
+  .toggle button{font-family:inherit;font-size:13px;font-weight:500;color:var(--muted);background:var(--surface);border:none;padding:7px 14px;cursor:pointer;}
+  .toggle button.on{background:var(--ink);color:var(--paper);}
+  .chart-box{position:relative;width:100%;height:320px;}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45;}
+  footer{margin-top:32px;padding-top:22px;border-top:1px solid var(--hair);max-width:80ch;}
+  footer h2{font-family:"Hanken Grotesk",sans-serif;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 14px;}
+  footer p{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 11px;}
+  footer p strong{color:var(--ink);font-weight:600;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  @media(max-width:640px){.controls,.scenarios{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Borrowing cost comparison</p>
+    <h1>Interest savings calculator</h1>
+    <p class="lede">Compare the lifetime cost of the same balance carried at two different interest rates over the same term. Rename the scenarios to fit whatever you're comparing.</p>
+  </header>
+
+  <div class="card">
+    <div class="scenarios">
+      <div class="field">
+        <label>Scenario A name</label>
+        <input class="scen-name cost" id="nameA" type="text" value="Keep current loan" aria-label="Scenario A name" />
+      </div>
+      <div class="field">
+        <label>Scenario B name</label>
+        <input class="scen-name save" id="nameB" type="text" value="Refinance / line of credit" aria-label="Scenario B name" />
+      </div>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--hair);margin:22px 0;">
+    <div class="controls">
+      <div class="field">
+        <label>Balance</label>
+        <div class="row">
+          <input type="range" id="bal" min="10000" max="500000" step="5000" value="200000" aria-label="Balance" />
+          <span class="num"><input type="text" id="bal-n" inputmode="numeric" value="$200,000" aria-label="Balance value" /></span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Term (years)</label>
+        <div class="row">
+          <input type="range" id="term" min="1" max="30" step="1" value="10" aria-label="Term in years" />
+          <span class="num"><input type="text" id="term-n" inputmode="numeric" value="10" aria-label="Term value" /></span>
+        </div>
+      </div>
+      <div class="field">
+        <label id="lblA">Scenario A rate</label>
+        <div class="row">
+          <input type="range" id="rA" min="0.5" max="15" step="0.05" value="7.5" aria-label="Scenario A rate" />
+          <span class="num"><input type="text" id="rA-n" inputmode="decimal" value="7.50%" aria-label="Scenario A rate value" /></span>
+        </div>
+      </div>
+      <div class="field">
+        <label id="lblB">Scenario B rate</label>
+        <div class="row">
+          <input type="range" id="rB" min="0.5" max="15" step="0.05" value="4.55" aria-label="Scenario B rate" />
+          <span class="num"><input type="text" id="rB-n" inputmode="decimal" value="4.55%" aria-label="Scenario B rate value" /></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat hero">
+      <div class="k">Lifetime interest saved</div>
+      <div class="v" id="m-saved">$0</div>
+      <div class="sub" id="m-savedsub">vs. the higher-rate scenario</div>
+    </div>
+    <div class="stat">
+      <div class="k" id="kA">Total interest — A</div>
+      <div class="v" id="m-iA">$0</div>
+      <div class="sub" id="m-mA">$0 / mo</div>
+    </div>
+    <div class="stat">
+      <div class="k" id="kB">Total interest — B</div>
+      <div class="v" id="m-iB">$0</div>
+      <div class="sub" id="m-mB">$0 / mo</div>
+    </div>
+    <div class="stat">
+      <div class="k">Monthly payment change</div>
+      <div class="v" id="m-mdiff">$0</div>
+      <div class="sub">Scenario B vs. A</div>
+    </div>
+  </div>
+
+  <div class="card chartcard">
+    <div class="chart-head">
+      <div class="legend">
+        <span><span class="swatch" style="background:var(--cost)"></span><span id="lgA">Scenario A</span></span>
+        <span><span class="swatch dash"></span><span id="lgB">Scenario B</span></span>
+      </div>
+      <div class="toggle" role="group" aria-label="Chart view">
+        <button id="view-int" class="on" type="button">Cumulative interest</button>
+        <button id="view-bal" type="button">Balance over time</button>
+      </div>
+    </div>
+    <div class="chart-box">
+      <canvas id="chart" role="img" aria-label="Comparison chart of two financing scenarios over the loan term."></canvas>
+    </div>
+  </div>
+
+  <footer>
+    <h2>Disclosures</h2>
+    <p><strong>Illustration only.</strong> This calculator is for educational and illustrative purposes only. It is not tax, legal, accounting, or investment advice, and is not a recommendation of any lender, loan, product, or strategy. Consult a qualified tax, legal, and financial professional before acting.</p>
+    <p><strong>Modeling assumptions.</strong> Results assume both balances are fully amortized in equal monthly payments over the same term at a constant annual rate. Actual interest will differ if the payment schedule, term, draw timing, or rate behavior differs from these assumptions.</p>
+    <p><strong>Rates are not fixed or guaranteed.</strong> The rates shown are advisor-entered inputs intended for comparison only. They are illustrative, may exclude lender or service fees, and are not a guarantee of availability or execution. Floating rates reset with their underlying index and can rise. Confirm current terms directly with the provider.</p>
+    <p><strong>Securities-backed lending — if applicable.</strong> If this calculator is used to compare a securities-backed loan or line of credit, borrowing against a portfolio pledges those assets as collateral. A decline in collateral value can trigger a maintenance or margin call requiring additional collateral or repayment on short notice, and the lender may sell pledged securities — possibly at a loss, at an inopportune time, and with tax consequences. Many such lines are demand facilities callable at any time. These risks are not reflected in the chart above.</p>
+    <p><strong>Taxes.</strong> Whether interest is deductible depends on how the loan proceeds are used and on individual circumstances; it is not automatic. This tool does not calculate tax effects. Consult a tax advisor.</p>
+    <p><strong>Comparison scope.</strong> This tool compares only two user-entered rates on a single balance and term. It does not evaluate all available financing options, the capital-gains or opportunity cost of selling versus borrowing, fees, or suitability. Other solutions may offer similar or greater benefit.</p>
+    <p><strong>Advisor use.</strong> If presented to clients, the presenting advisor is responsible for ensuring the material complies with applicable advertising and communication rules — including SEC Marketing Rule 206(4)-1 and FINRA Rule 2210 — and for retaining required records.</p>
+    <p>Figures are estimates; rounding may cause minor differences.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var view = 'int';
+  var chart;
+  var usd = function(n){ return '$' + Math.round(n).toLocaleString('en-US'); };
+
+  function parseNum(s){ var v = parseFloat(String(s).replace(/[^0-9.\-]/g,'')); return isNaN(v)?0:v; }
+
+  /* ===============================================================
+   *  URL parameter ingestion
+   *  Supported keys (all optional):
+   *    balance       — initial loan balance, e.g. 250000
+   *    termYears     — amortization term in years, e.g. 15
+   *    rateA         — Scenario A annual rate %, e.g. 7.25
+   *    rateB         — Scenario B annual rate %, e.g. 4.55
+   *    scenarioAName — display name for Scenario A
+   *    scenarioBName — display name for Scenario B
+   *  When a param is missing the existing hardcoded default stays.
+   * =============================================================== */
+  function applyUrlParams(){
+    var p = new URLSearchParams(window.location.search);
+
+    var bal = p.get('balance');
+    if (bal !== null && bal !== ''){
+      var balN = parseNum(bal);
+      if (balN > 0){
+        var bSlider = document.getElementById('bal');
+        var bBox    = document.getElementById('bal-n');
+        balN = Math.min(Math.max(balN, +bSlider.min), +bSlider.max);
+        bSlider.value = balN;
+        bBox.value = usd(balN);
+      }
+    }
+
+    var term = p.get('termYears');
+    if (term !== null && term !== ''){
+      var tN = parseNum(term);
+      if (tN > 0){
+        var tSlider = document.getElementById('term');
+        var tBox    = document.getElementById('term-n');
+        tN = Math.min(Math.max(tN, +tSlider.min), +tSlider.max);
+        tSlider.value = tN;
+        tBox.value = String(Math.round(tN));
+      }
+    }
+
+    var rA = p.get('rateA');
+    if (rA !== null && rA !== ''){
+      var rAN = parseNum(rA);
+      if (rAN > 0){
+        var rASlider = document.getElementById('rA');
+        var rABox    = document.getElementById('rA-n');
+        rAN = Math.min(Math.max(rAN, +rASlider.min), +rASlider.max);
+        rASlider.value = rAN;
+        rABox.value = (Math.round(rAN*100)/100).toFixed(2) + '%';
+      }
+    }
+
+    var rB = p.get('rateB');
+    if (rB !== null && rB !== ''){
+      var rBN = parseNum(rB);
+      if (rBN > 0){
+        var rBSlider = document.getElementById('rB');
+        var rBBox    = document.getElementById('rB-n');
+        rBN = Math.min(Math.max(rBN, +rBSlider.min), +rBSlider.max);
+        rBSlider.value = rBN;
+        rBBox.value = (Math.round(rBN*100)/100).toFixed(2) + '%';
+      }
+    }
+
+    var nA = p.get('scenarioAName');
+    if (nA !== null && nA !== ''){
+      document.getElementById('nameA').value = nA;
+    }
+    var nB = p.get('scenarioBName');
+    if (nB !== null && nB !== ''){
+      document.getElementById('nameB').value = nB;
+    }
+  }
+
+  function schedule(P, annual, months){
+    var r = annual/100/12;
+    var M = r === 0 ? P/months : P*r/(1-Math.pow(1+r,-months));
+    var bal = P, totalInt = 0, yi=[0], yb=[P];
+    for (var i=1;i<=months;i++){
+      var interest = bal*r; totalInt += interest;
+      bal -= (M - interest);
+      if (i % 12 === 0){ yi.push(totalInt); yb.push(Math.max(bal,0)); }
+    }
+    if (months % 12 !== 0){ yi.push(totalInt); yb.push(Math.max(bal,0)); }
+    return { payment:M, total:totalInt, yi:yi, yb:yb };
+  }
+
+  function el(id){ return document.getElementById(id); }
+
+  function recompute(){
+    var P = +el('bal').value;
+    var yrs = +el('term').value;
+    var rA = +el('rA').value;
+    var rB = +el('rB').value;
+    var months = Math.max(1, Math.round(yrs*12));
+    var A = schedule(P, rA, months);
+    var B = schedule(P, rB, months);
+
+    var nameA = el('nameA').value || 'Scenario A';
+    var nameB = el('nameB').value || 'Scenario B';
+
+    el('lblA').textContent = nameA + ' rate';
+    el('lblB').textContent = nameB + ' rate';
+    el('kA').textContent = 'Total interest — ' + nameA;
+    el('kB').textContent = 'Total interest — ' + nameB;
+    el('lgA').textContent = nameA;
+    el('lgB').textContent = nameB;
+
+    var saved = A.total - B.total;
+    el('m-saved').textContent = (saved < 0 ? '−' : '') + usd(Math.abs(saved));
+    el('m-savedsub').textContent = saved >= 0 ? ('choosing ' + nameB) : (nameB + ' costs more');
+    el('m-iA').textContent = usd(A.total);
+    el('m-iB').textContent = usd(B.total);
+    el('m-mA').textContent = usd(A.payment) + ' / mo';
+    el('m-mB').textContent = usd(B.payment) + ' / mo';
+    var mdiff = B.payment - A.payment;
+    el('m-mdiff').textContent = (mdiff >= 0 ? '+' : '−') + usd(Math.abs(mdiff));
+
+    var labels = []; for (var y=0;y<A.yi.length;y++){ labels.push(y===0?'Now':('Yr '+y)); }
+
+    var dataA = view === 'int' ? A.yi : A.yb;
+    var dataB = view === 'int' ? B.yi : B.yb;
+    var yTitle = view === 'int' ? 'Cumulative interest' : 'Remaining balance';
+
+    var cfg = {
+      labels: labels,
+      datasets: [
+        { label:nameA, data:dataA, borderColor:'#C0502B', backgroundColor:'#C0502B', borderWidth:2.5, tension:0.25, pointRadius:0 },
+        { label:nameB, data:dataB, borderColor:'#0F6E56', backgroundColor:'#0F6E56', borderWidth:2.5, borderDash:[6,5], tension:0.25, pointRadius:0 }
+      ]
+    };
+
+    if (chart){
+      chart.data = cfg;
+      chart.options.scales.y.title.text = yTitle;
+      chart.update();
+    } else {
+      chart = new Chart(el('chart'), {
+        type:'line', data:cfg,
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          interaction:{ mode:'index', intersect:false },
+          plugins:{ legend:{ display:false },
+            tooltip:{ callbacks:{ label:function(c){ return c.dataset.label + ': ' + usd(c.parsed.y); } } } },
+          scales:{
+            x:{ grid:{ display:false } },
+            y:{ title:{ display:true, text:yTitle }, ticks:{ callback:function(v){ return '$' + Math.round(v/1000) + 'k'; } } }
+          }
+        }
+      });
+    }
+  }
+
+  function sync(slider, box, fmt){
+    var s = el(slider), b = el(box);
+    s.addEventListener('input', function(){ b.value = fmt(+s.value); recompute(); });
+    b.addEventListener('change', function(){
+      var v = parseNum(b.value);
+      v = Math.min(Math.max(v, +s.min), +s.max);
+      s.value = v; b.value = fmt(v); recompute();
+    });
+  }
+  sync('bal','bal-n', function(v){ return usd(v); });
+  sync('term','term-n', function(v){ return String(Math.round(v)); });
+  sync('rA','rA-n', function(v){ return (Math.round(v*100)/100).toFixed(2) + '%'; });
+  sync('rB','rB-n', function(v){ return (Math.round(v*100)/100).toFixed(2) + '%'; });
+
+  ['nameA','nameB'].forEach(function(id){ el(id).addEventListener('input', recompute); });
+
+  el('view-int').addEventListener('click', function(){ view='int'; this.classList.add('on'); el('view-bal').classList.remove('on'); recompute(); });
+  el('view-bal').addEventListener('click', function(){ view='bal'; this.classList.add('on'); el('view-int').classList.remove('on'); recompute(); });
+
+  // Apply URL params BEFORE the first compute so the chart and metrics render with the inbound values.
+  applyUrlParams();
+  recompute();
+})();
+</script>
+</body>
+</html>
