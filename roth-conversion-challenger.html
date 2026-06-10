@@ -1236,7 +1236,9 @@ function projectSavings(inputs) {
   // Approx dip-coupled TLH + Roth conversion savings vs bracket-fill only.
   // Logic: ~30% of IRA converted during dips (20% market drop) → same tax moves 25% more shares.
   // Additional 4-5% direct saving; plus avoided RMD on converted Roth dollars over 20+ yrs.
-  const converted = inputs.balance * 0.30;
+  // Assumes the full IRA is converted to Roth over the runway, so the entire balance
+  // escapes future RMD and heir tax.
+  const converted = inputs.balance * 1.00;
   const directSave = converted * 0.044;
   const futureRoth = converted * Math.pow(1 + inputs.growthRate, 22);
   const avoidedRMDTax = futureRoth * 0.24 * 0.40; // 40% of future value would be withdrawn & taxed
@@ -1334,19 +1336,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const annualWithdrawalStr = annualWithdrawal > 0 ? fmtMoney(annualWithdrawal) : '$0';
   const inflationPct = ((inputs.inflationRate != null ? inputs.inflationRate : 0.04) * 100).toFixed(1) + '%';
 
-  // ── Cost of waiting: the prize melts as the low-bracket runway burns down ──
-  // The conversion window is the pre-RMD years available today (rmdAge - currentAge).
-  // Each year of delay forfeits a low-bracket year, so the prize scales with the
-  // runway still left and goes to zero once RMDs begin and force the issue.
-  // Illustrative — assumes conversions are spread across those remaining years.
-  const fullPrize = (widowAnnual > 0 ? widowCum : 0) + (typeof savings === 'number' ? savings : 0);
-  const convRunway = Math.max(1, rmdAge - inputs.currentAge);
-  const prizeAfter = (delay) => { const left = convRunway - delay; return left <= 0 ? 0 : fullPrize * (left / convRunway); };
-  const prize5 = prizeAfter(5), prize10 = prizeAfter(10);
-  const fullPrizeStr = fmtMoney(fullPrize);
-  const prize5Str = fmtMoney(prize5), prize10Str = fmtMoney(prize10);
-  const prize5Pct = fullPrize > 0 ? Math.round(prize5 / fullPrize * 100) : 0;
-  const prize10Pct = fullPrize > 0 ? Math.round(prize10 / fullPrize * 100) : 0;
+  // ── Payoff + urgency slides (37 & 38): rate amplifier and low-bracket runway ──
+  // heirPlus20: the tax heirs avoid if rates rise ~20% (illustrative).
+  // runwayYears: pre-RMD low-bracket years left today, the conversion window.
+  const heirPlus20Str = fmtMoney(heir.lost * 1.2);
   const runwayYears = Math.max(0, rmdAge - inputs.currentAge);
 
   const slides = [];
@@ -2828,31 +2821,32 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="21">
       <div class="title-block">
         <div class="kicker">The Prize &mdash; Claimed</div>
-        <h2 class="title">This prize is the biggest <em>it will ever be.</em></h2>
-        <p class="subtitle">Do nothing, and the IRS takes ${lifeTax}. Take control today and you keep ${fullPrizeStr} of it &mdash; ${saveStr} for you${widowAnnual > 0 ? `, ${widowCumStr} for your spouse` : ''}. But that number melts every year you wait.</p>
+        <h2 class="title">Your heirs inherit a Roth &mdash; <em>not a ${heirLost} tax bill.</em></h2>
+        <p class="subtitle">Convert the whole IRA over your low-bracket runway, and the tax the IRS would have taken from three generations all but disappears.</p>
       </div>
-      <div style="max-width:1080px;margin:34px auto 0;font-family:var(--font-sans);">
-        <div style="font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:18px;">Total household tax saved &mdash; by when you start</div>
-        <div style="display:flex;align-items:center;gap:18px;margin-bottom:15px;">
-          <div style="width:148px;text-align:right;font-weight:700;font-size:15px;color:var(--ink-900);">Start now</div>
-          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:54px;"><div style="width:100%;background:var(--gold-500);height:100%;border-radius:8px;"></div></div>
-          <div style="width:96px;font-family:var(--font-serif);font-weight:700;font-size:27px;color:var(--gold-700);line-height:1;">${fullPrizeStr}</div>
+      <div style="max-width:1120px;margin:26px auto 0;background:var(--ink-900);border-radius:14px;padding:28px 36px;display:flex;align-items:center;gap:34px;">
+        <div style="flex-shrink:0;">
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-400);margin-bottom:8px;">What your heirs never pay</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:82px;color:var(--gold-400);line-height:0.95;letter-spacing:-0.03em;">${heirLost}</div>
         </div>
-        <div style="display:flex;align-items:center;gap:18px;margin-bottom:15px;">
-          <div style="width:148px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Wait 5 years</div>
-          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:54px;"><div style="width:${prize5Pct}%;background:#C9A84C;height:100%;border-radius:8px;"></div></div>
-          <div style="width:96px;font-family:var(--font-serif);font-weight:700;font-size:27px;color:var(--ink-700);line-height:1;">${prize5Str}</div>
+        <div style="font-family:var(--font-serif);font-size:18px;color:rgba(255,255,255,0.9);line-height:1.55;border-left:1px solid rgba(255,255,255,0.18);padding-left:34px;">Your IRA grows to about ${heirBefore} by your eighties. Left in a Traditional account, your heirs drain it over ten years at their peak rates and hand the IRS ${heirLost}. In a Roth, they inherit it <em style="color:var(--gold-400);font-style:italic;">tax-free.</em></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1120px;margin:18px auto 0;">
+        <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:20px 26px;">
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">Saved in your lifetime</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:44px;color:var(--gold-700);line-height:1;">${saveStr}</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:8px;line-height:1.45;">Converting at low brackets instead of paying RMD tax at the top.</div>
         </div>
-        <div style="display:flex;align-items:center;gap:18px;">
-          <div style="width:148px;text-align:right;font-weight:600;font-size:15px;color:#A83B2E;">Wait 10 years</div>
-          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:54px;"><div style="width:${prize10Pct}%;background:#A83B2E;height:100%;border-radius:8px;"></div></div>
-          <div style="width:96px;font-family:var(--font-serif);font-weight:700;font-size:27px;color:#A83B2E;line-height:1;">${prize10Str}</div>
+        <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:20px 26px;">
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">${widowAnnual > 0 ? 'Widow&rsquo;s penalty, erased' : 'Single-filer penalty, avoided'}</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:44px;color:var(--gold-700);line-height:1;">${widowAnnual > 0 ? widowCumStr : '$0'}</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:8px;line-height:1.45;">${widowAnnual > 0 ? `The extra tax your spouse never pays the year one of you is gone.` : `Roth dollars never trigger a single-filer penalty.`}</div>
         </div>
       </div>
-      <div style="max-width:1080px;margin:26px auto 0;background:var(--ink-900);border-radius:12px;padding:18px 32px;text-align:center;">
-        <span style="font-family:var(--font-serif);font-size:20px;color:white;line-height:1.5;">Every year you wait, the IRA compounds into a bigger bomb and your low-bracket runway shrinks. At ${rmdAge}, RMDs take the choice entirely &mdash; <em style="color:var(--gold-400);font-style:italic;">and the prize is gone.</em></span>
+      <div style="max-width:1120px;margin:20px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:19px;color:white;line-height:1.5;">And these are today&rsquo;s historically low rates &mdash; at +20%, your heirs avoid closer to <em style="color:var(--gold-400);font-style:italic;">${heirPlus20Str}.</em> It&rsquo;s the biggest it will ever be: every year you wait the window shrinks, and at ${rmdAge}, RMDs force the worst of it.</span>
       </div>
-      <div style="max-width:1080px;margin:12px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Illustrative: assumes conversions are spread across your remaining pre-RMD years; waiting forfeits those low-bracket years. Actual results vary with markets and future tax law.</div>
+      <div style="max-width:1120px;margin:10px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Illustrative: assumes the full IRA is converted to Roth over your pre-RMD years; heir figure estimates the 10-year-rule drain at peak rates. Actual results vary with markets and future tax law.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">21</div>
     </section>
