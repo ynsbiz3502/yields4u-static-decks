@@ -4058,17 +4058,9 @@ function renderCharts(inputs, sim, savings) {
       options: {
         responsive: true, maintainAspectRatio: false,
         plugins: {
-          title: { display: true, text: 'Where Every Federal Dollar Goes — FY2025',
+          title: { display: true, text: 'Federal Budget 2025',
             color: '#0E0E0F', font: { size: 16, weight: '700', family: "'Playfair Display', Georgia, serif" }, padding: { bottom: 14 } },
-          legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true, padding: 16,
-            font: { size: 13, weight: '600' },
-            generateLabels: chart => chart.data.labels.map((l, i) => ({
-              text: l + ' — ' + chart.data.datasets[0].data[i] + '%',
-              fillStyle: chart.data.datasets[0].backgroundColor[i],
-              strokeStyle: chart.data.datasets[0].backgroundColor[i],
-              fontColor: BUDGET_SLICES[i][3],
-              pointStyle: 'circle', index: i
-            })) } },
+          legend: { display: false },
           tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '% of FY2025 outlays' } }
         }
       }
