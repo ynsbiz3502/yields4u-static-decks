@@ -1971,15 +1971,15 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="13">
       <div class="title-block">
         <div class="kicker">The Legislative Risk</div>
-        <h2 class="title"><span style="text-decoration:line-through;color:var(--ink-300);">What if</span> <em style="color:var(--gold-600);">When</em> Congress raises tax rates&hellip;<br>how will that impact us?</h2>
+        <h2 class="title"><span style="text-decoration:line-through;color:var(--ink-300);">What if</span> <em style="color:var(--gold-600);">When</em> Congress raises tax rates&hellip; how will that impact us?</h2>
         <p class="subtitle">Select a scenario to see your lifetime burden if every bracket shifts up &mdash; the 12% bracket becomes 22%, the 22% bracket becomes 32%, and so on.</p>
       </div>
       <div style="display:flex;justify-content:center;margin:10px 0 6px;">
         <div style="display:inline-flex;background:#FAFAF9;border:1px solid var(--border);border-radius:999px;padding:3px;font-family:var(--font-sans);font-size:12px;font-weight:600;letter-spacing:0.06em;gap:2px;">
           <button class="rate-tab" data-shift="0" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">Current Rates</button>
-          <button class="rate-tab" data-shift="0.1" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:var(--ink-900);color:#fff;transition:all .2s;">+10 pts</button>
-          <button class="rate-tab" data-shift="0.2" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">+20 pts</button>
-          <button class="rate-tab" data-shift="0.3" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">+30 pts</button>
+          <button class="rate-tab" data-shift="0.1" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:var(--ink-900);color:#fff;transition:all .2s;">+10%</button>
+          <button class="rate-tab" data-shift="0.2" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">+20%</button>
+          <button class="rate-tab" data-shift="0.3" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">+30%</button>
         </div>
       </div>
       <div style="max-width:1300px;margin:0 auto;">
@@ -2444,7 +2444,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="debt-gdp">
       <div class="title-block">
         <div class="kicker">Lever 3 &mdash; The Tax Code</div>
-        <h2 class="title">America earns $31 trillion. <em>It owes $39 trillion.</em></h2>
+        <h2 class="title">America earns $31 trillion.<br><em>It owes $39 trillion.</em></h2>
         <p class="subtitle">Treat the country like a household: the national debt is now about 125% of what the whole economy produces in a year. Math like that only has two exits.</p>
       </div>
       <div style="max-width:1100px;margin:26px auto 0;font-family:var(--font-sans);">
@@ -2461,27 +2461,43 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           </div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1100px;margin:28px auto 0;">
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid #2E7D5B;border-radius:10px;padding:20px 26px;display:flex;align-items:center;gap:20px;">
-          <div style="font-size:64px;font-weight:800;color:#2E7D5B;line-height:1;flex-shrink:0;">&uarr;</div>
+      <div style="max-width:1100px;margin:24px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Sources: U.S. Treasury Fiscal Data &mdash; gross federal debt, April 2026; BEA &mdash; nominal GDP, trailing 12 months. Debt held by the public alone now equals roughly 100% of GDP (CBO).</div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">24</div>
+    </section>
+  `);
+
+  // ── Lever 3 narrative A2: the only two ways out of the math ─────────
+  slides.push(`
+    <section class="slide" data-slide="two-exits">
+      <div class="title-block">
+        <div class="kicker">Lever 3 &mdash; The Tax Code</div>
+        <h2 class="title">Balancing the budget: <em>there is only one way.</em></h2>
+        <p class="subtitle">When a country owes more than it earns, the math leaves exactly two levers &mdash; and only one of them is realistic.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1100px;margin:36px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:10px;padding:24px 30px;display:flex;align-items:center;gap:22px;">
+          <div style="font-size:72px;font-weight:800;color:#A83B2E;line-height:1;flex-shrink:0;">&darr;</div>
           <div>
-            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2E7D5B;margin-bottom:8px;">Exit 1</div>
-            <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);">Raise revenue</div>
-            <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);margin-top:6px;">That means taxes &mdash; and you just saw a century of where rates can go.</div>
+            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:8px;">Exit 1</div>
+            <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--ink-900);">Cut spending</div>
+            <div style="font-family:var(--font-sans);font-size:14px;color:var(--fg-muted);margin-top:6px;">Sounds easy &mdash; until you look at where the money actually goes.</div>
           </div>
         </div>
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:10px;padding:20px 26px;display:flex;align-items:center;gap:20px;">
-          <div style="font-size:64px;font-weight:800;color:#A83B2E;line-height:1;flex-shrink:0;">&darr;</div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #2E7D5B;border-radius:10px;padding:24px 30px;display:flex;align-items:center;gap:22px;">
+          <div style="font-size:72px;font-weight:800;color:#2E7D5B;line-height:1;flex-shrink:0;">&uarr;</div>
           <div>
-            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:8px;">Exit 2</div>
-            <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);">Cut spending</div>
-            <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);margin-top:6px;">Sounds easy &mdash; until you look at where the money actually goes.</div>
+            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2E7D5B;margin-bottom:8px;">Exit 2</div>
+            <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--ink-900);">Raise revenue</div>
+            <div style="font-family:var(--font-sans);font-size:14px;color:var(--fg-muted);margin-top:6px;">That means taxes &mdash; and you just saw a century of where rates can go.</div>
           </div>
         </div>
       </div>
-      <div style="max-width:1100px;margin:14px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Sources: U.S. Treasury Fiscal Data &mdash; gross federal debt, April 2026; BEA &mdash; nominal GDP, trailing 12 months. Debt held by the public alone now equals roughly 100% of GDP (CBO).</div>
+      <div style="max-width:1100px;margin:28px auto 0;background:var(--ink-900);border-radius:12px;padding:18px 32px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:24px;color:white;line-height:1.4;">&hellip;<em style="color:var(--gold-400);font-style:italic;">or do both!</em></span>
+      </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">24</div>
+      <div class="slide-number">25</div>
     </section>
   `);
 
@@ -2490,22 +2506,22 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="budget-pie">
       <div class="title-block">
         <div class="kicker">Lever 3 &mdash; The Tax Code</div>
-        <h2 class="title">So&hellip; cut spending? <em>Look where it actually goes.</em></h2>
+        <h2 class="title">There&rsquo;s Nothing Left to Cut&hellip;<em>But Benefits!</em></h2>
         <p class="subtitle">Defense and every federal agency you can name add up to barely a quarter of the budget. Nearly three-quarters is benefits and interest &mdash; money already promised.</p>
       </div>
       <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:40px;max-width:1300px;margin:20px auto 0;align-items:center;">
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:16px;height:380px;"><canvas id="chart-budget-pie"></canvas></div>
         <div style="display:flex;flex-direction:column;gap:16px;">
           <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:18px 24px;">
-            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--gold-700);line-height:1;">58%</div>
+            <div style="display:flex;align-items:baseline;gap:12px;"><div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--gold-700);line-height:1;">58%</div><div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-700);">Benefits</div></div>
             <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">of spending goes to Social Security, Medicare, health care, and income support &mdash; benefits people were promised.</div>
           </div>
           <div style="background:#FEF2F2;border:1px solid #FBCFCF;border-left:4px solid #A83B2E;border-radius:10px;padding:18px 24px;">
-            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:#A83B2E;line-height:1;">14%</div>
+            <div style="display:flex;align-items:baseline;gap:12px;"><div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:#A83B2E;line-height:1;">14%</div><div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#A83B2E;">Interest</div></div>
             <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">goes to interest on the debt &mdash; over $1 trillion a year, and it can&rsquo;t be cut without defaulting.</div>
           </div>
           <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--info);border-radius:10px;padding:18px 24px;">
-            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--info);line-height:1;">28%</div>
+            <div style="display:flex;align-items:baseline;gap:12px;"><div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--info);line-height:1;">28%</div><div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--info);">Government</div></div>
             <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">is everything you picture as &ldquo;the government&rdquo; &mdash; military (13%), veterans (5%), every agency (10%). Eliminate <em>all of it</em> and you&rsquo;d barely cover one year&rsquo;s deficit.</div>
           </div>
         </div>
@@ -2524,7 +2540,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="one-choice">
       <div class="title-block">
         <div class="kicker">Lever 3 &mdash; The Tax Code</div>
-        <h2 class="title">One lever left: <em>cut benefits, or raise taxes.</em></h2>
+        <h2 class="title"><em>And it&rsquo;s been happening for years!</em></h2>
         <p class="subtitle">They&rsquo;ve already been cutting benefits for years. They&rsquo;ve just been quiet about it.</p>
       </div>
       <div class="grid-4">
