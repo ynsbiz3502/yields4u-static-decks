@@ -2444,6 +2444,115 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── Lever 3 narrative A: the debt math — income vs. what's owed ─────
+  slides.push(`
+    <section class="slide" data-slide="debt-gdp">
+      <div class="title-block">
+        <div class="kicker">Lever 3 &mdash; The Tax Code</div>
+        <h2 class="title">America earns $31 trillion. <em>It owes $39 trillion.</em></h2>
+        <p class="subtitle">Treat the country like a household: the national debt is now about 125% of what the whole economy produces in a year. Math like that only has two exits.</p>
+      </div>
+      <div style="max-width:1100px;margin:26px auto 0;font-family:var(--font-sans);">
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:14px;">
+          <div style="width:230px;text-align:right;font-weight:700;font-size:15px;color:var(--ink-900);">What America makes <span style="font-weight:500;color:var(--fg-subtle);">(GDP)</span></div>
+          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:52px;">
+            <div style="width:80%;background:var(--ink-700);height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:14px;color:#fff;font-weight:700;font-size:16px;">$31.2T</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:18px;">
+          <div style="width:230px;text-align:right;font-weight:700;font-size:15px;color:#A83B2E;">What America owes</div>
+          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:52px;">
+            <div style="width:100%;background:#A83B2E;height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:14px;color:#fff;font-weight:700;font-size:16px;">$39.0T &middot; 125% of GDP</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1100px;margin:28px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:20px 26px;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:8px;">Exit 1</div>
+          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);">Raise revenue</div>
+          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);margin-top:6px;">That means taxes &mdash; and you just saw a century of where rates can go.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-700);border-radius:10px;padding:20px 26px;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-700);margin-bottom:8px;">Exit 2</div>
+          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);">Cut spending</div>
+          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);margin-top:6px;">Sounds easy &mdash; until you look at where the money actually goes.</div>
+        </div>
+      </div>
+      <div style="max-width:1100px;margin:14px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Sources: U.S. Treasury Fiscal Data &mdash; gross federal debt, April 2026; BEA &mdash; nominal GDP, trailing 12 months. Debt held by the public alone now equals roughly 100% of GDP (CBO).</div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">24</div>
+    </section>
+  `);
+
+  // ── Lever 3 narrative B: where federal spending actually goes ───────
+  slides.push(`
+    <section class="slide" data-slide="budget-pie">
+      <div class="title-block">
+        <div class="kicker">Lever 3 &mdash; The Tax Code</div>
+        <h2 class="title">So&hellip; cut spending? <em>Look where it actually goes.</em></h2>
+        <p class="subtitle">Defense and every federal agency you can name add up to barely a quarter of the budget. Nearly three-quarters is benefits and interest &mdash; money already promised.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:40px;max-width:1300px;margin:20px auto 0;align-items:center;">
+        <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:16px;height:380px;"><canvas id="chart-budget-pie"></canvas></div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:18px 24px;">
+            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--gold-700);line-height:1;">58&cent;</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">of every dollar goes to Social Security, Medicare, health care, and income support &mdash; benefits people were promised.</div>
+          </div>
+          <div style="background:#FEF2F2;border:1px solid #FBCFCF;border-left:4px solid #A83B2E;border-radius:10px;padding:18px 24px;">
+            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:#A83B2E;line-height:1;">14&cent;</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">goes to interest on the debt &mdash; over $1 trillion a year, and it can&rsquo;t be cut without defaulting.</div>
+          </div>
+          <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--info);border-radius:10px;padding:18px 24px;">
+            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--info);line-height:1;">28&cent;</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">is everything you picture as &ldquo;the government&rdquo; &mdash; the military (13&cent;), veterans (5&cent;), and every agency combined (10&cent;).</div>
+          </div>
+        </div>
+      </div>
+      <div style="max-width:1300px;margin:14px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Source: U.S. Treasury Fiscal Data / CBO &mdash; FY2025 federal outlays, &approx;$7.0 trillion. Categories rounded to the nearest percent.</div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">25</div>
+    </section>
+  `);
+
+  // ── Lever 3 narrative C: the only lever left ────────────────────────
+  slides.push(`
+    <section class="slide" data-slide="one-choice">
+      <div class="title-block">
+        <div class="kicker">Lever 3 &mdash; The Tax Code</div>
+        <h2 class="title">One lever left: <em>cut benefits, or raise taxes.</em></h2>
+        <p class="subtitle">And they&rsquo;ve been quietly pulling the benefits lever for forty years.</p>
+      </div>
+      <div class="grid-4">
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">1</span>1983</div>
+          <div class="box-title">Retirement Age Raised</div>
+          <div class="box-body">Full Social Security age moved from 65 to 67 &mdash; an across-the-board benefit reduction, phased in quietly.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">2</span>1984 &amp; 1993</div>
+          <div class="box-title">Benefits Became Taxable</div>
+          <div class="box-body">Social Security checks were tax-free until 1984. Now up to 85% of your benefit can be taxed.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">3</span>2007</div>
+          <div class="box-title">Medicare Means-Testing</div>
+          <div class="box-body">IRMAA surcharges: higher earners now pay up to triple the standard premium for the same Medicare.</div>
+        </div>
+        <div class="box-card">
+          <div class="box-kicker"><span class="num">4</span>2020</div>
+          <div class="box-title">The Stretch IRA Killed</div>
+          <div class="box-body">The SECURE Act forces your heirs to drain inherited IRAs within 10 years &mdash; at their peak tax rates.</div>
+        </div>
+      </div>
+      <div style="max-width:1150px;margin:24px auto 0;background:var(--ink-900);border-radius:12px;padding:18px 32px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:21px;color:white;line-height:1.45;">The benefit cuts already happened. Taxes are the lever they haven&rsquo;t fully pulled &mdash; <em style="color:var(--gold-400);font-style:italic;">yet.</em></span>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">26</div>
+    </section>
+  `);
+
   // ── The legislative risk: converting at today's known rates ─────────
   slides.push(legRiskSlide);
 
@@ -3786,6 +3895,47 @@ function renderCharts(inputs, sim, savings) {
             callback: (v, i) => hrYears[i] % 10 === 0 ? hrYears[i] : '' } },
           y: { min: 0, max: 100, grid: { color: 'rgba(14, 14, 15, 0.06)' },
             ticks: { callback: v => v + '%' } }
+        }
+      }
+    });
+  }
+
+  // ---- Federal spending doughnut (lever 3 narrative) ----
+  // FY2025 outlays ~$7.0T, Treasury Fiscal Data / CBO category shares, rounded.
+  const budgetPieEl = document.getElementById('chart-budget-pie');
+  if (budgetPieEl) {
+    const BUDGET_SLICES = [
+      ['Social Security', 22, '#C9A84C'],
+      ['Medicare', 14, '#D48E27'],
+      ['Health & Medicaid', 13, '#E8A33D'],
+      ['Income security', 9, '#B1711B'],
+      ['Net interest', 14, '#A83B2E'],
+      ['National defense', 13, '#2F5673'],
+      ['Veterans', 5, '#4C8FBA'],
+      ['Everything else', 10, '#8F8F94']
+    ];
+    chartInstances.budgetPie = new Chart(budgetPieEl, {
+      type: 'doughnut',
+      data: {
+        labels: BUDGET_SLICES.map(s => s[0]),
+        datasets: [{
+          data: BUDGET_SLICES.map(s => s[1]),
+          backgroundColor: BUDGET_SLICES.map(s => s[2]),
+          borderColor: '#FFFFFF',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '55%',
+        plugins: {
+          legend: { position: 'right', labels: { boxWidth: 14, usePointStyle: true, padding: 12,
+            generateLabels: chart => chart.data.labels.map((l, i) => ({
+              text: l + ' — ' + chart.data.datasets[0].data[i] + '%',
+              fillStyle: chart.data.datasets[0].backgroundColor[i],
+              strokeStyle: chart.data.datasets[0].backgroundColor[i],
+              pointStyle: 'circle', index: i
+            })) } },
+          tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '% of FY2025 outlays' } }
         }
       }
     });
