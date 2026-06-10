@@ -2713,7 +2713,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
         <div style="display:flex;align-items:flex-start;gap:14px;background:white;border:1px solid var(--border);border-radius:8px;padding:16px 20px;">
           <div style="flex-shrink:0;width:26px;height:26px;border-radius:6px;background:transparent;border:2px solid #CDD2D8;margin-top:1px;"></div>
-          <div><div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.25;">Paid only by you</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);margin-top:3px;line-height:1.4;">One fee, straight from you &mdash; never a commission from a fund or annuity.</div></div>
+          <div><div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.25;">${inputs.filingStatus === 'MFJ' ? 'Plans for spouse &amp; heirs' : 'Plans for your heirs'}</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);margin-top:3px;line-height:1.4;">${inputs.filingStatus === 'MFJ' ? 'Models the survivor&rsquo;s single-filer penalty &mdash; and the 10-year rule your heirs face.' : 'Lines up your beneficiaries for the 10-year inherited-IRA rule &mdash; most never do.'}</div></div>
         </div>
       </div>
       <div style="max-width:1100px;margin:22px auto 0;text-align:center;">
