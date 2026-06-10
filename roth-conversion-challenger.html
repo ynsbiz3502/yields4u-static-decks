@@ -4038,10 +4038,11 @@ function renderCharts(inputs, sim, savings) {
   // and everything people picture as "the government."
   const budgetPieEl = document.getElementById('chart-budget-pie');
   if (budgetPieEl) {
+    // [label, %, slice fill (matches each box's accent border), legend text (matches each box's title)]
     const BUDGET_SLICES = [
-      ['Benefits & income support', 58, '#D48E27'],
-      ['Interest on the debt', 14, '#A83B2E'],
-      ['Defense & everything else', 28, '#2F5673']
+      ['Benefits', 58, '#D48E27', '#8A5612'],
+      ['Interest', 14, '#A83B2E', '#A83B2E'],
+      ['Government', 28, '#2F5673', '#2F5673']
     ];
     chartInstances.budgetPie = new Chart(budgetPieEl, {
       type: 'pie',
@@ -4065,6 +4066,7 @@ function renderCharts(inputs, sim, savings) {
               text: l + ' — ' + chart.data.datasets[0].data[i] + '%',
               fillStyle: chart.data.datasets[0].backgroundColor[i],
               strokeStyle: chart.data.datasets[0].backgroundColor[i],
+              fontColor: BUDGET_SLICES[i][3],
               pointStyle: 'circle', index: i
             })) } },
           tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '% of FY2025 outlays' } }
