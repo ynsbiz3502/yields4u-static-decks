@@ -2208,6 +2208,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
                in the loaded series — full years + current-year YTD. -->
         </div>
       </div>
+      <div style="max-width:1300px;margin:14px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Source: EOD Historical Data (eodhd.com), S&amp;P 500 (GSPC). Index levels and returns are price-only &mdash; they do not include reinvested dividends; the 500-stock gain/loss counts use split- and dividend-adjusted closes. Data as of <span id="spx-data-asof">&mdash;</span>.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">18</div>
     </section>
@@ -3216,6 +3217,15 @@ function renderCharts(inputs, sim, savings) {
       if (!container || !Array.isArray(years) || years.length === 0) return;
       container.innerHTML = years.map(renderSpxYearPanel).join('');
       container.style.gridTemplateColumns = 'repeat(' + years.length + ', 1fr)';
+      // Keep the source/as-of footnote in sync with whichever data rendered
+      // (inline defaults first, then the fetched JSON when it arrives).
+      const ytdYear = years.find(y => y && y.ytd && y.as_of);
+      const asOfEl = document.getElementById('spx-data-asof');
+      if (asOfEl && ytdYear) {
+        try {
+          asOfEl.textContent = new Date(ytdYear.as_of + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        } catch (_) { asOfEl.textContent = ytdYear.as_of; }
+      }
     }
     const SPX_CONSTITUENTS_DEFAULTS = [
       { label: '2024', ytd: false, index_return_pct: 23.3, positive: 363, negative: 136 },
