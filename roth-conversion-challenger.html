@@ -2413,6 +2413,37 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── Lever 3 history: a century of marginal rates, lowest + highest bracket ──
+  slides.push(`
+    <section class="slide" data-slide="hist-rates">
+      <div class="title-block">
+        <div class="kicker">Lever 3 &mdash; The Tax Code</div>
+        <h2 class="title"><span style="text-decoration:line-through;color:var(--ink-300);">Will</span> <em>When</em> will tax rates go up?</h2>
+        <p class="subtitle">More than a century of the U.S. income tax in one picture. The top bracket has been as high as 94% &mdash; today&rsquo;s 37% sits near the floor of modern history.</p>
+      </div>
+      <div style="max-width:1300px;margin:10px auto 0;">
+        <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:16px 18px;height:330px;"><canvas id="chart-hist-rates"></canvas></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1300px;margin:16px auto 0;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:10px;padding:16px 22px;text-align:center;">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:34px;color:#A83B2E;line-height:1;">94%</div>
+          <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);margin-top:6px;">Top bracket at its peak, 1944&ndash;45</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:16px 22px;text-align:center;">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:34px;color:var(--ink-900);line-height:1;">70%</div>
+          <div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);margin-top:6px;">Top bracket as recently as 1980</div>
+        </div>
+        <div style="background:var(--ink-900);border-radius:10px;padding:16px 22px;text-align:center;">
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:34px;color:var(--gold-400);line-height:1;">37%</div>
+          <div style="font-family:var(--font-sans);font-size:12px;color:rgba(255,255,255,0.72);margin-top:6px;">Top bracket today &mdash; near the modern floor</div>
+        </div>
+      </div>
+      <div style="max-width:1300px;margin:12px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Sources: IRS Statistics of Income; Tax Foundation. Statutory marginal rates for the lowest and highest federal income-tax brackets, 1913&ndash;2026. Excludes temporary surcharges and credits.</div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">23</div>
+    </section>
+  `);
+
   // ── The legislative risk: converting at today's known rates ─────────
   slides.push(legRiskSlide);
 
@@ -3709,6 +3740,57 @@ function renderCharts(inputs, sim, savings) {
   }
 
   // ---- 1040 stacking chart (Act 3): effective tax on a fixed conversion vs other income ----
+  // ---- Historical marginal rates, lowest + highest bracket (lever 3 history) ----
+  // Change-point table [year, lowest %, highest %]; each entry holds until the
+  // next. Statutory rates per IRS SOI / Tax Foundation; surcharges excluded.
+  const histRatesEl = document.getElementById('chart-hist-rates');
+  if (histRatesEl) {
+    const HIST_RATES = [
+      [1913, 1, 7], [1916, 2, 15], [1917, 2, 67], [1918, 6, 77], [1919, 4, 73],
+      [1922, 4, 58], [1924, 1.5, 46], [1925, 1.5, 25], [1929, 0.4, 24], [1930, 1.1, 25],
+      [1932, 4, 63], [1936, 4, 79], [1940, 4.4, 81], [1941, 10, 81], [1942, 19, 88],
+      [1944, 23, 94], [1946, 19, 86.5], [1948, 16.6, 82.1], [1950, 17.4, 84.4],
+      [1951, 20.4, 91], [1952, 22.2, 92], [1954, 20, 91], [1964, 16, 77], [1965, 14, 70],
+      [1982, 12, 50], [1983, 11, 50], [1987, 11, 38.5], [1988, 15, 28], [1991, 15, 31],
+      [1993, 15, 39.6], [2001, 10, 39.1], [2002, 10, 38.6], [2003, 10, 35],
+      [2013, 10, 39.6], [2018, 10, 37]
+    ];
+    const hrYears = [], hrLo = [], hrHi = [];
+    for (let y = 1913; y <= new Date().getFullYear(); y++) {
+      let cur = HIST_RATES[0];
+      for (const e of HIST_RATES) { if (e[0] <= y) cur = e; else break; }
+      hrYears.push(y); hrLo.push(cur[1]); hrHi.push(cur[2]);
+    }
+    chartInstances.histRates = new Chart(histRatesEl, {
+      type: 'line',
+      data: {
+        labels: hrYears,
+        datasets: [
+          { label: 'Highest bracket', data: hrHi, borderColor: '#A83B2E',
+            backgroundColor: 'rgba(168, 59, 46, 0.08)', borderWidth: 2.5,
+            stepped: true, pointRadius: 0, pointHoverRadius: 4, fill: true },
+          { label: 'Lowest bracket', data: hrLo, borderColor: '#6B6B70',
+            backgroundColor: 'transparent', borderWidth: 2,
+            stepped: true, pointRadius: 0, pointHoverRadius: 4, fill: false }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { boxWidth: 12, usePointStyle: true, padding: 14 } },
+          tooltip: { mode: 'index', intersect: false,
+            callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + ctx.parsed.y + '%' } }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkip: false,
+            callback: (v, i) => hrYears[i] % 10 === 0 ? hrYears[i] : '' } },
+          y: { min: 0, max: 100, grid: { color: 'rgba(14, 14, 15, 0.06)' },
+            ticks: { callback: v => v + '%' } }
+        }
+      }
+    });
+  }
+
   // ---- Proof / savings chart (slide 14) ----
   const proofEl = document.getElementById('chart-proof');
   if (proofEl) {
