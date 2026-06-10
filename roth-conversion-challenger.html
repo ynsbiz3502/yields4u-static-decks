@@ -2031,10 +2031,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div class="kicker" style="text-align:center">Let&rsquo;s Recap</div>
         <h1 class="hero-title">
           So why do Roth conversions?
-          <span class="accent">Three numbers${name}.</span>
+          <span class="accent">Four numbers${name}.</span>
         </h1>
-        <p class="hero-sub">Everything we just walked through, on your ${balStr} IRA &mdash; the money you&rsquo;ll be forced to take, the brackets it pushes you into, and what it costs your kids.</p>
-        <div class="hook-stats">
+        <p class="hero-sub">Everything we just walked through, on your ${balStr} IRA &mdash; the money you&rsquo;ll be forced to take, the brackets it pushes you into, what it costs your kids, and the total bill if you do nothing.</p>
+        <div class="hook-stats" style="grid-template-columns:repeat(4,1fr);max-width:1240px;">
           <div class="hook-stat">
             <div class="stat-label">Forced Out Beyond Your Need</div>
             <div class="stat-val">${fmtMoney(rmdBeyondNeed)}</div>
@@ -2049,6 +2049,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             <div class="stat-label">Your Kids&rsquo; Tax Bill</div>
             <div class="stat-val">${fmtMoney(heir.lost)}</div>
             <div class="stat-meta">Lost to the 10-year forced drain at their peak earning rates</div>
+          </div>
+          <div class="hook-stat">
+            <div class="stat-label">Lifetime Tax &mdash; Doing Nothing</div>
+            <div class="stat-val">${lifeTax}</div>
+            <div class="stat-meta">Your projected total bill on RMDs alone</div>
           </div>
         </div>
       </div>
