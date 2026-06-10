@@ -1977,8 +1977,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="display:flex;justify-content:center;margin:10px 0 6px;">
         <div style="display:inline-flex;background:#FAFAF9;border:1px solid var(--border);border-radius:999px;padding:3px;font-family:var(--font-sans);font-size:12px;font-weight:600;letter-spacing:0.06em;gap:2px;">
           <button class="rate-tab" data-shift="0" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">Current Rates</button>
-          <button class="rate-tab" data-shift="0.1" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:var(--ink-900);color:#fff;transition:all .2s;">+10%</button>
-          <button class="rate-tab" data-shift="0.2" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">+20%</button>
+          <button class="rate-tab" data-shift="0.1" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">+10%</button>
+          <button class="rate-tab" data-shift="0.2" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:var(--ink-900);color:#fff;transition:all .2s;">+20%</button>
           <button class="rate-tab" data-shift="0.3" style="padding:6px 20px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">+30%</button>
         </div>
       </div>
@@ -3964,7 +3964,7 @@ function renderCharts(inputs, sim, savings) {
       }
     }
 
-    renderRateIncChart(0.1);
+    renderRateIncChart(0.2);
 
     rateIncEl.closest('.slide').querySelectorAll('.rate-tab').forEach(btn => {
       btn.addEventListener('click', () => {
