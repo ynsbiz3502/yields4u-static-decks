@@ -1533,8 +1533,12 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // Challenger reorder: hold the credibility trio (About YFY / Meet Team / About Leibel) for the pitch.
-  const _credibilitySlides = slides.splice(2, 3);
+  // Challenger reorder: hold the credibility slides (About YFY / Meet Team / About
+  // Leibel) for the close. In the pitch we lead with Leibel — he's the proof of the
+  // wedge claims (IRS Enrolled Agent + the CTO who built the platform) — then the
+  // team, to kill the "one-man shop" worry. The firm "About" slide is dropped here;
+  // its mission already rides the footer of every slide and the CTA.
+  const [, _teamSlide, _leibelSlide] = slides.splice(2, 3);
 
   // SECTION DIVIDER (title page) — poses the question the diagnostic run answers:
   // "how big is the threat?" Deliberately withholds the specifics; the slides that
@@ -2834,8 +2838,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // Credibility trio — lands here, right after the wedge that explains why a boutique firm exists
-  slides.push(..._credibilitySlides);
+  // Credibility — lands right after the wedge. Leibel first (proof of the wedge),
+  // then the team. The firm "About" slide was intentionally dropped (see splice above).
+  slides.push(_leibelSlide, _teamSlide);
 
   // ── Section divider: the cost of doing nothing ──────────────────────
   slides.push(`
