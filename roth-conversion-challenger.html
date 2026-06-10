@@ -2467,15 +2467,21 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1100px;margin:28px auto 0;">
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:20px 26px;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:8px;">Exit 1</div>
-          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);">Raise revenue</div>
-          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);margin-top:6px;">That means taxes &mdash; and you just saw a century of where rates can go.</div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #2E7D5B;border-radius:10px;padding:20px 26px;display:flex;align-items:center;gap:20px;">
+          <div style="font-size:64px;font-weight:800;color:#2E7D5B;line-height:1;flex-shrink:0;">&uarr;</div>
+          <div>
+            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#2E7D5B;margin-bottom:8px;">Exit 1</div>
+            <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);">Raise revenue</div>
+            <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);margin-top:6px;">That means taxes &mdash; and you just saw a century of where rates can go.</div>
+          </div>
         </div>
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-700);border-radius:10px;padding:20px 26px;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-700);margin-bottom:8px;">Exit 2</div>
-          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);">Cut spending</div>
-          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);margin-top:6px;">Sounds easy &mdash; until you look at where the money actually goes.</div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:10px;padding:20px 26px;display:flex;align-items:center;gap:20px;">
+          <div style="font-size:64px;font-weight:800;color:#A83B2E;line-height:1;flex-shrink:0;">&darr;</div>
+          <div>
+            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:8px;">Exit 2</div>
+            <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);">Cut spending</div>
+            <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);margin-top:6px;">Sounds easy &mdash; until you look at where the money actually goes.</div>
+          </div>
         </div>
       </div>
       <div style="max-width:1100px;margin:14px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Sources: U.S. Treasury Fiscal Data &mdash; gross federal debt, April 2026; BEA &mdash; nominal GDP, trailing 12 months. Debt held by the public alone now equals roughly 100% of GDP (CBO).</div>
@@ -2496,16 +2502,16 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:16px;height:380px;"><canvas id="chart-budget-pie"></canvas></div>
         <div style="display:flex;flex-direction:column;gap:16px;">
           <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:18px 24px;">
-            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--gold-700);line-height:1;">58&cent;</div>
-            <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">of every dollar goes to Social Security, Medicare, health care, and income support &mdash; benefits people were promised.</div>
+            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--gold-700);line-height:1;">58%</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">of spending goes to Social Security, Medicare, health care, and income support &mdash; benefits people were promised.</div>
           </div>
           <div style="background:#FEF2F2;border:1px solid #FBCFCF;border-left:4px solid #A83B2E;border-radius:10px;padding:18px 24px;">
-            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:#A83B2E;line-height:1;">14&cent;</div>
+            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:#A83B2E;line-height:1;">14%</div>
             <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">goes to interest on the debt &mdash; over $1 trillion a year, and it can&rsquo;t be cut without defaulting.</div>
           </div>
           <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--info);border-radius:10px;padding:18px 24px;">
-            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--info);line-height:1;">28&cent;</div>
-            <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">is everything you picture as &ldquo;the government&rdquo; &mdash; the military (13&cent;), veterans (5&cent;), and every agency combined (10&cent;).</div>
+            <div style="font-family:var(--font-serif);font-weight:700;font-size:30px;color:var(--info);line-height:1;">28%</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:6px;line-height:1.45;">is everything you picture as &ldquo;the government&rdquo; &mdash; the military (13%), veterans (5%), and every agency combined (10%).</div>
           </div>
         </div>
       </div>
@@ -2521,28 +2527,28 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="title-block">
         <div class="kicker">Lever 3 &mdash; The Tax Code</div>
         <h2 class="title">One lever left: <em>cut benefits, or raise taxes.</em></h2>
-        <p class="subtitle">And they&rsquo;ve been quietly pulling the benefits lever for forty years.</p>
+        <p class="subtitle">And they&rsquo;ve been quietly pulling the benefits lever for years &mdash; the next cut is already on the calendar.</p>
       </div>
       <div class="grid-4">
         <div class="box-card">
-          <div class="box-kicker"><span class="num">1</span>1983</div>
-          <div class="box-title">Retirement Age Raised</div>
-          <div class="box-body">Full Social Security age moved from 65 to 67 &mdash; an across-the-board benefit reduction, phased in quietly.</div>
+          <div class="box-kicker"><span class="num">1</span>2007</div>
+          <div class="box-title">IRMAA</div>
+          <div class="box-body">Medicare became means-tested: higher earners now pay up to triple the standard premium for the exact same coverage.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">2</span>1984 &amp; 1993</div>
-          <div class="box-title">Benefits Became Taxable</div>
-          <div class="box-body">Social Security checks were tax-free until 1984. Now up to 85% of your benefit can be taxed.</div>
+          <div class="box-kicker"><span class="num">2</span>2016</div>
+          <div class="box-title">Deemed Filing</div>
+          <div class="box-body">File-and-suspend and restricted claiming were eliminated &mdash; couples lost the ability to collect one benefit while the other keeps growing.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">3</span>2007</div>
-          <div class="box-title">Medicare Means-Testing</div>
-          <div class="box-body">IRMAA surcharges: higher earners now pay up to triple the standard premium for the same Medicare.</div>
+          <div class="box-kicker"><span class="num">3</span>2020</div>
+          <div class="box-title">The 10-Year Rule</div>
+          <div class="box-body">They came after retirement savings: the SECURE Act forces heirs to drain inherited IRAs within a decade &mdash; at their peak tax rates.</div>
         </div>
         <div class="box-card">
-          <div class="box-kicker"><span class="num">4</span>2020</div>
-          <div class="box-title">The Stretch IRA Killed</div>
-          <div class="box-body">The SECURE Act forces your heirs to drain inherited IRAs within 10 years &mdash; at their peak tax rates.</div>
+          <div class="box-kicker"><span class="num">4</span>2032</div>
+          <div class="box-title">Trust Fund Runs Dry</div>
+          <div class="box-body">Social Security&rsquo;s retirement trust fund is projected to be depleted as soon as 2032 &mdash; triggering automatic benefit cuts of roughly 20% unless Congress acts.</div>
         </div>
       </div>
       <div style="max-width:1150px;margin:24px auto 0;background:var(--ink-900);border-radius:12px;padding:18px 32px;text-align:center;">
@@ -3900,35 +3906,35 @@ function renderCharts(inputs, sim, savings) {
     });
   }
 
-  // ---- Federal spending doughnut (lever 3 narrative) ----
-  // FY2025 outlays ~$7.0T, Treasury Fiscal Data / CBO category shares, rounded.
+  // ---- Federal spending pie (lever 3 narrative) ----
+  // FY2025 outlays ~$7.0T, Treasury Fiscal Data / CBO category shares, rounded
+  // into the three buckets the narrative uses: promised benefits, interest,
+  // and everything people picture as "the government."
   const budgetPieEl = document.getElementById('chart-budget-pie');
   if (budgetPieEl) {
     const BUDGET_SLICES = [
-      ['Social Security', 22, '#C9A84C'],
-      ['Medicare', 14, '#D48E27'],
-      ['Health & Medicaid', 13, '#E8A33D'],
-      ['Income security', 9, '#B1711B'],
-      ['Net interest', 14, '#A83B2E'],
-      ['National defense', 13, '#2F5673'],
-      ['Veterans', 5, '#4C8FBA'],
-      ['Everything else', 10, '#8F8F94']
+      ['Benefits & income support', 58, '#D48E27'],
+      ['Interest on the debt', 14, '#A83B2E'],
+      ['Defense & everything else', 28, '#2F5673']
     ];
     chartInstances.budgetPie = new Chart(budgetPieEl, {
-      type: 'doughnut',
+      type: 'pie',
       data: {
         labels: BUDGET_SLICES.map(s => s[0]),
         datasets: [{
           data: BUDGET_SLICES.map(s => s[1]),
           backgroundColor: BUDGET_SLICES.map(s => s[2]),
           borderColor: '#FFFFFF',
-          borderWidth: 2
+          borderWidth: 3
         }]
       },
       options: {
-        responsive: true, maintainAspectRatio: false, cutout: '55%',
+        responsive: true, maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'right', labels: { boxWidth: 14, usePointStyle: true, padding: 12,
+          title: { display: true, text: 'Where Every Federal Dollar Goes — FY2025',
+            color: '#0E0E0F', font: { size: 16, weight: '700', family: "'Playfair Display', Georgia, serif" }, padding: { bottom: 14 } },
+          legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: true, padding: 16,
+            font: { size: 13, weight: '600' },
             generateLabels: chart => chart.data.labels.map((l, i) => ({
               text: l + ' — ' + chart.data.datasets[0].data[i] + '%',
               fillStyle: chart.data.datasets[0].backgroundColor[i],
