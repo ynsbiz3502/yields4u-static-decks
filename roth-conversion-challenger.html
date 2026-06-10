@@ -1136,13 +1136,21 @@ function computeTaxIndexedShifted(income, status, inflFactor, ratePtShift) {
   return Math.max(0, tax);
 }
 
+// SECURE 2.0 RMD start age, derived from birth year (current year - age):
+// born 1951-1959 → 73; born 1960 or later → 75. Earlier cohorts began at 72
+// and are already past their start age either way, so 73 is safe for them.
+function rmdStartAge(currentAge) {
+  const birthYear = new Date().getFullYear() - currentAge;
+  return birthYear >= 1960 ? 75 : 73;
+}
+
 function simulate(inputs) {
   const { balance, currentAge, growthRate, otherIncome, filingStatus } = inputs;
   const annualWithdrawal = inputs.annualWithdrawal || 0;
   const totalIncomeNeeds = inputs.totalIncomeNeeds || 0;
   const socialSecurity = inputs.socialSecurity || 0;
   const inflationRate = (inputs.inflationRate != null) ? inputs.inflationRate : 0.04;
-  const rmdStart = 73, endAge = 95;
+  const rmdStart = rmdStartAge(currentAge), endAge = 95;
 
   let bal = balance;
   const yearly = [];          // full per-year breakdown (currentAge .. endAge)
@@ -1303,6 +1311,7 @@ function parseMoney(s) {
  * =============================================================== */
 function buildSlides(inputs, sim, savings, heir, widow) {
   const name = inputs.firstName ? `, ${inputs.firstName}` : '';
+  const rmdAge = rmdStartAge(inputs.currentAge);
   const balStr = fmtMoney(inputs.balance, true);
   const peak = fmtMoney(sim.peakRMD);
   const lifeRMD = fmtMoney(sim.lifetimeRMD);
@@ -1347,7 +1356,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:36px 28px;text-align:center;">
           <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:18px;">Current Age</div>
           <div style="font-family:var(--font-serif);font-weight:700;font-size:48px;color:var(--ink-900);line-height:1;letter-spacing:-0.02em;">${inputs.currentAge}</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);margin-top:14px;">${73 - inputs.currentAge > 0 ? `${73 - inputs.currentAge} years until RMDs begin` : 'RMDs already in effect'}</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);margin-top:14px;">${rmdAge - inputs.currentAge > 0 ? `${rmdAge - inputs.currentAge} years until RMDs begin (age ${rmdAge})` : 'RMDs already in effect'}</div>
         </div>
         <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:36px 28px;text-align:center;">
           <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:18px;">Expected Growth</div>
@@ -1551,7 +1560,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 6 — Compound Growth Education (before threats)
   // Compute compound growth comparison numbers for the slide.
   const cgAgeNow = inputs.currentAge;
-  const cgAge73 = 73;
+  const cgAge73 = rmdAge;
   const cgAge95 = 95;
   const yrsTo73 = Math.max(0, cgAge73 - cgAgeNow);
   const balAt73 = inputs.balance * Math.pow(1 + inputs.growthRate, yrsTo73);
@@ -1570,7 +1579,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="6">
       <div class="title-block">
         <div class="kicker">Why Roth Conversions?</div>
-        <h2 class="title">Because at 73, your IRA stops being <em>entirely yours.</em></h2>
+        <h2 class="title">Because at ${rmdAge}, your IRA stops being <em>entirely yours.</em></h2>
         <p class="subtitle">The reason this whole strategy exists is three letters: RMD &mdash; the Required Minimum Distribution. Here&rsquo;s what it does to your ${balStr} nest egg.</p>
       </div>
       <div style="display:grid;grid-template-columns:1.05fr 1fr;gap:48px;max-width:1300px;margin:32px auto 0;align-items:center;">
@@ -1578,7 +1587,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div style="display:flex;flex-direction:column;gap:18px;">
           <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-400);border-radius:10px;padding:22px 26px;">
             <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:10px;">What&rsquo;s an RMD?</div>
-            <p style="font-family:var(--font-serif);font-size:18px;color:var(--ink-900);line-height:1.5;margin:0;">Starting at age 73, the IRS requires you to pull money out of your IRA every year &mdash; whether you need it or not. They set the percentage, it rises as you age, and every dollar comes out taxed as ordinary income.</p>
+            <p style="font-family:var(--font-serif);font-size:18px;color:var(--ink-900);line-height:1.5;margin:0;">Starting at age ${rmdAge}, the IRS requires you to pull money out of your IRA every year &mdash; whether you need it or not. They set the percentage, it rises as you age, and every dollar comes out taxed as ordinary income.</p>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
             <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:18px 16px;text-align:center;">
@@ -1586,7 +1595,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
               <div style="font-family:var(--font-serif);font-weight:700;font-size:24px;color:var(--ink-900);line-height:1;">${balStartStr}</div>
             </div>
             <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:18px 16px;text-align:center;">
-              <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;">Age 73 (RMDs start)</div>
+              <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;">Age ${rmdAge} (RMDs start)</div>
               <div style="font-family:var(--font-serif);font-weight:700;font-size:24px;color:var(--ink-900);line-height:1;">${bal73Str}</div>
             </div>
             <div style="background:var(--ink-900);color:white;border-radius:8px;padding:18px 16px;text-align:center;">
@@ -1615,7 +1624,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div style="font-family:var(--font-serif);font-weight:700;font-size:104px;color:var(--gold-600);line-height:1;letter-spacing:-0.02em;">${peak}</div>
           <div style="font-family:var(--font-sans);font-size:18px;color:var(--fg-muted);margin-top:14px;line-height:1.5;">in forced withdrawals at the peak. On your <strong>${balStr}</strong> IRA.</div>
           <div style="height:1px;background:var(--border);margin:30px 0;"></div>
-          <p style="font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.5;margin:0;font-weight:500;">It starts small &mdash; about 1 dollar out of every 26 at age 73. It doesn&rsquo;t stay small. The percentage rises every single year, and by 95 the IRS is forcing out almost <em style="color:var(--gold-600);font-style:italic;">1 of every 9 dollars</em>. On a growing balance, that&rsquo;s a bigger slice of a bigger pie.</p>
+          <p style="font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.5;margin:0;font-weight:500;">It starts small &mdash; about 1 dollar out of every ${Math.floor(ULT[rmdAge] || 26)} at age ${rmdAge}. It doesn&rsquo;t stay small. The percentage rises every single year, and by 95 the IRS is forcing out almost <em style="color:var(--gold-600);font-style:italic;">1 of every 9 dollars</em>. On a growing balance, that&rsquo;s a bigger slice of a bigger pie.</p>
         </div>
         <div class="chart-holder" style="background:white;border:1px solid var(--border);border-radius:10px;padding:18px;height:440px;"><canvas id="chart-rmd"></canvas></div>
       </div>
@@ -1635,12 +1644,12 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="title-block">
         <div class="kicker">Devil&rsquo;s Advocate</div>
         <h2 class="title">&ldquo;Wouldn&rsquo;t we take that money out anyway?&rdquo;</h2>
-        <p class="subtitle">Fair question. You need <strong>${needsStr}</strong>/yr to live on, and Social Security covers <strong>${ssStr}</strong> &mdash; so yes, you&rsquo;d be drawing from savings either way. Watch what happens at 73.</p>
+        <p class="subtitle">Fair question. You need <strong>${needsStr}</strong>/yr to live on, and Social Security covers <strong>${ssStr}</strong> &mdash; so yes, you&rsquo;d be drawing from savings either way. Watch what happens at ${rmdAge}.</p>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1.15fr;gap:48px;max-width:1300px;margin:32px auto 0;align-items:center;">
         <div style="text-align:left;">
           <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:14px;">What you actually pull out</div>
-          <p style="font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;margin:0 0 18px 0;font-weight:500;">The problem was never that money comes out &mdash; you were always going to spend in retirement. The problem is that at 73, the IRS starts deciding <em style="color:var(--gold-600);font-style:italic;">how much</em> comes out. And their formula has never seen your budget.</p>
+          <p style="font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;margin:0 0 18px 0;font-weight:500;">The problem was never that money comes out &mdash; you were always going to spend in retirement. The problem is that at ${rmdAge}, the IRS starts deciding <em style="color:var(--gold-600);font-style:italic;">how much</em> comes out. And their formula has never seen your budget.</p>
           <div style="display:flex;flex-direction:column;gap:14px;">
             <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--ink-700);border-radius:8px;padding:14px 18px;"><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-700);font-weight:700;margin-bottom:4px;">What you&rsquo;d take anyway</div><div style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);">The gap between Social Security and your real spending. Out either way, RMD or no RMD.</div></div>
             <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--gold-600);border-radius:8px;padding:14px 18px;"><div style="font-family:var(--font-sans);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);font-weight:700;margin-bottom:4px;">What the IRS forces on top</div><div style="font-family:var(--font-serif);font-size:15px;color:var(--ink-900);">Withdrawals beyond what you need &mdash; taken on their schedule, taxed at your worst rates, whether you want them or not.</div></div>
@@ -2012,7 +2021,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div class="hook-stat">
             <div class="stat-label">Lifetime Forced RMDs</div>
             <div class="stat-val">${lifeRMD}</div>
-            <div class="stat-meta">Age 73 &rarr; 95 at ${(inputs.growthRate*100).toFixed(1)}% growth</div>
+            <div class="stat-meta">Age ${rmdAge} &rarr; 95 at ${(inputs.growthRate*100).toFixed(1)}% growth</div>
           </div>
           <div class="hook-stat">
             <div class="stat-label">Lifetime Tax Bill</div>
@@ -2767,7 +2776,7 @@ function renderCharts(inputs, sim, savings) {
       pure.push(pureBal);
       withRmd.push(rmdBal);
       pureBal *= (1 + inputs.growthRate);
-      if (age < 73) {
+      if (age < rmdStartAge(inputs.currentAge)) {
         rmdBal *= (1 + inputs.growthRate);
       } else {
         const yearRmd = rmdByAge[age] || 0;
@@ -2791,7 +2800,7 @@ function renderCharts(inputs, sim, savings) {
             fill: false
           },
           {
-            label: 'Your trajectory (with RMDs after 73)',
+            label: 'Your trajectory (with RMDs after ' + rmdStartAge(inputs.currentAge) + ')',
             data: withRmd,
             borderColor: '#D48E27',
             backgroundColor: 'rgba(212, 142, 39, 0.18)',
