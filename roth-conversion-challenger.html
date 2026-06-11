@@ -1378,7 +1378,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const filingDisplay = inputs.filingStatus === 'MFJ' ? 'Married Filing Jointly' : 'Single Filer';
   slides.push(`
     <section class="slide" data-slide="1">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">Before We Begin</div>
         <h2 class="title">Here&rsquo;s what we&rsquo;re working with${name}.</h2>
         <p class="subtitle">Four numbers tell the whole story. Let&rsquo;s confirm we&rsquo;re looking at the right picture before we dive in.</p>
@@ -1417,7 +1417,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 2 — The Challenger reframe: three questions as horizontal agenda rows
   slides.push(`
     <section class="slide" data-slide="2">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">Agenda</div>
         <h2 class="title">Deciding to convert?<br><em>That&rsquo;s the easy part.</em></h2>
       </div>
@@ -2127,7 +2127,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // detail slide that follows pays off one of these open loops.
   slides.push(`
     <section class="slide" data-slide="three-levers">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">The Solution</div>
         <h2 class="title" style="font-weight:700;">The Three Hidden Levers</h2>
       </div>
@@ -2158,7 +2158,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // deck's existing 5%/10%/20% cadence (from the "Markets Dip" slide) for consistency.
   slides.push(`
     <section class="slide" data-slide="buffett-dips">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">Lever 1 &mdash; The Market</div>
       </div>
       <div style="max-width:1040px;margin:6px auto 0;text-align:center;">
@@ -2319,7 +2319,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // Lever 2 reframe: bracket context before the 1040 proof
   slides.push(`
     <section class="slide" data-slide="lever2-intro">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">Lever 2 &mdash; Your Tax Return</div>
         <h2 class="title">Perfect timing. Perfect price.<br><em>None of it matters in the wrong bracket.</em></h2>
       </div>
@@ -2973,7 +2973,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Ownership-experience milestones (client-facing timeline; First 90 Days + Ongoing) ──
   slides.push(`
     <section class="slide" data-slide="onboarding">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">The Tax-Free Retirement Accelerator</div>
         <h2 class="title">What your first 90 days look like &mdash; <em>and every year after.</em></h2>
         <p class="subtitle">A guided process with one goal: keeping more of your money out of taxes &mdash; this year, and for the rest of your life. We do the heavy lifting up front; you make every decision.</p>
@@ -3054,7 +3054,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Planning philosophy wheel: the 5 areas we plan around (from the Implementation Options deck) ──
   slides.push(`
     <section class="slide" data-slide="planning-wheel">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">Our Planning Philosophy</div>
         <h2 class="title">We don&rsquo;t just manage money. <em>We help you live your dreams.</em></h2>
         <p class="subtitle">Real planning isn&rsquo;t one thing &mdash; it&rsquo;s five, working together. We build every piece around the life you actually want, with one question at the center of it all: are you free to live your dreams?</p>
@@ -3074,7 +3074,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   if (showFee) {
   slides.push(`
     <section class="slide" data-slide="onboarding-structure">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">Two Ways To Get Started</div>
         <h2 class="title">Choose the onboarding structure <em>that fits you.</em></h2>
         <p class="subtitle">Most of the work happens in the first 90 days &mdash; building your plan, moving your accounts, and setting everything up. Pick how you&rsquo;d like to handle that one-time onboarding investment. Same work, same team, same outcome either way.</p>
@@ -3117,7 +3117,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Two ways to work together: Conversion Only (the engine) vs White Glove (engine + the plan) ──
   slides.push(`
     <section class="slide" data-slide="two-ways">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">Your Choice</div>
         <h2 class="title">Which way do you want to work together?</h2>
         <p class="subtitle">Same tax engine either way &mdash; we manage every account and run your conversions. The difference is everything <em>around</em> the numbers, and the price reflects it.</p>
@@ -3233,7 +3233,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Genuine scarcity: capacity-limited, mutual-fit, boutique-by-design ──
   slides.push(`
     <section class="slide" data-slide="scarcity">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">Why We Stay Small</div>
         <h2 class="title">We do 30&ndash;40 of these a month. <em>We take on one or two.</em></h2>
         <p class="subtitle">That&rsquo;s not a sales tactic &mdash; it&rsquo;s a capacity limit. Doing this right is labor-intensive, and we&rsquo;d rather do it beautifully for a few than adequately for everyone.</p>
@@ -3272,7 +3272,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Risk reversal: say stop anytime, money stays in your name at Schwab, billed in arrears ──
   slides.push(`
     <section class="slide" data-slide="risk-reversal">
-      <div class="title-block" style="text-align:center;">
+      <div class="title-block center">
         <div class="kicker">No Risk In Starting</div>
         <h2 class="title">You&rsquo;re never locked in &mdash; <em>not for a single day.</em></h2>
         <p class="subtitle">Three ways we put the risk on us, not you &mdash; before you ever commit, and every day after.</p>
