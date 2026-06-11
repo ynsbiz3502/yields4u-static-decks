@@ -2942,35 +2942,39 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // ── Onboarding timeline (adapted from the Implementation Options deck, p.8) ──
+  // ── Ownership-experience milestones (client-facing timeline; evolved from Implementation Options p.8) ──
   slides.push(`
     <section class="slide" data-slide="onboarding">
       <div class="title-block" style="text-align:center;">
-        <div class="kicker">How We Work Together</div>
-        <h2 class="title">The setup takes days. <em>The plan works for the rest of your life.</em></h2>
-        <p class="subtitle">The part you&rsquo;re picturing &mdash; the paperwork, the transfers, the watching &mdash; is our job, not yours. You make one decision today; from there the plan runs and compounds <em>on us.</em></p>
+        <div class="kicker">The Ownership Experience</div>
+        <h2 class="title">We run the plan. <em>You hit the milestones.</em></h2>
+        <p class="subtitle">You&rsquo;re not buying a setup &mdash; you&rsquo;re buying what happens after. Here&rsquo;s the relationship from <em>your</em> side of the table: the moments that actually matter to you, from day one on.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1.18fr;align-items:stretch;max-width:1240px;margin:34px auto 0;">
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid #C9DCEB;border-radius:12px;padding:24px 26px;display:flex;flex-direction:column;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;">Today</div>
-          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">You decide.</div>
-          <div style="font-family:var(--font-sans);font-size:14px;color:var(--fg-muted);line-height:1.5;">We turn today&rsquo;s conversation into your written action plan &mdash; the one decision that starts everything.</div>
+      <div style="max-width:1240px;margin:36px auto 0;">
+        <div style="display:flex;">
+          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Day One</div>
+          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Month One</div>
+          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Every November</div>
+          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">As Life Happens</div>
+          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">The Long Game</div>
         </div>
-        <div style="display:flex;align-items:center;justify-content:center;padding:0 12px;font-size:28px;color:var(--gold-500);">&rarr;</div>
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid #C9A84C;border-radius:12px;padding:24px 26px;display:flex;flex-direction:column;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;">About 10 Days</div>
-          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">We set it up.</div>
-          <div style="font-family:var(--font-sans);font-size:14px;color:var(--fg-muted);line-height:1.5;">Paperwork, accounts, transfers, strategy &mdash; handled for you. You sign once, and your money stays in your name at the brokerage. <strong style="color:var(--ink-700);">We never take custody.</strong></div>
+        <div style="position:relative;display:flex;align-items:center;margin:11px 0;">
+          <div style="position:absolute;left:10%;right:10%;top:50%;height:3px;background:#E6D3A8;transform:translateY(-50%);z-index:0;"></div>
+          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:20px;height:20px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
+          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:20px;height:20px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
+          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:20px;height:20px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
+          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:20px;height:20px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
+          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:26px;height:26px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 3px rgba(201,168,76,0.30);"></div></div>
         </div>
-        <div style="display:flex;align-items:center;justify-content:center;padding:0 12px;font-size:28px;color:var(--gold-500);">&rarr;</div>
-        <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 26px;display:flex;flex-direction:column;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-400);margin-bottom:8px;">Every Year After</div>
-          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:8px;">We run it &mdash; and it compounds.</div>
-          <div style="font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.85);line-height:1.5;">Conversions timed to market corrections, daily monitoring, your November tax-planning meeting, and reviews whenever life shifts.</div>
-          <div style="margin-top:auto;padding-top:14px;font-family:var(--font-serif);font-style:italic;font-size:16px;color:var(--gold-400);">&rarr; Live your best life.</div>
+        <div style="display:flex;align-items:flex-start;">
+          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);">Clarity</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:5px;">Your whole picture in one written plan &mdash; you stop guessing.</div></div>
+          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);">Momentum</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:5px;">Your first Strategic Roth Conversion &mdash; tax-free dollars start working.</div></div>
+          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);">Confidence</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:5px;">A tax-planning sit-down before year-end &mdash; no April surprises.</div></div>
+          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);">Protection</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:5px;">Estate, survivor &amp; care plans set; market dips turned into opportunity.</div></div>
+          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--gold-600);">Freedom</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:5px;">RMDs arrive as a non-event; your heirs inherit a Roth, not a tax bill.</div></div>
         </div>
       </div>
-      <div style="max-width:1100px;margin:26px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">One decision from you. <em style="color:var(--gold-600);font-style:italic;">The rest is on us &mdash; for as long as you&rsquo;re with us.</em></div>
+      <div style="max-width:1100px;margin:30px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">Every milestone is yours. <em style="color:var(--gold-600);font-style:italic;">The work behind each one is ours.</em></div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">path</div>
     </section>
