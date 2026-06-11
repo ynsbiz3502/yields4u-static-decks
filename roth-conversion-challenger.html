@@ -999,6 +999,23 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
           <input type="number" id="inflationRate" value="4" min="0" max="15" step="0.1" style="width:84px;font-size:14px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;">
           <span style="font-size:13px;color:var(--fg-subtle);">% per year &middot; used to grow income needs &amp; Social Security</span>
         </div>
+        <div style="margin-top:10px;padding:12px 14px;background:#FAFAF9;border:1px solid var(--border);border-radius:8px;">
+          <label for="showOnboardingFee" style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--ink-700);font-weight:600;margin:0;">
+            <input type="checkbox" id="showOnboardingFee" style="width:16px;height:16px;flex:0 0 auto;cursor:pointer;">
+            Present a one-time onboarding investment
+          </label>
+          <div style="font-size:12px;color:var(--fg-subtle);margin:6px 0 0 26px;line-height:1.45;">Off = current pricing (AUM only, billed in arrears). On = adds an upfront onboarding-fee slide (committed vs refundable) and swaps the risk-reversal card for a 90-day refund safety net.</div>
+          <div id="onboardingFeeFields" style="display:none;gap:14px;margin:12px 0 0 26px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <label for="onboardingFeeA" style="font-size:13px;color:var(--ink-700);font-weight:500;margin:0;">Option A &middot; Committed</label>
+              <input type="text" id="onboardingFeeA" value="$15,000" inputmode="numeric" style="width:110px;font-size:14px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;">
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <label for="onboardingFeeB" style="font-size:13px;color:var(--ink-700);font-weight:500;margin:0;">Option B &middot; Refundable</label>
+              <input type="text" id="onboardingFeeB" value="$18,000" inputmode="numeric" style="width:110px;font-size:14px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;">
+            </div>
+          </div>
+        </div>
       </details>
 
       <button type="submit" class="cta-btn">See my plan</button>
@@ -1315,6 +1332,17 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const name = inputs.firstName ? `, ${inputs.firstName}` : '';
   const rmdAge = rmdStartAge(inputs.currentAge);
   const balStr = fmtMoney(inputs.balance, true);
+  // Onboarding-investment toggle (set on the intake form / via ?onboardingFee=1).
+  // When on, the deck presents a one-time upfront onboarding fee — Option A
+  // (committed, non-refundable, lowest cost) vs Option B (refundable after 90
+  // days) — and the risk-reversal slide swaps its "billed in arrears" card for
+  // the 90-day refund safety net. Off by default → the deck reads exactly as it
+  // does today (AUM only, billed monthly in arrears).
+  const showFee = !!inputs.showOnboardingFee;
+  const feeA = inputs.onboardingFeeA > 0 ? inputs.onboardingFeeA : 15000;
+  const feeB = inputs.onboardingFeeB > 0 ? inputs.onboardingFeeB : 18000;
+  const feeAStr = fmtMoneyFull(feeA);
+  const feeBStr = fmtMoneyFull(feeB);
   const peak = fmtMoney(sim.peakRMD);
   const lifeRMD = fmtMoney(sim.lifetimeRMD);
   const lifeTax = fmtMoney(sim.lifetimeTax);
@@ -3003,6 +3031,52 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── One-time onboarding investment (only when the intake toggle is on) ──
+  // Most of the work lands in the first 90 days, so we offer two ways to handle
+  // that one-time investment: Option A committed (lowest cost) / Option B refundable.
+  if (showFee) {
+  slides.push(`
+    <section class="slide" data-slide="onboarding-structure">
+      <div class="title-block" style="text-align:center;">
+        <div class="kicker">Two Ways To Get Started</div>
+        <h2 class="title">Choose the onboarding structure <em>that fits you.</em></h2>
+        <p class="subtitle">Most of the work happens in the first 90 days &mdash; building your plan, moving your accounts, and setting everything up. Pick how you&rsquo;d like to handle that one-time onboarding investment. Same work, same team, same outcome either way.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1180px;margin:22px auto 0;align-items:stretch;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-400);border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;position:relative;">
+          <div style="position:absolute;top:-12px;right:24px;background:var(--ink-900);color:#fff;font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;border-radius:999px;">Best Price</div>
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:4px;">Option A &middot; Committed</div>
+          <div style="font-family:var(--font-serif);font-size:23px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:10px;">Ready to move forward.</div>
+          <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);"><span style="font-family:var(--font-serif);font-size:38px;font-weight:700;color:var(--ink-900);line-height:1;">${feeAStr}</span><span style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);">one-time onboarding investment</span></div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14.5px;color:var(--ink-700);line-height:1.4;display:flex;flex-direction:column;gap:10px;">
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Lowest total investment</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Fastest path to your finished plan</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Full onboarding &mdash; all 8 deliverables</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Dedicated onboarding team</li>
+          </ul>
+          <div style="margin-top:auto;padding-top:16px;font-family:var(--font-sans);font-size:12.5px;color:var(--fg-subtle);line-height:1.45;">Non-refundable. For households who know they want this and want the best overall economics.</div>
+        </div>
+        <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;position:relative;">
+          <div style="position:absolute;top:-12px;right:24px;background:var(--gold-400);color:var(--ink-900);font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;border-radius:999px;">Most Flexible</div>
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:4px;">Option B &middot; Refundable</div>
+          <div style="font-family:var(--font-serif);font-size:23px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:10px;">Want extra confidence first.</div>
+          <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.18);"><span style="font-family:var(--font-serif);font-size:38px;font-weight:700;color:var(--gold-400);line-height:1;">${feeBStr}</span><span style="font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.72);">one-time onboarding investment</span></div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.9);line-height:1.4;display:flex;flex-direction:column;gap:10px;">
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>The same full onboarding experience</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span><strong>Refundable after 90 days</strong> if it&rsquo;s not delivering</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>An exit path while you evaluate</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Same implementation team &amp; support</li>
+          </ul>
+          <div style="margin-top:auto;padding-top:16px;font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.7);line-height:1.45;">For households who want to feel the value before fully committing.</div>
+        </div>
+      </div>
+      <div style="max-width:1120px;margin:22px auto 0;text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--ink-900);line-height:1.5;">Same outcome. Same team. Same process. <em style="color:var(--gold-600);font-style:italic;">The only difference is how you&rsquo;d like to structure the one-time investment.</em></div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">onboarding-fee</div>
+    </section>
+  `);
+  }
+
   // ── Two ways to work together: Conversion Only (the engine) vs White Glove (engine + the plan) ──
   slides.push(`
     <section class="slide" data-slide="two-ways">
@@ -3178,9 +3252,15 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div style="font-family:var(--font-sans);font-size:14px;color:var(--ink-700);line-height:1.5;">Your accounts are opened in <strong>your name</strong> at Charles Schwab. Want us off them? Call Schwab directly &mdash; &ldquo;I don&rsquo;t want Yields For You on my accounts anymore&rdquo; &mdash; and we&rsquo;re gone in about five minutes. You never need our sign-off.</div>
         </div>
         <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 26px;display:flex;flex-direction:column;">
+          ${showFee ? `
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-400);margin-bottom:10px;">Your 90-Day Safety Net</div>
+          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:12px;">Refundable after 90 days.</div>
+          <div style="font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.9);line-height:1.5;">Not ready to fully commit? Choose the refundable onboarding option. We build your whole plan &mdash; and if it isn&rsquo;t delivering what we promised, your onboarding investment comes back after 90 days.</div>
+          ` : `
           <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-400);margin-bottom:10px;">How We Get Paid</div>
           <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:12px;">We earn it first.</div>
           <div style="font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.9);line-height:1.5;">We bill monthly, in arrears &mdash; we don&rsquo;t collect a dime until the first month after your money has moved. You get to feel what working with us is actually like before we&rsquo;re ever paid.</div>
+          `}
         </div>
       </div>
       <div style="max-width:1120px;margin:26px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">You hold every card. <em style="color:var(--gold-600);font-style:italic;">We earn the relationship &mdash; we never trap you in it.</em></div>
@@ -4406,7 +4486,10 @@ function onGenerate(e) {
     socialSecurity: parseMoney(document.getElementById('socialSecurity')?.value || '0'),
     annualWithdrawal: parseMoney(urlParams.get('annualWithdrawal') || '0'),
     inflationRate: (parseFloat(document.getElementById('inflationRate')?.value || '4') || 4) / 100,
-    growthRate: parseFloat(document.getElementById('growthRate').value) / 100
+    growthRate: parseFloat(document.getElementById('growthRate').value) / 100,
+    showOnboardingFee: !!document.getElementById('showOnboardingFee')?.checked,
+    onboardingFeeA: parseMoney(document.getElementById('onboardingFeeA')?.value || '0'),
+    onboardingFeeB: parseMoney(document.getElementById('onboardingFeeB')?.value || '0')
   };
   if (!inputs.balance || inputs.balance < 50000) {
     alert('Please enter a valid IRA balance ($50,000 or more).');
@@ -4482,6 +4565,12 @@ function persistInputsToUrl(inputs) {
     if (inputs.inflationRate != null && inflPct !== 4) {
       params.set('inflationRate', String(inflPct));
     }
+    // Onboarding-fee presentation toggle (off by default → omitted, keeps URLs short).
+    if (inputs.showOnboardingFee) {
+      params.set('onboardingFee', '1');
+      if (inputs.onboardingFeeA) params.set('onboardingFeeA', String(Math.round(inputs.onboardingFeeA)));
+      if (inputs.onboardingFeeB) params.set('onboardingFeeB', String(Math.round(inputs.onboardingFeeB)));
+    }
     const newUrl = window.location.pathname + '?' + params.toString() + window.location.hash;
     history.replaceState(null, '', newUrl);
   } catch (_) { /* no-op on file:// */ }
@@ -4542,12 +4631,29 @@ function applyUrlParamsToForm() {
     const n = parseFloat(infl);
     if (i && !isNaN(n)) i.value = String(n);
   }
+  const onbFee = params.get('onboardingFee');
+  if (onbFee === '1' || onbFee === 'true') {
+    const c = document.getElementById('showOnboardingFee');
+    if (c) c.checked = true;
+  }
+  setMoney('onboardingFeeA', 'onboardingFeeA');
+  setMoney('onboardingFeeB', 'onboardingFeeB');
+  syncOnboardingFeeFields();
   return params.get('auto') === '1' || params.get('auto') === 'true';
+}
+
+// Show/hide the Option A/B amount fields based on the onboarding-fee checkbox.
+function syncOnboardingFeeFields() {
+  const c = document.getElementById('showOnboardingFee');
+  const fields = document.getElementById('onboardingFeeFields');
+  if (c && fields) fields.style.display = c.checked ? 'flex' : 'none';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('input-form');
   if (form) form.addEventListener('submit', onGenerate);
+  const onbFeeToggle = document.getElementById('showOnboardingFee');
+  if (onbFeeToggle) onbFeeToggle.addEventListener('change', syncOnboardingFeeFields);
   // A `#slide=N` hash on initial load also implies auto-run: someone is
   // refreshing or following a shared link straight to a specific slide, and
   // shouldn't have to re-click Continue. Falls back to whatever URL params
