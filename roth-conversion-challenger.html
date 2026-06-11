@@ -2942,39 +2942,45 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // ── Ownership-experience milestones (client-facing timeline; evolved from Implementation Options p.8) ──
+  // ── Ownership-experience milestones (client-facing timeline; First 90 Days + Ongoing) ──
   slides.push(`
     <section class="slide" data-slide="onboarding">
       <div class="title-block" style="text-align:center;">
-        <div class="kicker">The Keep-More Method</div>
-        <h2 class="title">What your first year looks like &mdash; <em>and every year after.</em></h2>
-        <p class="subtitle">A guided, quarter-by-quarter process built around one goal: keeping more of your money out of taxes &mdash; this year, and for the rest of your life. You make the decisions; we do the work.</p>
+        <div class="kicker">The Tax-Free Retirement Accelerator</div>
+        <h2 class="title">What your first 90 days look like &mdash; <em>and every year after.</em></h2>
+        <p class="subtitle">A guided process with one goal: keeping more of your money out of taxes &mdash; this year, and for the rest of your life. We do the heavy lifting up front; you make every decision.</p>
       </div>
-      <div style="max-width:1240px;margin:36px auto 0;">
-        <div style="display:flex;">
-          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Quarter One</div>
-          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Quarter Two</div>
-          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Quarter Three</div>
-          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Quarter Four</div>
-          <div style="flex:1;text-align:center;font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Ongoing</div>
+      <div style="display:grid;grid-template-columns:1.7fr 1fr;gap:24px;max-width:1200px;margin:26px auto 0;align-items:stretch;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);">First 90 Days</div>
+            <div style="font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);">We build your entire plan.</div>
+          </div>
+          <div style="font-family:var(--font-serif);font-size:23px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:16px;">Everything gets set up &mdash; the right way, once.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px 26px;font-family:var(--font-sans);font-size:14.5px;color:var(--ink-700);line-height:1.35;">
+            <div style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Sign your paperwork</div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Transfer over your accounts</div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Review your holdings</div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Create your investment plan</div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Sign your IPS</div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Create your tax plan</div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Create your estate plan</div>
+            <div style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Create your Roth conversion plan</div>
+          </div>
+          <div style="margin-top:auto;padding-top:16px;font-family:var(--font-sans);font-size:12.5px;color:var(--fg-subtle);line-height:1.45;">You sign once; we open and transfer your accounts in-kind &mdash; held in your name at Charles Schwab. We never take custody of your money.</div>
         </div>
-        <div style="position:relative;display:flex;align-items:center;margin:11px 0;">
-          <div style="position:absolute;left:10%;right:10%;top:50%;height:3px;background:#E6D3A8;transform:translateY(-50%);z-index:0;"></div>
-          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:20px;height:20px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
-          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:20px;height:20px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
-          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:20px;height:20px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
-          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:20px;height:20px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
-          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:26px;height:26px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 3px rgba(201,168,76,0.30);"></div></div>
-        </div>
-        <div style="display:flex;align-items:flex-start;">
-          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.2;">We take it from here.</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:6px;">You sign once; we open and transfer your accounts in-kind &mdash; in your name, we never take custody.</div></div>
-          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.2;">We see everything.</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:6px;">Your 1040 audit + investment audit. With it all under one roof, we find every missed dollar.</div></div>
-          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.2;">Your tax plan.</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:6px;">Your Strategic Roth Conversion plan + income plan, built from what we found.</div></div>
-          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.2;">Your wealth plan.</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:6px;">Your investment plan + estate plan &mdash; growth and legacy, locked in.</div></div>
-          <div style="flex:1;text-align:center;padding:0 10px;"><div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--gold-600);line-height:1.2;">We keep cutting.</div><div style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);line-height:1.4;margin-top:6px;">Dip-timed conversions, your November tax meeting, and reviews &mdash; trimming your lifetime tax, year after year.</div></div>
+        <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:4px;">Ongoing</div>
+          <div style="font-family:var(--font-serif);font-size:23px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:16px;">We keep cutting &mdash; year after year.</div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.9);line-height:1.4;display:flex;flex-direction:column;gap:11px;">
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Dip-timed Roth conversions</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Your standing November tax meeting</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Ongoing investment &amp; estate reviews</li>
+          </ul>
+          <div style="margin-top:auto;padding-top:16px;font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.7);line-height:1.45;">Trimming your lifetime tax bill, every single year &mdash; not just this one.</div>
         </div>
       </div>
-      <div style="max-width:1100px;margin:30px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">One decision from you. <em style="color:var(--gold-600);font-style:italic;">From there, keeping more of your money is our job.</em></div>
+      <div style="max-width:1100px;margin:24px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">One decision from you. <em style="color:var(--gold-600);font-style:italic;">From there, keeping more of your money is our job.</em></div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">path</div>
     </section>
@@ -3149,6 +3155,37 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1120px;margin:26px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">We don&rsquo;t do this for the volume. <em style="color:var(--gold-600);font-style:italic;">We do it because we care &mdash; and caring only scales to a couple of new families a month.</em></div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">spots</div>
+    </section>
+  `);
+
+  // ── Risk reversal: say stop anytime, money stays in your name at Schwab, billed in arrears ──
+  slides.push(`
+    <section class="slide" data-slide="risk-reversal">
+      <div class="title-block" style="text-align:center;">
+        <div class="kicker">No Risk In Starting</div>
+        <h2 class="title">You&rsquo;re never locked in &mdash; <em>not for a single day.</em></h2>
+        <p class="subtitle">Three ways we put the risk on us, not you &mdash; before you ever commit, and every day after.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1180px;margin:26px auto 0;align-items:stretch;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 26px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:10px;">Before We Begin</div>
+          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:12px;">Say stop, and we stop.</div>
+          <div style="font-family:var(--font-sans);font-size:14px;color:var(--ink-700);line-height:1.5;">Right up until we get started, if anything doesn&rsquo;t feel right, just say the word. You walk away &mdash; no questions asked, no fees, no pressure.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 26px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:10px;">Your Money, Your Control</div>
+          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:12px;">One phone call removes us.</div>
+          <div style="font-family:var(--font-sans);font-size:14px;color:var(--ink-700);line-height:1.5;">Your accounts are opened in <strong>your name</strong> at Charles Schwab. Want us off them? Call Schwab directly &mdash; &ldquo;I don&rsquo;t want Yields For You on my accounts anymore&rdquo; &mdash; and we&rsquo;re gone in about five minutes. You never need our sign-off.</div>
+        </div>
+        <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 26px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-400);margin-bottom:10px;">How We Get Paid</div>
+          <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:12px;">We earn it first.</div>
+          <div style="font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.9);line-height:1.5;">We bill monthly, in arrears &mdash; we don&rsquo;t collect a dime until the first month after your money has moved. You get to feel what working with us is actually like before we&rsquo;re ever paid.</div>
+        </div>
+      </div>
+      <div style="max-width:1120px;margin:26px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">You hold every card. <em style="color:var(--gold-600);font-style:italic;">We earn the relationship &mdash; we never trap you in it.</em></div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">risk</div>
     </section>
   `);
 
