@@ -3051,6 +3051,55 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── Planning philosophy wheel: the 5 areas we plan around (from the Implementation Options deck) ──
+  slides.push(`
+    <section class="slide" data-slide="planning-wheel">
+      <div class="title-block" style="text-align:center;">
+        <div class="kicker">Our Planning Philosophy</div>
+        <h2 class="title">We don&rsquo;t just manage money. <em>We help you live your dreams.</em></h2>
+        <p class="subtitle">Real planning isn&rsquo;t one thing &mdash; it&rsquo;s five, working together. We build every piece around the life you actually want, with one question at the center of it all: are you free to live your dreams?</p>
+      </div>
+      <div style="max-width:720px;margin:18px auto 0;">
+        <svg viewBox="0 0 760 470" style="width:100%;height:auto;display:block;" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The five areas of the Yields For You planning philosophy, centered on living your dreams">
+          <defs>
+            <linearGradient id="pwGold" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#DBB451"/>
+              <stop offset="1" stop-color="#BC922D"/>
+            </linearGradient>
+          </defs>
+          <!-- gold ring (donut) -->
+          <circle cx="380" cy="235" r="121" fill="none" stroke="url(#pwGold)" stroke-width="58"/>
+          <!-- white separators between the 5 segments -->
+          <line x1="434.1" y1="160.6" x2="468.2" y2="113.7" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+          <line x1="467.5" y1="263.4" x2="522.7" y2="281.4" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+          <line x1="380" y1="327" x2="380" y2="385" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+          <line x1="292.5" y1="263.4" x2="237.3" y2="281.4" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+          <line x1="325.9" y1="160.6" x2="291.8" y2="113.7" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+          <!-- center -->
+          <circle cx="380" cy="235" r="92" fill="#FBF9F4" stroke="rgba(14,14,15,0.10)" stroke-width="1"/>
+          <text x="380" y="220" text-anchor="middle" style="font-family:var(--font-serif);font-weight:700;font-style:italic;fill:var(--gold-600);font-size:22px;letter-spacing:0.02em;">
+            <tspan x="380">Live</tspan><tspan x="380" dy="24">Your</tspan><tspan x="380" dy="24">Dreams</tspan>
+          </text>
+          <!-- number badges at each segment center -->
+          <g><circle cx="380" cy="114" r="15" fill="#1a1a1a"/><text x="380" y="114" text-anchor="middle" dominant-baseline="central" style="fill:#fff;font-family:var(--font-sans);font-weight:800;font-size:14px;">1</text></g>
+          <g><circle cx="495.1" cy="197.6" r="15" fill="#1a1a1a"/><text x="495.1" y="197.6" text-anchor="middle" dominant-baseline="central" style="fill:#fff;font-family:var(--font-sans);font-weight:800;font-size:14px;">2</text></g>
+          <g><circle cx="451.1" cy="332.9" r="15" fill="#1a1a1a"/><text x="451.1" y="332.9" text-anchor="middle" dominant-baseline="central" style="fill:#fff;font-family:var(--font-sans);font-weight:800;font-size:14px;">3</text></g>
+          <g><circle cx="308.9" cy="332.9" r="15" fill="#1a1a1a"/><text x="308.9" y="332.9" text-anchor="middle" dominant-baseline="central" style="fill:#fff;font-family:var(--font-sans);font-weight:800;font-size:14px;">4</text></g>
+          <g><circle cx="264.9" cy="197.6" r="15" fill="#1a1a1a"/><text x="264.9" y="197.6" text-anchor="middle" dominant-baseline="central" style="fill:#fff;font-family:var(--font-sans);font-weight:800;font-size:14px;">5</text></g>
+          <!-- area labels + captions around the wheel -->
+          <text x="380" y="44" text-anchor="middle"><tspan x="380" style="font-family:var(--font-sans);font-weight:800;fill:var(--ink-900);font-size:15px;letter-spacing:0.05em;">INVESTMENTS</tspan><tspan x="380" dy="16" style="font-family:var(--font-sans);font-weight:500;fill:var(--fg-muted);font-size:11px;">Grow and protect your nest egg.</tspan></text>
+          <text x="558.8" y="172" text-anchor="start"><tspan x="558.8" style="font-family:var(--font-sans);font-weight:800;fill:var(--ink-900);font-size:15px;letter-spacing:0.05em;">TAX MINIMIZATION</tspan><tspan x="558.8" dy="16" style="font-family:var(--font-sans);font-weight:500;fill:var(--fg-muted);font-size:11px;">Keep more of what you earn.</tspan></text>
+          <text x="490.5" y="384" text-anchor="start"><tspan x="490.5" style="font-family:var(--font-sans);font-weight:800;fill:var(--ink-900);font-size:15px;letter-spacing:0.05em;">INCOME</tspan><tspan x="490.5" dy="16" style="font-family:var(--font-sans);font-weight:500;fill:var(--fg-muted);font-size:11px;">Sustainable, predictable income.</tspan></text>
+          <text x="269.5" y="384" text-anchor="end"><tspan x="269.5" style="font-family:var(--font-sans);font-weight:800;fill:var(--ink-900);font-size:15px;letter-spacing:0.05em;">LIFE PLANNING</tspan><tspan x="269.5" dy="16" style="font-family:var(--font-sans);font-weight:500;fill:var(--fg-muted);font-size:11px;">Care, dignity, control.</tspan></text>
+          <text x="236" y="172" text-anchor="end"><tspan x="236" style="font-family:var(--font-sans);font-weight:800;fill:var(--ink-900);font-size:15px;letter-spacing:0.05em;">FINANCIAL CONTINUITY</tspan><tspan x="236" dy="16" style="font-family:var(--font-sans);font-weight:500;fill:var(--fg-muted);font-size:11px;">A legacy, not a burden.</tspan></text>
+        </svg>
+      </div>
+      <div style="max-width:1000px;margin:14px auto 0;text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--ink-900);line-height:1.5;">Five areas. One plan. <em style="color:var(--gold-600);font-style:italic;">Built entirely around you.</em></div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">wheel</div>
+    </section>
+  `);
+
   // ── One-time onboarding investment (only when the intake toggle is on) ──
   // Most of the work lands in the first 90 days, so we offer two ways to handle
   // that one-time investment: Option A committed (lowest cost) / Option B refundable.
