@@ -2258,7 +2258,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="19">
       <div class="title-block">
         <div class="kicker">Why Timing Is Everything</div>
-        <h2 class="title">Strategic Dip Conversions</h2>
+        <h2 class="title">Strategic Roth Conversions</h2>
         <p class="subtitle">Why market drops are your biggest conversion opportunity — not your biggest fear.</p>
       </div>
       <div class="grid-4">
@@ -2963,36 +2963,38 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="two-ways">
       <div class="title-block" style="text-align:center;">
-        <div class="kicker">Two Ways In</div>
-        <h2 class="title">Two ways we work together.</h2>
-        <p class="subtitle">The tax engine is in both &mdash; we manage every account and time your conversions either way. The difference is everything <em>around</em> the numbers.</p>
+        <div class="kicker">Your Choice</div>
+        <h2 class="title">Which way do you want to work together?</h2>
+        <p class="subtitle">Same tax engine either way &mdash; we manage every account and run your conversions. The difference is everything <em>around</em> the numbers, and the price reflects it.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1180px;margin:28px auto 0;align-items:stretch;">
-        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-400);border-radius:12px;padding:26px 30px;display:flex;flex-direction:column;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:6px;">Conversion Only</div>
-          <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:16px;">Just the numbers.</div>
-          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14.5px;color:var(--ink-700);line-height:1.45;display:flex;flex-direction:column;gap:11px;">
-            <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Dip-timed Roth conversions, run for you</li>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1180px;margin:22px auto 0;align-items:stretch;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-400);border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:4px;">Conversion Only</div>
+          <div style="font-family:var(--font-serif);font-size:23px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:10px;">Just the numbers.</div>
+          <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);"><span style="font-family:var(--font-serif);font-size:40px;font-weight:700;color:var(--ink-900);line-height:1;">0.5%</span><span style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);">/yr &middot; about ${fmtMoneyFull(inputs.balance*0.005)} on your ${balStr}</span></div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14.5px;color:var(--ink-700);line-height:1.4;display:flex;flex-direction:column;gap:10px;">
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Strategic Roth Conversions, run for you</li>
             <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Tax-smart management of all your accounts</li>
             <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Two strategy meetings a year</li>
           </ul>
-          <div style="margin-top:auto;padding-top:18px;font-family:var(--font-sans);font-size:13px;color:var(--fg-subtle);line-height:1.5;">For the do-it-yourselfer who wants the one engine they can&rsquo;t run alone &mdash; and handles the rest of their planning themselves.</div>
+          <div style="margin-top:auto;padding-top:16px;font-family:var(--font-sans);font-size:12.5px;color:var(--fg-subtle);line-height:1.45;">For the do-it-yourselfer who wants the one engine they can&rsquo;t run alone &mdash; and handles the rest themselves.</div>
         </div>
-        <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:26px 30px;display:flex;flex-direction:column;position:relative;">
+        <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;position:relative;">
           <div style="position:absolute;top:-12px;right:24px;background:var(--gold-400);color:var(--ink-900);font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;border-radius:999px;">Recommended</div>
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:6px;">White Glove</div>
-          <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:14px;">The numbers &mdash; and everything around them.</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--gold-400);font-weight:700;margin-bottom:10px;">Everything in Conversion Only, plus:</div>
-          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14.5px;color:rgba(255,255,255,0.9);line-height:1.45;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:4px;">White Glove</div>
+          <div style="font-family:var(--font-serif);font-size:23px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:10px;">Your personal CFO.</div>
+          <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.18);"><span style="font-family:var(--font-serif);font-size:40px;font-weight:700;color:var(--gold-400);line-height:1;">1.5%</span><span style="font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.72);">/yr &middot; about ${fmtMoneyFull(inputs.balance*0.015)} on your ${balStr}</span></div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--gold-400);font-weight:700;margin-bottom:9px;">Everything in Conversion Only, plus:</div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.9);line-height:1.4;display:flex;flex-direction:column;gap:8px;">
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Unlimited meetings &mdash; as often or as rarely as you want</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>A standing November&ndash;December tax-planning meeting every year</li>
             <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Estate &amp; legacy planning</li>
-            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Long-term care planning</li>
-            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Social Security timing</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Long-term care &amp; Social Security planning</li>
             <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Tax-return coordination &mdash; in-house Enrolled Agents</li>
             <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>The survivor plan, and a team that knows you by name</li>
           </ul>
         </div>
       </div>
-      <div style="max-width:1180px;margin:22px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">Conversion Only runs the tax engine. <em style="color:var(--gold-600);font-style:italic;">White Glove runs it &mdash; and stands in your corner for everything around it.</em></div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">ways</div>
     </section>
@@ -3004,7 +3006,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="title-block">
         <div class="kicker">What It Costs</div>
         <h2 class="title">One fee. <em><span class="fee-figure" data-wg-pct="1.5%" data-wg-usd="${fmtMoneyFull(inputs.balance*0.015)}/yr" data-co-pct="0.5%" data-co-usd="${fmtMoneyFull(inputs.balance*0.005)}/yr">1.5%</span>, all-in.</em></h2>
-        <p class="subtitle fee-scope" data-wg="No conversion fees, no per-trade charges, no surprise add-ons — White Glove covers it all: investment management, conversion timing, tax-return coordination, estate, long-term care, and Social Security planning, plus the relationship. One fee, because it's one kitchen." data-co="Conversion Only is the tax engine, all-in: dip-timed Roth conversions and tax-smart management of every account, with two strategy meetings a year. Nothing extra bolted on.">No conversion fees, no per-trade charges, no surprise add-ons &mdash; White Glove covers it all: investment management, conversion timing, tax-return coordination, estate, long-term care, and Social Security planning, plus the relationship. One fee, because it&rsquo;s one kitchen.</p>
+        <p class="subtitle fee-scope" data-wg="No conversion fees, no per-trade charges, no surprise add-ons — White Glove covers it all: investment management, conversion timing, tax-return coordination, estate, long-term care, and Social Security planning, plus the relationship. One fee, because it's one kitchen." data-co="Conversion Only is the tax engine, all-in: Strategic Roth Conversions and tax-smart management of every account, with two strategy meetings a year. Nothing extra bolted on.">No conversion fees, no per-trade charges, no surprise add-ons &mdash; White Glove covers it all: investment management, conversion timing, tax-return coordination, estate, long-term care, and Social Security planning, plus the relationship. One fee, because it&rsquo;s one kitchen.</p>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:5px;margin:12px 0 0;">
         <div style="display:inline-flex;background:#FAFAF9;border:1px solid var(--border);border-radius:999px;padding:4px;font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.03em;gap:3px;">
