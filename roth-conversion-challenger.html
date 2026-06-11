@@ -2942,6 +2942,53 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── Onboarding timeline (adapted from the Implementation Options deck, p.8) ──
+  slides.push(`
+    <section class="slide" data-slide="onboarding">
+      <div class="title-block" style="text-align:center;">
+        <div class="kicker">What It&rsquo;s Like To Work With Us</div>
+        <h2 class="title">From today, here&rsquo;s the path.</h2>
+        <p class="subtitle">Most of the steps are <em>our</em> job, not yours. Your accounts are held at the brokerage in your name &mdash; we direct the strategy and never take custody of your money.</p>
+      </div>
+      <div style="max-width:1260px;margin:30px auto 0;">
+        <div style="display:flex;font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px;">
+          <div style="flex:1;text-align:center;color:var(--gold-600);">Today</div>
+          <div style="flex:7;text-align:center;color:var(--ink-700);border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 8px;">Account Setup &amp; Estate Audit &mdash; about 7&ndash;10 days</div>
+          <div style="flex:3;text-align:center;color:var(--gold-600);">Your Personal CFO &mdash; ongoing</div>
+        </div>
+        <div style="position:relative;display:flex;align-items:flex-start;">
+          <div style="position:absolute;top:10px;left:4.5%;right:4.5%;height:3px;background:var(--border);z-index:0;"></div>
+          ${[
+            ['Personal Action Plan','#7FA8C9'],
+            ['Paperwork Prepared','#C9A84C'],
+            ['Review &amp; Sign','#7FA8C9'],
+            ['Accounts Opened','#2F5673'],
+            ['Assets Delivered','#2F5673'],
+            ['Quality Review','#C9A84C'],
+            ['Strategy Set','#7FA8C9'],
+            ['Accounts Allocated','#C9A84C'],
+            ['Continual Monitoring','#C9A84C'],
+            ['Quarterly Reviews','#7FA8C9'],
+            ['Live Your Best Life','#C9A84C'],
+          ].map(([label,color],i,arr)=>`
+            <div style="flex:1;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:0 3px;">
+              <div style="width:${i===arr.length-1?'24px':'20px'};height:${i===arr.length-1?'24px':'20px'};border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div>
+              <div style="margin-top:9px;font-family:var(--font-sans);font-size:10px;font-weight:600;color:var(--ink-700);text-align:center;line-height:1.25;">${label}</div>
+            </div>`).join('')}
+        </div>
+        <div style="text-align:center;margin:16px 0 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);">We monitor &amp; manage your accounts <strong style="color:var(--ink-700);">daily</strong>, and meet as often as you need.</div>
+        <div style="display:flex;gap:26px;justify-content:center;align-items:center;margin:18px 0 0;font-family:var(--font-sans);font-size:12px;color:var(--ink-700);">
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:50%;background:#C9A84C;display:inline-block;"></span>Our work</span>
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:50%;background:#2F5673;display:inline-block;"></span>Your brokerage &mdash; we supervise</span>
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:50%;background:#7FA8C9;display:inline-block;"></span>Together</span>
+        </div>
+      </div>
+      <div style="max-width:1100px;margin:26px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">Count the gold dots. <em style="color:var(--gold-600);font-style:italic;">Almost all of this is on us.</em></div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">path</div>
+    </section>
+  `);
+
   // ── Section divider: ask the money question head-on (Challenger "take control") ──
   slides.push(`
     <section class="slide" data-slide="cost-divider">
