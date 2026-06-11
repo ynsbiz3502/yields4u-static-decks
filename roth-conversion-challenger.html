@@ -2942,13 +2942,76 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── Section divider: ask the money question head-on (Challenger "take control") ──
+  slides.push(`
+    <section class="slide" data-slide="cost-divider">
+      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
+        <div class="hook-hero" style="padding:0;">
+          <div class="kicker" style="text-align:center">The Investment</div>
+          <h1 class="hero-title">
+            So &mdash; what does all this
+            <span class="accent">cost?</span>
+          </h1>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">cost</div>
+    </section>
+  `);
+
+  // ── Two ways to work together: Conversion Only (the engine) vs White Glove (engine + the plan) ──
+  slides.push(`
+    <section class="slide" data-slide="two-ways">
+      <div class="title-block" style="text-align:center;">
+        <div class="kicker">Two Ways In</div>
+        <h2 class="title">Two ways we work together.</h2>
+        <p class="subtitle">The tax engine is in both &mdash; we manage every account and time your conversions either way. The difference is everything <em>around</em> the numbers.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1180px;margin:28px auto 0;align-items:stretch;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-400);border-radius:12px;padding:26px 30px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:6px;">Conversion Only</div>
+          <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:16px;">Just the numbers.</div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14.5px;color:var(--ink-700);line-height:1.45;display:flex;flex-direction:column;gap:11px;">
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Dip-timed Roth conversions, run for you</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Tax-smart management of all your accounts</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Two strategy meetings a year</li>
+          </ul>
+          <div style="margin-top:auto;padding-top:18px;font-family:var(--font-sans);font-size:13px;color:var(--fg-subtle);line-height:1.5;">For the do-it-yourselfer who wants the one engine they can&rsquo;t run alone &mdash; and handles the rest of their planning themselves.</div>
+        </div>
+        <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:26px 30px;display:flex;flex-direction:column;position:relative;">
+          <div style="position:absolute;top:-12px;right:24px;background:var(--gold-400);color:var(--ink-900);font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;border-radius:999px;">Recommended</div>
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:6px;">White Glove</div>
+          <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:14px;">The numbers &mdash; and everything around them.</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--gold-400);font-weight:700;margin-bottom:10px;">Everything in Conversion Only, plus:</div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14.5px;color:rgba(255,255,255,0.9);line-height:1.45;display:flex;flex-direction:column;gap:10px;">
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Estate &amp; legacy planning</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Long-term care planning</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Social Security timing</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Tax-return coordination &mdash; in-house Enrolled Agents</li>
+            <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>The survivor plan, and a team that knows you by name</li>
+          </ul>
+        </div>
+      </div>
+      <div style="max-width:1180px;margin:22px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">Conversion Only runs the tax engine. <em style="color:var(--gold-600);font-style:italic;">White Glove runs it &mdash; and stands in your corner for everything around it.</em></div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">ways</div>
+    </section>
+  `);
+
   // Pitch — fee frame: 1.5% all-in vs what a well-run strategy saves
   slides.push(`
     <section class="slide" data-slide="fee">
       <div class="title-block">
         <div class="kicker">What It Costs</div>
-        <h2 class="title">One fee. <em><span class="fee-figure" data-pct="1.5%" data-usd="${fmtMoneyFull(inputs.balance*0.015)}/yr">1.5%</span>, all-in.</em></h2>
-        <p class="subtitle">No conversion fees. No per-trade charges. No surprise add-ons. One transparent 1.5% covers everything &mdash; investment management, conversion timing, tax-return coordination, and quarterly reviews. One fee, because it&rsquo;s one kitchen.</p>
+        <h2 class="title">One fee. <em><span class="fee-figure" data-wg-pct="1.5%" data-wg-usd="${fmtMoneyFull(inputs.balance*0.015)}/yr" data-co-pct="0.5%" data-co-usd="${fmtMoneyFull(inputs.balance*0.005)}/yr">1.5%</span>, all-in.</em></h2>
+        <p class="subtitle fee-scope" data-wg="No conversion fees, no per-trade charges, no surprise add-ons — White Glove covers it all: investment management, conversion timing, tax-return coordination, estate, long-term care, and Social Security planning, plus the relationship. One fee, because it's one kitchen." data-co="Conversion Only is the tax engine, all-in: dip-timed Roth conversions and tax-smart management of every account, with two strategy meetings a year. Nothing extra bolted on.">No conversion fees, no per-trade charges, no surprise add-ons &mdash; White Glove covers it all: investment management, conversion timing, tax-return coordination, estate, long-term care, and Social Security planning, plus the relationship. One fee, because it&rsquo;s one kitchen.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:5px;margin:12px 0 0;">
+        <div style="display:inline-flex;background:#FAFAF9;border:1px solid var(--border);border-radius:999px;padding:4px;font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.03em;gap:3px;">
+          <button class="fee-tier-tab" data-tier="wg" style="padding:8px 22px;border-radius:999px;border:none;cursor:pointer;background:var(--ink-900);color:#fff;transition:all .2s;">White Glove</button>
+          <button class="fee-tier-tab" data-tier="co" style="padding:8px 22px;border-radius:999px;border:none;cursor:pointer;background:transparent;color:var(--ink-900);transition:all .2s;">Conversion Only</button>
+        </div>
+        <div style="font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);font-style:italic;">Start where you&rsquo;re comfortable &mdash; upgrade or downgrade anytime.</div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1060px;margin:18px auto 0;">
         <div style="background:#FBF9F4;border:1px solid var(--border);border-radius:10px;padding:14px 20px;">
@@ -2971,30 +3034,30 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div style="display:flex;align-items:center;gap:18px;margin-bottom:12px;">
           <div style="width:150px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Scenario A</div>
           <div style="flex:1;background:#F2F0EB;border-radius:8px;height:46px;display:flex;align-items:center;overflow:hidden;">
-            <div style="width:7.5%;height:100%;background:#A8A29A;flex-shrink:0;"></div>
-            <div style="width:17.5%;height:100%;background:#6E8B5A;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:14px;">5%</div>
+            <div class="fee-bar-slice" data-wg-w="7.5%" data-co-w="2.5%" style="width:7.5%;height:100%;background:#A8A29A;flex-shrink:0;"></div>
+            <div class="fee-bar-net" data-wg-w="17.5%" data-co-w="22.5%" style="width:17.5%;height:100%;background:#6E8B5A;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:14px;">5%</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:18px;margin-bottom:12px;">
           <div style="width:150px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Scenario B</div>
           <div style="flex:1;background:#F2F0EB;border-radius:8px;height:46px;display:flex;align-items:center;overflow:hidden;">
-            <div style="width:7.5%;height:100%;background:#A8A29A;flex-shrink:0;"></div>
-            <div style="width:42.5%;height:100%;background:#6E8B5A;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:14px;">10%</div>
+            <div class="fee-bar-slice" data-wg-w="7.5%" data-co-w="2.5%" style="width:7.5%;height:100%;background:#A8A29A;flex-shrink:0;"></div>
+            <div class="fee-bar-net" data-wg-w="42.5%" data-co-w="47.5%" style="width:42.5%;height:100%;background:#6E8B5A;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:14px;">10%</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:18px;">
           <div style="width:150px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Scenario C</div>
           <div style="flex:1;background:#F2F0EB;border-radius:8px;height:46px;display:flex;align-items:center;overflow:hidden;">
-            <div style="width:7.5%;height:100%;background:#A8A29A;flex-shrink:0;"></div>
-            <div style="width:92.5%;height:100%;background:#4E6B3C;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:14px;">20%</div>
+            <div class="fee-bar-slice" data-wg-w="7.5%" data-co-w="2.5%" style="width:7.5%;height:100%;background:#A8A29A;flex-shrink:0;"></div>
+            <div class="fee-bar-net" data-wg-w="92.5%" data-co-w="97.5%" style="width:92.5%;height:100%;background:#4E6B3C;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:14px;">20%</div>
           </div>
         </div>
         <div style="display:flex;gap:28px;justify-content:center;align-items:center;margin:16px 0 0 168px;font-size:12.5px;color:var(--ink-700);">
-          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:3px;background:#A8A29A;display:inline-block;"></span>Your fee &mdash; <strong style="margin-left:2px;"><span class="fee-figure" data-pct="1.5%" data-usd="${fmtMoneyFull(inputs.balance*0.015)}/yr">1.5%</span></strong></span>
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:3px;background:#A8A29A;display:inline-block;"></span>Your fee &mdash; <strong style="margin-left:2px;"><span class="fee-figure" data-wg-pct="1.5%" data-wg-usd="${fmtMoneyFull(inputs.balance*0.015)}/yr" data-co-pct="0.5%" data-co-usd="${fmtMoneyFull(inputs.balance*0.005)}/yr">1.5%</span></strong></span>
           <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:3px;background:#6E8B5A;display:inline-block;"></span>What you keep</span>
         </div>
       </div>
-      <div style="max-width:1060px;margin:20px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Scenarios A&ndash;C are illustrative, not projections or a promise of results. The dollar figure applies the 1.5% to your ${balStr} balance; in practice the fee covers every account we manage.</div>
+      <div style="max-width:1060px;margin:20px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Scenarios A&ndash;C are illustrative, not projections or a promise of results. The dollar figure applies your tier&rsquo;s rate to your ${balStr} balance; in practice the fee covers every account we manage.</div>
       <div style="text-align:center;margin:10px auto 0;">
         <a class="fee-toggle-link" role="button" tabindex="0" data-unit="pct" style="font-family:var(--font-sans);font-size:11.5px;color:var(--gold-600);text-decoration:underline;text-underline-offset:2px;cursor:pointer;">Show fee in dollars</a>
       </div>
@@ -4237,20 +4300,33 @@ function onGenerate(e) {
   wrap.querySelectorAll('.slide .slide-number').forEach((el, i) => {
     el.textContent = String(i + 1).padStart(2, '0');
   });
-  // Fee slide: small Percent/Dollars hyperlink — swaps only the fee figure; the scenario bars stay in percent.
-  wrap.querySelectorAll('.fee-toggle-link').forEach(link => {
-    const slide = link.closest('.slide');
-    const flip = () => {
-      const unit = link.dataset.unit === 'usd' ? 'pct' : 'usd';
-      link.dataset.unit = unit;
-      link.textContent = unit === 'usd' ? 'Show fee in percent' : 'Show fee in dollars';
-      slide.querySelectorAll('.fee-figure').forEach(el => {
-        el.textContent = unit === 'usd' ? el.dataset.usd : el.dataset.pct;
+  // Fee slide: White Glove / Conversion Only tier toggle + Percent/Dollars unit link (one shared state).
+  const feeSlide = wrap.querySelector('.fee-tier-tab') ? wrap.querySelector('.fee-tier-tab').closest('.slide') : null;
+  if (feeSlide) {
+    const state = { tier: 'wg', unit: 'pct' };
+    const link = feeSlide.querySelector('.fee-toggle-link');
+    const apply = () => {
+      feeSlide.querySelectorAll('.fee-tier-tab').forEach(t => {
+        const on = t.dataset.tier === state.tier;
+        t.style.background = on ? 'var(--ink-900)' : 'transparent';
+        t.style.color = on ? '#fff' : 'var(--ink-900)';
       });
+      feeSlide.querySelectorAll('.fee-figure').forEach(el => {
+        el.textContent = el.dataset[state.tier + (state.unit === 'usd' ? 'Usd' : 'Pct')];
+      });
+      const scope = feeSlide.querySelector('.fee-scope');
+      if (scope) scope.textContent = scope.dataset[state.tier];
+      feeSlide.querySelectorAll('.fee-bar-slice').forEach(el => { el.style.width = el.dataset[state.tier + 'W']; });
+      feeSlide.querySelectorAll('.fee-bar-net').forEach(el => { el.style.width = el.dataset[state.tier + 'W']; });
+      if (link) link.textContent = state.unit === 'usd' ? 'Show fee in percent' : 'Show fee in dollars';
     };
-    link.addEventListener('click', flip);
-    link.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); } });
-  });
+    feeSlide.querySelectorAll('.fee-tier-tab').forEach(t => t.addEventListener('click', () => { state.tier = t.dataset.tier; apply(); }));
+    if (link) {
+      link.addEventListener('click', () => { state.unit = state.unit === 'usd' ? 'pct' : 'usd'; apply(); });
+      link.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); state.unit = state.unit === 'usd' ? 'pct' : 'usd'; apply(); } });
+    }
+    apply();
+  }
   document.getElementById('input-screen').style.display = 'none';
   document.getElementById('presentation-screen').classList.add('active');
   // Honor a #slide=N hash so a refresh / shared link restores the right slide.
