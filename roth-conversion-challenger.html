@@ -1254,7 +1254,7 @@ function computeHeirImpact(inputs) {
   const currentYear = new Date().getFullYear();
   const yearOfPassing = currentYear + years;
   const balanceAtDeath = inputs.balance * Math.pow(1 + inputs.growthRate, years);
-  const heirEffectiveRate = 0.35; // 10-yr forced drain at heir's peak earning years
+  const heirEffectiveRate = 0.37; // 10-yr forced drain lands at the top 37% bracket for peak-earning heirs
   const afterTaxPct = 1 - heirEffectiveRate;
   // Roth alternative: same balance, but heir withdrawals are 100% tax-free.
   return {
@@ -2871,9 +2871,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div class="compare-cell val bad">${lifeTax} (projected)</div>
         <div class="compare-cell val good">~${fmtMoney(sim.lifetimeTax - savings)} net <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 10px;margin-left:8px;white-space:nowrap;">saves ${saveStr}</span></div>
 
-        <div class="compare-cell row-label">Effective Rate</div>
-        <div class="compare-cell val bad">22–32%</div>
-        <div class="compare-cell val good">10–15%</div>
+        <div class="compare-cell row-label">Rate Your Heirs Pay</div>
+        <div class="compare-cell val bad">${Math.round(heir.heirRate*100)}% &mdash; top bracket</div>
+        <div class="compare-cell val good">0% &mdash; tax-free Roth</div>
 
         <div class="compare-cell row-label">Tax Your Heirs Pay</div>
         <div class="compare-cell val bad">${heirLost} over 10 yrs</div>
@@ -2896,9 +2896,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="relationship">
       <div class="title-block">
-        <div class="kicker">The Relationship</div>
-        <h2 class="title">You won&rsquo;t be handed off. <em>There&rsquo;s no one to hand you to.</em></h2>
-        <p class="subtitle">At a national firm, the advisor who signs you is a salesperson &mdash; your money is run by a department you&rsquo;ll never meet, and they rotate. We&rsquo;re built the opposite way on purpose: the person across from you now builds your plan, times your conversions, and picks up the phone &mdash; for as long as you&rsquo;re with us.</p>
+        <div class="kicker">The Hand-Off Nobody Plans For</div>
+        <h2 class="title">${widowAnnual > 0 ? `When one of you is gone, someone still has to <em>finish the ladder.</em>` : `A ${runwayYears}-year ladder needs the <em>same hands</em> the whole way.`}</h2>
+        <p class="subtitle">${widowAnnual > 0 ? `A Roth conversion ladder isn&rsquo;t one decision &mdash; it&rsquo;s a ${runwayYears}-year sequence, timed to your brackets and the market. Stop halfway and your surviving spouse inherits the unfinished half &mdash; and files it <strong>single</strong>, where the brackets are tightest. The question was never who <em>sells</em> you the plan. It&rsquo;s who&rsquo;s still across the table to <em>finish it.</em>` : `A Roth conversion ladder isn&rsquo;t one decision &mdash; it&rsquo;s a ${runwayYears}-year sequence, timed to your brackets and the market. It only works if the same hands run it start to finish &mdash; not a service desk that reassigns your account every spring.`}</p>
       </div>
       <div style="max-width:1180px;margin:30px auto 0;background:white;border:1px solid var(--border);border-top:4px solid #A83B2E;border-radius:12px;padding:22px 28px;">
         <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A83B2E;margin-bottom:16px;">At A National Firm</div>
@@ -2915,7 +2915,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <span style="color:var(--fg-subtle);font-size:16px;">&rarr;</span>
           <span style="color:var(--fg-subtle);font-style:italic;">&hellip;and on</span>
         </div>
-        <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);margin-top:13px;">Passed down the line until you&rsquo;re account #4,000 &mdash; nobody on the other end who knows your plan.</div>
+        <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);margin-top:13px;">Passed down the line until you&rsquo;re account #4,000 &mdash; and the day someone has to <em>finish</em> your plan, a stranger answers and the ladder stops where it stood.</div>
       </div>
       <div style="max-width:1180px;margin:18px auto 0;background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:22px 28px;">
         <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:16px;">With Yields For You</div>
@@ -2932,10 +2932,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             `).join('')}
           </div>
         </div>
-        <div style="font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.75);margin-top:18px;">The person who pitched you is the person who runs it &mdash; you&rsquo;ll know us by name, every quarter, for the life of your plan.</div>
+        <div style="font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.75);margin-top:18px;">The people who built your ladder are the people who finish it &mdash; same names, every quarter, through every conversion and whoever&rsquo;s left to see it done.</div>
       </div>
       <div style="max-width:1180px;margin:22px auto 0;text-align:center;">
-        <span style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.5;">Small isn&rsquo;t the risk. <em style="color:var(--gold-600);font-style:italic;">It&rsquo;s the reason you get a relationship instead of a call center.</em></span>
+        ${widowAnnual > 0 ? `<div style="font-family:var(--font-sans);font-size:14px;color:var(--fg-muted);margin-bottom:10px;">Finish the ladder and the <strong style="color:var(--ink-900);">${widowCumStr}</strong> single-filer penalty your spouse would otherwise face never lands. Leave it half-built, and they pay it in the years they can least respond.</div>` : ``}
+        <span style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.5;">Small isn&rsquo;t the risk. <em style="color:var(--gold-600);font-style:italic;">A team that&rsquo;s never seen your bracket history is.</em></span>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">38</div>
@@ -2947,7 +2948,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     <section class="slide" data-slide="fee">
       <div class="title-block">
         <div class="kicker">What It Costs</div>
-        <h2 class="title">One fee. <em>1.5%, all-in.</em></h2>
+        <h2 class="title">One fee. <em><span class="fee-figure" data-pct="1.5%" data-usd="${fmtMoneyFull(inputs.balance*0.015)}/yr">1.5%</span>, all-in.</em></h2>
         <p class="subtitle">No conversion fees. No per-trade charges. No surprise add-ons. One transparent 1.5% covers everything &mdash; investment management, conversion timing, tax-return coordination, and quarterly reviews. One fee, because it&rsquo;s one kitchen.</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1060px;margin:18px auto 0;">
@@ -2965,34 +2966,45 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <div style="max-width:1060px;margin:10px auto 0;font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);text-align:center;">Most firms couldn&rsquo;t deliver this economically. That was the point of building it this way. Here&rsquo;s how the fee compares to what a well-run strategy saves you.</div>
-      <div style="max-width:1060px;margin:22px auto 0;font-family:var(--font-sans);">
-        <div style="display:flex;align-items:center;gap:18px;margin-bottom:10px;">
-          <div style="width:200px;text-align:right;font-weight:700;font-size:15px;color:var(--ink-900);">Your all-in fee</div>
-          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:48px;">
-            <div style="width:7.5%;min-width:54px;background:var(--ink-700);height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-weight:700;font-size:14px;">1.5%</div>
+      <!-- Heavy Percent / Dollars switch (controls only the fee figure) -->
+      <div style="display:flex;justify-content:center;align-items:center;gap:18px;margin:16px 0 4px;">
+        <span class="fee-switch-side" data-side="pct" style="font-family:var(--font-sans);font-size:13px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-900);cursor:pointer;">Percent</span>
+        <div class="fee-switch" data-unit="pct" role="button" tabindex="0" aria-label="Toggle fee display between percent and dollars" style="position:relative;width:112px;height:52px;background:var(--ink-900);border-radius:999px;cursor:pointer;box-shadow:inset 0 2px 7px rgba(0,0,0,0.4),0 8px 20px rgba(14,14,15,0.22);flex-shrink:0;">
+          <div class="fee-switch-knob" style="position:absolute;top:4px;left:4px;width:44px;height:44px;border-radius:50%;background:var(--gold-400);box-shadow:0 3px 10px rgba(0,0,0,0.45);transition:left .22s cubic-bezier(.4,0,.2,1);"></div>
+        </div>
+        <span class="fee-switch-side" data-side="usd" style="font-family:var(--font-sans);font-size:13px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--fg-subtle);cursor:pointer;">Dollars</span>
+      </div>
+      <!-- Stacked bars: your fee shown as a slice over each targeted savings rate -->
+      <div style="max-width:1000px;margin:14px auto 0;font-family:var(--font-sans);">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin:0 0 12px 168px;">What a well-run strategy saves you &mdash; every year</div>
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:12px;">
+          <div style="width:150px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Conservative</div>
+          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:46px;display:flex;align-items:center;overflow:hidden;">
+            <div style="width:7.5%;height:100%;background:#A8A29A;flex-shrink:0;"></div>
+            <div style="width:17.5%;height:100%;background:#6E8B5A;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:14px;">5%</div>
           </div>
         </div>
-        <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin:22px 0 14px 218px;">What we aim to save you on conversion taxes &mdash; every year</div>
-        <div style="display:flex;align-items:center;gap:18px;margin-bottom:14px;">
-          <div style="width:200px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Conservative</div>
-          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:48px;">
-            <div style="width:25%;background:#9CAF88;height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-weight:700;font-size:14px;">5%</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:18px;margin-bottom:14px;">
-          <div style="width:200px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Typical</div>
-          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:48px;">
-            <div style="width:50%;background:#6E8B5A;height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-weight:700;font-size:14px;">10%</div>
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:12px;">
+          <div style="width:150px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Typical</div>
+          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:46px;display:flex;align-items:center;overflow:hidden;">
+            <div style="width:7.5%;height:100%;background:#A8A29A;flex-shrink:0;"></div>
+            <div style="width:42.5%;height:100%;background:#6E8B5A;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:14px;">10%</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:18px;">
-          <div style="width:200px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Well-timed</div>
-          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:48px;">
-            <div style="width:100%;background:#4E6B3C;height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-weight:700;font-size:14px;">20%</div>
+          <div style="width:150px;text-align:right;font-weight:600;font-size:15px;color:var(--ink-700);">Well-timed</div>
+          <div style="flex:1;background:#F2F0EB;border-radius:8px;height:46px;display:flex;align-items:center;overflow:hidden;">
+            <div style="width:7.5%;height:100%;background:#A8A29A;flex-shrink:0;"></div>
+            <div style="width:92.5%;height:100%;background:#4E6B3C;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:14px;">20%</div>
           </div>
         </div>
+        <div style="display:flex;gap:28px;justify-content:center;align-items:center;margin:16px 0 0 168px;font-size:12.5px;color:var(--ink-700);">
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:3px;background:#A8A29A;display:inline-block;"></span>Your fee &mdash; <strong style="margin-left:2px;"><span class="fee-figure" data-pct="1.5%" data-usd="${fmtMoneyFull(inputs.balance*0.015)}/yr">1.5%</span></strong></span>
+          <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:3px;background:#6E8B5A;display:inline-block;"></span>What you keep</span>
+        </div>
       </div>
-      <p style="max-width:1060px;margin:24px auto 0;font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--fg-muted);text-align:center;line-height:1.55;">Save even 5% on what you&rsquo;d otherwise pay in conversion taxes and the strategy more than pays for itself. At 10&ndash;20%, it isn&rsquo;t close.</p>
+      <p style="max-width:1060px;margin:16px auto 0;font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--fg-muted);text-align:center;line-height:1.5;">Save even 5% on what you&rsquo;d otherwise pay in conversion taxes and the strategy more than pays for itself. At 10&ndash;20%, it isn&rsquo;t close.</p>
+      <div style="max-width:1060px;margin:8px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Dollar view applies the 1.5% to your ${balStr} balance; in practice the fee covers every account we manage. Savings are shown as a share of your conversion tax.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">fee</div>
     </section>
@@ -4231,6 +4243,25 @@ function onGenerate(e) {
   // Challenger reorder changed slide positions — renumber the corner labels to match actual order.
   wrap.querySelectorAll('.slide .slide-number').forEach((el, i) => {
     el.textContent = String(i + 1).padStart(2, '0');
+  });
+  // Fee slide: heavy Percent/Dollars switch — swaps only the fee figure; the stacked savings bars stay in percent.
+  wrap.querySelectorAll('.fee-switch').forEach(sw => {
+    const slide = sw.closest('.slide');
+    const apply = (unit) => {
+      sw.dataset.unit = unit;
+      const knob = sw.querySelector('.fee-switch-knob');
+      if (knob) knob.style.left = unit === 'usd' ? '64px' : '4px';
+      slide.querySelectorAll('.fee-switch-side').forEach(l => {
+        l.style.color = l.dataset.side === unit ? 'var(--ink-900)' : 'var(--fg-subtle)';
+      });
+      slide.querySelectorAll('.fee-figure').forEach(el => {
+        el.textContent = unit === 'usd' ? el.dataset.usd : el.dataset.pct;
+      });
+    };
+    const flip = () => apply(sw.dataset.unit === 'usd' ? 'pct' : 'usd');
+    sw.addEventListener('click', flip);
+    sw.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); } });
+    slide.querySelectorAll('.fee-switch-side').forEach(l => l.addEventListener('click', () => apply(l.dataset.side)));
   });
   document.getElementById('input-screen').style.display = 'none';
   document.getElementById('presentation-screen').classList.add('active');
