@@ -1370,6 +1370,35 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const heirPlus20Str = fmtMoney(heir.lost * 1.2);
   const runwayYears = Math.max(0, rmdAge - inputs.currentAge);
 
+  // ── "Your Year One" tailoring — all computed from intake via the same simulate()
+  // and bracket tables the trajectory + 1040 slides use. Reused on the fee slide. ──
+  const y1Status = inputs.filingStatus;
+  const y1Br = y1Status === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
+  const y1Year = new Date().getFullYear();
+  // Year-0 taxable income (after the standard deduction), straight from simulate().
+  const y1TaxableNow = Math.max(0, ((sim.yearly[0] && sim.yearly[0].taxableInc) || 0) - STD_DED[y1Status]);
+  // Current bracket: marginal rate + the taxable-income ceiling of that bracket.
+  let y1Rate = 0.10, y1BrTop = Infinity;
+  for (const [maxT, rate] of y1Br) { y1Rate = rate; y1BrTop = maxT; if (y1TaxableNow <= maxT) break; }
+  const y1RatePct = Math.round(y1Rate * 100) + '%';
+  // Headroom left in the current bracket before income spills into the next one.
+  const y1Headroom = Math.max(0, (y1BrTop === Infinity ? y1TaxableNow : y1BrTop) - y1TaxableNow);
+  const y1HeadroomStr = fmtMoney(y1Headroom);
+  // First conversion: a range sized to fill that headroom without spilling over.
+  const y1ConvHigh = Math.round(y1Headroom / 1000) * 1000;
+  const y1ConvLow = Math.round(y1ConvHigh * 0.7 / 1000) * 1000;
+  const y1ConvStr = y1ConvHigh > 0 ? `${fmtMoney(y1ConvLow)}–${fmtMoney(y1ConvHigh)}` : 'a bracket-filling amount';
+  // What one year-one conversion does to the lifetime tax bill: re-run the same
+  // simulate() with the converted dollars removed from the traditional IRA, then add
+  // the tax paid on the conversion now at today's bracket. Savings = the drop.
+  const y1DoNothingTax = sim.lifetimeTax;
+  const y1AfterSim = simulate({ ...inputs, balance: Math.max(0, inputs.balance - y1ConvHigh) });
+  const y1AfterTax = y1AfterSim.lifetimeTax + y1ConvHigh * y1Rate;
+  const y1Savings = Math.max(0, y1DoNothingTax - y1AfterTax);
+  const y1DoNothingStr = fmtMoney(y1DoNothingTax);
+  const y1AfterStr = fmtMoney(y1AfterTax);
+  const y1SavingsStr = fmtMoney(y1Savings);
+
   const slides = [];
 
 
@@ -1545,16 +1574,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div class="leibel-underline"></div>
           <div class="leibel-ea">Enrolled Agent With The IRS</div>
           <ul class="leibel-creds-v2">
-            <li>Bestselling author of <em>Living with Financial Anxiety</em></li>
-            <li>Enrolled Agent with the IRS</li>
-            <li>Accredited Portfolio Management Advisor</li>
-            <li>Chartered Financial Consultant</li>
-            <li>National Social Security Advisor Certificate Holder</li>
-            <li>Portfolio Manager for ETF: YFYA</li>
-            <li>Financial Sponsor for the ETF: RSMV</li>
+            <li>Enrolled Agent &mdash; licensed by the IRS to give the tax advice most advisors can&rsquo;t</li>
+            <li>Fintech CTO &mdash; built and runs the platform that executes this daily</li>
+            <li>Portfolio Manager, ETF YFYA</li>
+            <li>Educating retirees since 2007</li>
           </ul>
           <p class="leibel-bio">
-            Frequently quoted as an expert in the media. Been helping educate retirees since 2007.
+            Frequently quoted as an expert in the media.
           </p>
           <div class="leibel-link-v2">
             Learn more: <a href="https://linktr.ee/LeibelSternbach" target="_blank" rel="noopener">linktr.ee/LeibelSternbach</a>
@@ -2653,6 +2679,80 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── The Prize — moved up to follow the turn: commit to the strategy before the vendor ──
+  slides.push(`
+    <section class="slide" data-slide="21">
+      <div class="title-block">
+        <div class="kicker">The Prize</div>
+        <h2 class="title">Your heirs inherit a Roth &mdash; <em>not a ${heirLost} tax bill.</em></h2>
+        <p class="subtitle">Use the ${runwayYears} low-bracket years you have left, and the tax the IRS would have taken all but disappears.</p>
+      </div>
+      <div style="max-width:1120px;margin:26px auto 0;background:var(--ink-900);border-radius:14px;padding:28px 36px;display:flex;align-items:center;gap:34px;">
+        <div style="flex-shrink:0;">
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-400);margin-bottom:8px;">What your heirs never pay</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:82px;color:var(--gold-400);line-height:0.95;letter-spacing:-0.03em;">${heirLost}</div>
+        </div>
+        <div style="font-family:var(--font-serif);font-size:18px;color:rgba(255,255,255,0.9);line-height:1.55;border-left:1px solid rgba(255,255,255,0.18);padding-left:34px;">Your IRA grows to about ${heirBefore} by your eighties. Left in a Traditional account, your heirs drain it over ten years at their peak rates and hand the IRS ${heirLost}. In a Roth, they inherit it <em style="color:var(--gold-400);font-style:italic;">tax-free.</em></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1120px;margin:18px auto 0;">
+        <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:20px 26px;">
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">Saved in your lifetime</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:44px;color:var(--gold-700);line-height:1;">${saveStr}</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:8px;line-height:1.45;">Converting at low brackets instead of paying RMD tax at the top.</div>
+        </div>
+        <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:20px 26px;">
+          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">${widowAnnual > 0 ? 'Widow&rsquo;s penalty, erased' : 'Single-filer penalty, avoided'}</div>
+          <div style="font-family:var(--font-serif);font-weight:700;font-size:44px;color:var(--gold-700);line-height:1;">${widowAnnual > 0 ? widowCumStr : '$0'}</div>
+          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:8px;line-height:1.45;">${widowAnnual > 0 ? `The extra tax your spouse never pays the year one of you is gone.` : `Roth dollars never trigger a single-filer penalty.`}</div>
+        </div>
+      </div>
+      <div style="max-width:1120px;margin:20px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:19px;color:white;line-height:1.5;">And these are today&rsquo;s historically low rates &mdash; at +20%, your heirs avoid closer to <em style="color:var(--gold-400);font-style:italic;">${heirPlus20Str}.</em> It&rsquo;s the biggest it will ever be: every year you wait the window shrinks, and at ${rmdAge}, RMDs force the worst of it.</span>
+      </div>
+      <div style="max-width:1120px;margin:10px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Illustrative: assumes the full IRA is converted to Roth over your pre-RMD years; heir figure estimates the 10-year-rule drain at peak rates. Actual results vary with markets and future tax law.</div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">21</div>
+    </section>
+  `);
+
+  // ── The Choice — moved up to follow the prize ──
+  slides.push(`
+    <section class="slide" data-slide="23">
+      <div class="title-block">
+        <div class="kicker">The Choice</div>
+        <h2 class="title">Their timing <em>vs. yours</em></h2>
+        <p class="subtitle">The left column is what happens on their schedule. The right column is what happens on yours &mdash; over a 30-year retirement on your ${balStr} IRA.</p>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-cell head"></div>
+        <div class="compare-cell head nothing">On Their Schedule</div>
+        <div class="compare-cell head us">On Your Schedule</div>
+
+        <div class="compare-cell row-label">Lifetime Tax Bill</div>
+        <div class="compare-cell val bad">${lifeTax} (projected)</div>
+        <div class="compare-cell val good">~${fmtMoney(sim.lifetimeTax - savings)} net <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 10px;margin-left:8px;white-space:nowrap;">saves ${saveStr}</span></div>
+
+        <div class="compare-cell row-label">Rate Your Heirs Pay</div>
+        <div class="compare-cell val bad">${Math.round(heir.heirRate*100)}% &mdash; top bracket</div>
+        <div class="compare-cell val good">0% &mdash; tax-free Roth</div>
+
+        <div class="compare-cell row-label">Tax Your Heirs Pay</div>
+        <div class="compare-cell val bad">${heirLost} over 10 yrs</div>
+        <div class="compare-cell val good">$0 &mdash; tax-free Roth</div>
+
+        <div class="compare-cell row-label">Conversion Window</div>
+        <div class="compare-cell val bad">Wasted &mdash; gone at ${rmdAge}</div>
+        <div class="compare-cell val good">${runwayYears > 0 ? `${runwayYears} low-bracket years, all used` : 'Every remaining year used'}</div>
+      </div>
+      <div style="max-width:1300px;margin:18px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:20px;color:white;line-height:1.5;">Doing nothing and deciding later are the <em style="color:var(--gold-400);font-style:italic;">same column.</em> You pick which one &mdash; but only until ${rmdAge}. After that, the IRS picks for you.</span>
+      </div>
+      <div class="compare-note">How these are figured: each row compares doing nothing &mdash; paying tax on Required Minimum Distributions at projected rates &mdash; against converting the IRA to Roth over your pre-RMD years, filling the lower brackets. Brackets and the standard deduction are indexed to inflation each year. Heir figures estimate the 10-year-rule drain at heirs&rsquo; peak rates. All figures use today&rsquo;s tax law and are illustrative; because today&rsquo;s rates are near historic lows, higher future rates would <em>increase</em> the savings shown. Actual results vary with your circumstances, markets, and future law.</div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">23</div>
+    </section>
+  `);
+
   // ── Wedge: one 1040, one set of hands — why every account must be under our roof ──
   slides.push(`
     <section class="slide" data-slide="all-assets">
@@ -2697,7 +2797,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="title-block" style="margin-bottom:18px;">
         <div class="kicker">Take Control &mdash; The Requirements</div>
         <h2 class="title" style="margin-bottom:6px;">Before you let anyone run this, make them check <em>every</em> box.</h2>
-        <p class="subtitle" style="font-size:15px;">We didn&rsquo;t write this list to describe ourselves &mdash; the strategy wrote it. Hand it to any advisor. Yours, or ours.</p>
+        <p class="subtitle" style="font-size:15px;">We didn&rsquo;t write this list to describe ourselves &mdash; the strategy wrote it. Score anyone against it, including us.</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px 28px;max-width:1100px;margin:0 auto;">
         <div style="display:flex;align-items:flex-start;gap:14px;background:#FBF6EC;border:1px solid #E6D3A8;border-radius:8px;padding:16px 20px;">
@@ -2792,99 +2892,6 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // then the team. The firm "About" slide was intentionally dropped (see splice above).
   slides.push(_leibelSlide, _teamSlide);
 
-  // ── Section divider: the cost of doing nothing ──────────────────────
-  slides.push(`
-    <section class="slide" data-slide="nothing-divider">
-      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
-        <div class="hook-hero" style="padding:0;">
-          <div class="kicker" style="text-align:center">The Default Setting</div>
-          <h1 class="hero-title">
-            Do nothing &mdash; and Congress
-            <span class="accent">decides for you.</span>
-          </h1>
-        </div>
-      </div>
-      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">27</div>
-    </section>
-  `);
-
-  // SLIDE 16 — The Proof: 3-way comparison (Do Nothing vs Saved For You vs Saved For Your Spouse)
-  slides.push(`
-    <section class="slide" data-slide="21">
-      <div class="title-block">
-        <div class="kicker">The Prize &mdash; Claimed</div>
-        <h2 class="title">Your heirs inherit a Roth &mdash; <em>not a ${heirLost} tax bill.</em></h2>
-        <p class="subtitle">Convert the whole IRA over your low-bracket runway, and the tax the IRS would have taken from three generations all but disappears.</p>
-      </div>
-      <div style="max-width:1120px;margin:26px auto 0;background:var(--ink-900);border-radius:14px;padding:28px 36px;display:flex;align-items:center;gap:34px;">
-        <div style="flex-shrink:0;">
-          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-400);margin-bottom:8px;">What your heirs never pay</div>
-          <div style="font-family:var(--font-serif);font-weight:700;font-size:82px;color:var(--gold-400);line-height:0.95;letter-spacing:-0.03em;">${heirLost}</div>
-        </div>
-        <div style="font-family:var(--font-serif);font-size:18px;color:rgba(255,255,255,0.9);line-height:1.55;border-left:1px solid rgba(255,255,255,0.18);padding-left:34px;">Your IRA grows to about ${heirBefore} by your eighties. Left in a Traditional account, your heirs drain it over ten years at their peak rates and hand the IRS ${heirLost}. In a Roth, they inherit it <em style="color:var(--gold-400);font-style:italic;">tax-free.</em></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1120px;margin:18px auto 0;">
-        <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:20px 26px;">
-          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">Saved in your lifetime</div>
-          <div style="font-family:var(--font-serif);font-weight:700;font-size:44px;color:var(--gold-700);line-height:1;">${saveStr}</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:8px;line-height:1.45;">Converting at low brackets instead of paying RMD tax at the top.</div>
-        </div>
-        <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:20px 26px;">
-          <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">${widowAnnual > 0 ? 'Widow&rsquo;s penalty, erased' : 'Single-filer penalty, avoided'}</div>
-          <div style="font-family:var(--font-serif);font-weight:700;font-size:44px;color:var(--gold-700);line-height:1;">${widowAnnual > 0 ? widowCumStr : '$0'}</div>
-          <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:8px;line-height:1.45;">${widowAnnual > 0 ? `The extra tax your spouse never pays the year one of you is gone.` : `Roth dollars never trigger a single-filer penalty.`}</div>
-        </div>
-      </div>
-      <div style="max-width:1120px;margin:20px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
-        <span style="font-family:var(--font-serif);font-size:19px;color:white;line-height:1.5;">And these are today&rsquo;s historically low rates &mdash; at +20%, your heirs avoid closer to <em style="color:var(--gold-400);font-style:italic;">${heirPlus20Str}.</em> It&rsquo;s the biggest it will ever be: every year you wait the window shrinks, and at ${rmdAge}, RMDs force the worst of it.</span>
-      </div>
-      <div style="max-width:1120px;margin:10px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Illustrative: assumes the full IRA is converted to Roth over your pre-RMD years; heir figure estimates the 10-year-rule drain at peak rates. Actual results vary with markets and future tax law.</div>
-      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">21</div>
-    </section>
-  `);
-
-  // ("It's About Them" capstone was here — relocated up to close Act 1, just after the widow gate)
-
-  // SLIDE 18 — Do Nothing vs With Our Strategy
-  slides.push(`
-    <section class="slide" data-slide="23">
-      <div class="title-block">
-        <div class="kicker">The Choice</div>
-        <h2 class="title">Their timing <em>vs. yours</em></h2>
-        <p class="subtitle">The left column is what happens on their schedule. The right column is what happens on yours &mdash; over a 30-year retirement on your ${balStr} IRA.</p>
-      </div>
-      <div class="compare-grid">
-        <div class="compare-cell head"></div>
-        <div class="compare-cell head nothing">On Their Schedule</div>
-        <div class="compare-cell head us">On Your Schedule</div>
-
-        <div class="compare-cell row-label">Lifetime Tax Bill</div>
-        <div class="compare-cell val bad">${lifeTax} (projected)</div>
-        <div class="compare-cell val good">~${fmtMoney(sim.lifetimeTax - savings)} net <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 10px;margin-left:8px;white-space:nowrap;">saves ${saveStr}</span></div>
-
-        <div class="compare-cell row-label">Rate Your Heirs Pay</div>
-        <div class="compare-cell val bad">${Math.round(heir.heirRate*100)}% &mdash; top bracket</div>
-        <div class="compare-cell val good">0% &mdash; tax-free Roth</div>
-
-        <div class="compare-cell row-label">Tax Your Heirs Pay</div>
-        <div class="compare-cell val bad">${heirLost} over 10 yrs</div>
-        <div class="compare-cell val good">$0 &mdash; tax-free Roth</div>
-
-        <div class="compare-cell row-label">Conversion Window</div>
-        <div class="compare-cell val bad">Wasted &mdash; gone at ${rmdAge}</div>
-        <div class="compare-cell val good">${runwayYears > 0 ? `${runwayYears} low-bracket years, all used` : 'Every remaining year used'}</div>
-      </div>
-      <div style="max-width:1300px;margin:18px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
-        <span style="font-family:var(--font-serif);font-size:20px;color:white;line-height:1.5;">Doing nothing and deciding later are the <em style="color:var(--gold-400);font-style:italic;">same column.</em> You pick which one &mdash; but only until ${rmdAge}. After that, the IRS picks for you.</span>
-      </div>
-      <div class="compare-note">How these are figured: each row compares doing nothing &mdash; paying tax on Required Minimum Distributions at projected rates &mdash; against converting the IRA to Roth over your pre-RMD years, filling the lower brackets. Brackets and the standard deduction are indexed to inflation each year. Heir figures estimate the 10-year-rule drain at heirs&rsquo; peak rates. All figures use today&rsquo;s tax law and are illustrative; because today&rsquo;s rates are near historic lows, higher future rates would <em>increase</em> the savings shown. Actual results vary with your circumstances, markets, and future law.</div>
-      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">23</div>
-    </section>
-  `);
-
   // ── Relationship / continuity: the boutique wedge, right before price ──
   slides.push(`
     <section class="slide" data-slide="relationship">
@@ -2977,20 +2984,51 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // ── Section divider: ask the money question head-on (Challenger "take control") ──
+  // ── "Your Year One" — auto-tailored plan, computed from intake (after onboarding) ──
   slides.push(`
-    <section class="slide" data-slide="cost-divider">
-      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
-        <div class="hook-hero" style="padding:0;">
-          <div class="kicker" style="text-align:center">The Investment</div>
-          <h1 class="hero-title">
-            So &mdash; what does all this
-            <span class="accent">cost?</span>
-          </h1>
+    <section class="slide" data-slide="year-one">
+      <div class="title-block center">
+        <div class="kicker">Your Plan, Already In Motion</div>
+        <h2 class="title">Here&rsquo;s your first year &mdash; <em>built from your numbers.</em></h2>
+        <p class="subtitle">Not a sample. Not a template. This is what we&rsquo;d execute for you, starting the month your accounts land.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1200px;margin:22px auto 0;align-items:stretch;">
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);margin-bottom:8px;">Your ${y1Year} target bracket</div>
+          <div style="font-family:var(--font-serif);font-size:34px;font-weight:700;color:var(--ink-900);line-height:1;">${y1RatePct}</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);line-height:1.45;margin-top:8px;">~<strong>${y1HeadroomStr}</strong> of headroom left on your return this year, before the next bracket.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);margin-bottom:8px;">Your first conversion</div>
+          <div style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--ink-900);line-height:1.05;">${y1ConvStr}</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);line-height:1.45;margin-top:8px;">Sized to fill that bracket &mdash; executed <strong>on the next dip, not the calendar.</strong></div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-400);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;">The dip watch</div>
+          <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);line-height:1.2;">Monitored daily, from day one.</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);line-height:1.45;margin-top:8px;">A 10% correction has historically arrived ~every 18 months &mdash; we don&rsquo;t wait for it, we&rsquo;re ready for it.</div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-400);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;">November 15 checkpoint</div>
+          <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);line-height:1.2;">Your standing year-end meeting.</div>
+          <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);line-height:1.45;margin-top:8px;">We true up against your actual 1040 before the Dec 31 conversion window closes.</div>
         </div>
       </div>
+      <div style="max-width:1200px;margin:16px auto 0;background:var(--ink-900);border-radius:12px;padding:18px 30px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+        <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-400);max-width:200px;line-height:1.4;">What year one does to the big number</div>
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div style="text-align:center;"><div style="font-family:var(--font-sans);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:2px;">Doing nothing</div><div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:rgba(255,255,255,0.85);line-height:1;">${y1DoNothingStr}</div></div>
+          <div style="color:var(--gold-400);font-size:24px;">&rarr;</div>
+          <div style="text-align:center;"><div style="font-family:var(--font-sans);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:2px;">After your year-one conversion</div><div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:#fff;line-height:1;">${y1AfterStr}</div></div>
+          <div style="background:var(--gold-400);color:var(--ink-900);border-radius:999px;padding:6px 14px;font-family:var(--font-sans);font-size:14px;font-weight:800;white-space:nowrap;">&minus;${y1SavingsStr}</div>
+        </div>
+      </div>
+      <div style="max-width:1200px;margin:10px auto 0;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;font-family:var(--font-sans);">
+        <div style="font-size:11px;color:var(--fg-subtle);line-height:1.5;max-width:430px;"><strong style="color:var(--gold-600);">Illustrative.</strong> Figures are the plan we&rsquo;d build from today&rsquo;s law and your numbers &mdash; not a promise of results.</div>
+        <div style="font-family:var(--font-serif);font-size:16px;color:var(--ink-900);line-height:1.4;text-align:right;">${runwayYears} years. ${runwayYears} planned conversions. <em style="color:var(--gold-600);font-style:italic;">This is year one of ${runwayYears} &mdash; and the window is widest right now.</em></div>
+      </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
-      <div class="slide-number">cost</div>
+      <div class="slide-number">year-one</div>
     </section>
   `);
 
@@ -3008,6 +3046,23 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1000px;margin:14px auto 0;text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--ink-900);line-height:1.5;">Five areas. One plan. <em style="color:var(--gold-600);font-style:italic;">Built entirely around you.</em></div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">wheel</div>
+    </section>
+  `);
+
+  // ── Section divider: ask the money question head-on (Challenger "take control") ──
+  slides.push(`
+    <section class="slide" data-slide="cost-divider">
+      <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
+        <div class="hook-hero" style="padding:0;">
+          <div class="kicker" style="text-align:center">The Investment</div>
+          <h1 class="hero-title">
+            So &mdash; what does all this
+            <span class="accent">cost?</span>
+          </h1>
+        </div>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">cost</div>
     </section>
   `);
 
@@ -3164,6 +3219,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <span style="display:inline-flex;align-items:center;gap:7px;"><span style="width:13px;height:13px;border-radius:3px;background:#6E8B5A;display:inline-block;"></span>Potential tax savings</span>
         </div>
       </div>
+      <div style="max-width:1060px;margin:16px auto 0;text-align:center;font-family:var(--font-serif);font-size:18px;color:var(--ink-900);line-height:1.5;">Year one alone is built to keep <em style="color:var(--gold-600);font-style:italic;">${y1SavingsStr}</em> in your pocket &mdash; on a single planned conversion. <span style="font-family:var(--font-sans);font-size:11px;font-style:normal;color:var(--fg-subtle);">Illustrative.</span></div>
       <div style="max-width:1060px;margin:20px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Scenarios A&ndash;C are illustrative, not projections or a promise of results. The dollar figure applies your tier&rsquo;s rate to your ${balStr} balance; in practice the fee covers every account we manage.</div>
       <div style="text-align:center;margin:10px auto 0;">
         <a class="fee-toggle-link" role="button" tabindex="0" data-unit="pct" style="font-family:var(--font-sans);font-size:11.5px;color:var(--gold-600);text-decoration:underline;text-underline-offset:2px;cursor:pointer;">Show fee in dollars</a>
@@ -3253,48 +3309,47 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="25">
       <div class="title-block">
-        <div class="kicker">Moving Forward</div>
-        <h2 class="title">This is what it looks like${name}.</h2>
-        <p class="subtitle">One service, all-in. Everything you just saw &mdash; executed across your whole picture.</p>
+        <div class="kicker">Your Move</div>
+        <h2 class="title">Take back the timing.</h2>
+        <p class="subtitle">Everything you just saw &mdash; your plan, your accounts, your names on everything &mdash; in motion within 30 days.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1.65fr;gap:22px;align-items:start;margin-bottom:22px;">
+      <div style="display:grid;grid-template-columns:1fr 1.65fr;gap:22px;align-items:start;margin-bottom:18px;">
         <div class="cta-plan premium" style="margin-bottom:0;">
-          <div class="cta-plan-tag">The Offer</div>
-          <div class="cta-plan-title">White Glove &mdash; All-In</div>
-          <div class="cta-plan-price">1.5%/yr of assets managed</div>
-          <div class="cta-plan-body">Full investment management, multi-year Roth conversion timing, dip monitoring, tax-return coordination, and estate alignment &mdash; with tax advice from IRS Enrolled Agents. One fee. No add-ons.</div>
-          <div style="margin-top:22px;padding:15px 16px;background:rgba(232,163,61,0.08);border:1px solid rgba(212,142,39,0.28);border-radius:8px;">
-            <div style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:5px;">Why all your assets?</div>
-            <div style="font-family:var(--font-body);font-size:13px;color:var(--ink-700);line-height:1.5;">We manage the investments to manage the tax bill. The strategy only works when the whole 1040 is under one roof.</div>
+          <div class="cta-plan-tag">What You Take Back</div>
+          <ul style="list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:14px;">
+            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14.5px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>You pick the year you pay &mdash; not the IRS at ${rmdAge}</span></li>
+            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14.5px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>You pick the bracket &mdash; <strong>${todayBracketPct}%</strong> now, not <strong>${peakBracketPct}%</strong> later</span></li>
+            ${inputs.filingStatus === 'MFJ' ? `<li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14.5px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>Your spouse never faces the widow&rsquo;s penalty alone</span></li>` : ``}
+            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14.5px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>Your kids inherit a Roth, not a ${heirLost} tax bill</span></li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:12px;">Your First 30 Days</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:13px 18px;">
+              <div class="cta-step-num" style="flex-shrink:0;">1</div>
+              <div><div class="cta-step-title">You sign one document</div><div class="cta-step-body">About 20 minutes, start to finish.</div></div>
+            </div>
+            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:13px 18px;">
+              <div class="cta-step-num" style="flex-shrink:0;">2</div>
+              <div><div class="cta-step-title">Your Schwab accounts open</div><div class="cta-step-body">Your name, your control.</div></div>
+            </div>
+            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:13px 18px;">
+              <div class="cta-step-num" style="flex-shrink:0;">3</div>
+              <div><div class="cta-step-title">Your money transfers in-kind</div><div class="cta-step-body">Nothing sold, nothing taxed &mdash; you don&rsquo;t touch a thing.</div></div>
+            </div>
+            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:13px 18px;">
+              <div class="cta-step-num" style="flex-shrink:0;">4</div>
+              <div><div class="cta-step-title">Your Year One plan goes live</div><div class="cta-step-body">The bracket-fill plan we built for you, ready to run.</div></div>
+            </div>
+            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:13px 18px;">
+              <div class="cta-step-num" style="flex-shrink:0;">5</div>
+              <div><div class="cta-step-title">Your first conversion fires on the next dip</div><div class="cta-step-body">Not the calendar &mdash; the moment the market hands us a discount.</div></div>
+            </div>
           </div>
           <div style="margin-top:12px;display:flex;align-items:flex-start;gap:10px;">
             <div style="flex-shrink:0;width:20px;height:20px;border-radius:5px;background:var(--ink-900);color:var(--gold-400);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-top:1px;">&#10003;</div>
-            <div style="font-family:var(--font-sans);font-size:12px;color:var(--ink-700);line-height:1.45;">Your accounts are held at <strong>Charles Schwab</strong>, in your name. We direct the strategy &mdash; we never take custody of your money.</div>
-          </div>
-        </div>
-        <div>
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:12px;">What Happens Next</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;">
-              <div class="cta-step-num" style="flex-shrink:0;">1</div>
-              <div><div class="cta-step-title">We Sign Paperwork</div><div class="cta-step-body">One document sets everything in motion &mdash; takes about 20 minutes, start to finish.</div></div>
-            </div>
-            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;">
-              <div class="cta-step-num" style="flex-shrink:0;">2</div>
-              <div><div class="cta-step-title">We Open Your Account at Schwab</div><div class="cta-step-body">We open your Traditional IRA and Roth IRA accounts at Charles Schwab on your behalf.</div></div>
-            </div>
-            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;">
-              <div class="cta-step-num" style="flex-shrink:0;">3</div>
-              <div><div class="cta-step-title">We Transfer Your Accounts</div><div class="cta-step-body">Schwab moves everything in-kind &mdash; nothing sold, nothing taxed, and you don&rsquo;t touch a thing.</div></div>
-            </div>
-            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;">
-              <div class="cta-step-num" style="flex-shrink:0;">4</div>
-              <div><div class="cta-step-title">We Create Your Tax &amp; Roth Conversion Plan</div><div class="cta-step-body">A personalized conversion roadmap for this year and every year ahead &mdash; optimized to your bracket.</div></div>
-            </div>
-            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;">
-              <div class="cta-step-num" style="flex-shrink:0;">5</div>
-              <div><div class="cta-step-title">We Do the Conversion &amp; Save You Money</div><div class="cta-step-body">We execute at the right time &mdash; bracket-fill, dip harvesting &mdash; every dollar working harder for you.</div></div>
-            </div>
+            <div style="font-family:var(--font-sans);font-size:12px;color:var(--ink-700);line-height:1.45;">Your accounts live at <strong>Charles Schwab</strong>, in your name. One phone call removes us in five minutes.</div>
           </div>
         </div>
       </div>
