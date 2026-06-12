@@ -2980,8 +2980,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // ── The 30-Day Roth Accelerator: signature onboarding timeline (replaces legacy 90-day milestone slide; Year One folded in) ──
-  slides.push(`
+  // ── The 30-Day Roth Accelerator: signature onboarding timeline (defined here, pushed later in the Investment section — right after the "what does it cost?" divider and before the pricing tiers, since Conversion Only IS "The 30-Day Roth Accelerator") ──
+  const acceleratorSlide = `
     <section class="slide" data-slide="accelerator">
       <div class="title-block center">
         <div class="kicker">Our Signature Process</div>
@@ -3036,7 +3036,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">accelerator</div>
     </section>
-  `);
+  `;
 
   // ── Value stack: "four different jobs" comparison — the Challenger reframe that sets up price ──
   slides.push(`
@@ -3175,6 +3175,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="slide-number">cost</div>
     </section>
   `);
+
+  // ── 30-Day Roth Accelerator (the process you get) — moved here, right after "what does it cost?", so it leads straight into the pricing tiers below ──
+  slides.push(acceleratorSlide);
 
   // ── One-time onboarding investment (only when the intake toggle is on) ──
   // Most of the work lands in the first 90 days, so we offer two ways to handle
