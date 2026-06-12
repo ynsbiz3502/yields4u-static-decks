@@ -1421,6 +1421,46 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // PERSONA FORK — "Which one are you?" The Warmer + Tailor gate (Challenger).
+  // The prospect self-selects between the two branded archetypes. The pick is
+  // captured live by a click handler in onGenerate (in-memory only, no storage),
+  // or pre-set via ?persona=. It drives the Full Circle close (which renders the
+  // matching version) and pre-selects the matching tier on the "Your Choice" slide.
+  slides.push(`
+    <section class="slide" data-slide="persona-fork">
+      <div class="title-block center">
+        <div class="kicker">Which One Are You?</div>
+        <h2 class="title">Almost everyone who calls me is really <em>one of two people.</em></h2>
+        <p class="subtitle">It&rsquo;s almost never about the money itself &mdash; it&rsquo;s about what the money is <em>for.</em> After enough of these conversations, I can usually tell which one someone is before they say a word. Read both. One of them is you.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1180px;margin:24px auto 0;align-items:stretch;">
+        <div class="persona-card" data-persona="protector" style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:26px 30px;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:12px;">The Protector</div>
+          <div style="font-family:var(--font-serif);font-style:italic;font-size:21px;color:var(--ink-900);line-height:1.45;margin-bottom:16px;">&ldquo;If something happens to me, I have to know my spouse is taken care of &mdash; that someone&rsquo;s in their corner as they age, and they never have to face this alone.&rdquo;</div>
+          <div style="margin-top:auto;font-family:var(--font-sans);font-size:14.5px;color:var(--ink-700);line-height:1.5;"><strong style="color:var(--ink-900);">What the Protector wants:</strong> a team for the rest of your life &mdash; people who know your wishes, who age in place with you, and who step in for the one you leave behind.</div>
+          <div style="margin-top:18px;display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:9px;padding:11px 14px;">
+            <span class="persona-check" style="width:21px;height:21px;border-radius:6px;border:2px solid var(--gold-500);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;line-height:1;"></span>
+            <span style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--ink-900);">That&rsquo;s me &mdash; I&rsquo;m the Protector</span>
+          </div>
+        </div>
+        <div class="persona-card" data-persona="steward" style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:26px 30px;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:12px;">The Steward</div>
+          <div style="font-family:var(--font-serif);font-style:italic;font-size:21px;color:#fff;line-height:1.45;margin-bottom:16px;">&ldquo;I&rsquo;ve paid taxes my whole life. I&rsquo;m not about to let the IRS take 40% of what I built before a dollar of it reaches my kids.&rdquo;</div>
+          <div style="margin-top:auto;font-family:var(--font-sans);font-size:14.5px;color:rgba(255,255,255,0.9);line-height:1.5;"><strong style="color:var(--gold-400);">What the Steward wants:</strong> a machine that gets every dollar to the people you chose instead of the government &mdash; and proves it, fast.</div>
+          <div style="margin-top:18px;display:flex;align-items:center;gap:11px;border:1px solid rgba(255,255,255,0.25);border-radius:9px;padding:11px 14px;">
+            <span class="persona-check" style="width:21px;height:21px;border-radius:6px;border:2px solid var(--gold-400);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:800;line-height:1;"></span>
+            <span style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.02em;color:#fff;">That&rsquo;s me &mdash; I&rsquo;m the Steward</span>
+          </div>
+        </div>
+      </div>
+      <div style="max-width:1180px;margin:22px auto 0;background:var(--ink-900);border-radius:12px;padding:18px 32px;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:20px;color:white;line-height:1.5;">So &mdash; which one is more you? Pick the one that fits, and keep the other in the back of your mind. Because by the end, the thing that surprises most people isn&rsquo;t the answer they came for. <em style="color:var(--gold-400);font-style:italic;">It&rsquo;s what it does for the answer they didn&rsquo;t.</em></span>
+      </div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">02</div>
+    </section>
+  `);
+
   // SLIDE 2 — The Challenger reframe: three questions as horizontal agenda rows
   slides.push(`
     <section class="slide" data-slide="2">
@@ -1578,7 +1618,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // wedge claims (IRS Enrolled Agent + the CTO who built the platform) — then the
   // team, to kill the "one-man shop" worry. The firm "About" slide is dropped here;
   // its mission already rides the footer of every slide and the CTA.
-  const [, _teamSlide, _leibelSlide] = slides.splice(2, 3);
+  // splice at index 3 (not 2): the persona-fork slide now sits at index 1, after
+  // SLIDE 1, so the three credibility slides (About YFY / Team / Leibel) start at 3.
+  const [, _teamSlide, _leibelSlide] = slides.splice(3, 3);
 
   // SECTION DIVIDER (title page) — poses the question the diagnostic run answers:
   // "how big is the threat?" Deliberately withholds the specifics; the slides that
@@ -3071,6 +3113,49 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1100px;margin:16px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">Everyone here does part of it. <em style="color:var(--gold-600);font-style:italic;">We&rsquo;re built to do the whole thing &mdash; under one roof.</em></div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">value-stack</div>
+    </section>
+  `);
+
+  // ── FULL CIRCLE — the close that pays off the persona-fork open loop ──
+  // Renders the version matching the prospect's pick (default Steward when unset,
+  // so the slide is always coherent). Hands them the fear they DIDN'T name. The
+  // cross-payoff is filing-status-aware: the "spouse / widow's penalty" beat only
+  // holds for a married couple (fcCouple); single filers get an equivalent payoff
+  // about their own later years / heirs. No flat "40%" assertion in the body —
+  // it references the deck's computed heir figure instead (the prospect's own "40%"
+  // stays only inside their quote on the intro fork). Reuses the slide-21 disclaimer.
+  const fcCouple = inputs.filingStatus === 'MFJ' && widowAnnual > 0;
+  slides.push(`
+    <section class="slide" data-slide="full-circle">
+      <div class="title-block center">
+        <div class="kicker">Full Circle</div>
+      </div>
+      <div style="max-width:1080px;margin:6px auto 0;">
+        <div class="fc-variant" data-persona="steward">
+          <h2 class="title" style="text-align:center;">You came in as <em>The Steward.</em></h2>
+          <p style="font-family:var(--font-serif);font-size:21px;color:var(--ink-700);line-height:1.6;margin:20px auto 0;max-width:980px;text-align:center;">You told me straight: you would not let the IRS take the lion&rsquo;s share of what you built before it reached your ${fcCouple ? 'kids' : 'heirs'}. So that&rsquo;s what we built &mdash; the engine that times every conversion, fills the low brackets, and routes what you earned to the people you chose, not the government.</p>
+          <div style="max-width:980px;margin:20px auto 0;background:var(--ink-900);border-radius:14px;padding:24px 34px;">
+            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-400);margin-bottom:10px;">Now the part you didn&rsquo;t come for</div>
+            <p style="font-family:var(--font-serif);font-size:20px;color:#fff;line-height:1.6;margin:0;">${fcCouple
+              ? `The very move that beats the IRS for your kids is the <em style="color:var(--gold-400);font-style:italic;">same move</em> that erases the widow&rsquo;s penalty for your spouse &mdash; the quiet tax trap that strikes the year one of you is gone${widowAnnual > 0 ? `, about ${widowCumStr} your spouse never pays` : ''}. <strong style="color:#fff;">You walked in to protect what you built. You protected your people, too.</strong>`
+              : `The very move that beats the IRS for your heirs is the <em style="color:var(--gold-400);font-style:italic;">same move</em> that frees <em>you</em> from the single-filer tax cliff in your own later years &mdash; when the brackets compress hardest and you face them alone. <strong style="color:#fff;">You walked in to protect what you built. You protected yourself, too.</strong>`}</p>
+          </div>
+        </div>
+        <div class="fc-variant" data-persona="protector" style="display:none;">
+          <h2 class="title" style="text-align:center;">You came in as <em>The Protector.</em></h2>
+          <p style="font-family:var(--font-serif);font-size:21px;color:var(--ink-700);line-height:1.6;margin:20px auto 0;max-width:980px;text-align:center;">You told me straight: whatever happens to you, ${fcCouple ? 'your spouse' : 'the people you love'} can never be left to face the money alone. So that&rsquo;s what we built &mdash; the team that doesn&rsquo;t leave, the plan that ages with you, the hands that know your wishes and step in when you can&rsquo;t.</p>
+          <div style="max-width:980px;margin:20px auto 0;background:var(--ink-900);border-radius:14px;padding:24px 34px;">
+            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-400);margin-bottom:10px;">Now the part you didn&rsquo;t come for</div>
+            <p style="font-family:var(--font-serif);font-size:20px;color:#fff;line-height:1.6;margin:0;">The same plan that shields ${fcCouple ? 'your spouse' : 'the people in your care'} quietly does one more thing: it keeps the IRS from taking the lion&rsquo;s share of what you built before it ever reaches your ${fcCouple ? 'kids' : 'heirs'}${heir && heir.lost > 0 ? ` &mdash; about ${heirLost} they keep instead` : ''}. <strong style="color:#fff;">You walked in to protect your people. You protected what you built, too.</strong></p>
+          </div>
+        </div>
+      </div>
+      <div style="max-width:1080px;margin:24px auto 0;text-align:center;">
+        <span style="font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.5;">The Steward and the Protector were never two people. <em style="color:var(--gold-600);font-style:italic;">They were two reasons to make the same decision.</em></span>
+      </div>
+      <div style="max-width:1080px;margin:14px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Illustrative only &mdash; survivor and heir figures estimate the 10-year-rule drain at peak rates and single-filer vs. joint brackets. Actual results vary with markets and future tax law.</div>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">full-circle</div>
     </section>
   `);
 
@@ -4568,7 +4653,11 @@ function onGenerate(e) {
     growthRate: parseFloat(document.getElementById('growthRate').value) / 100,
     showOnboardingFee: !!document.getElementById('showOnboardingFee')?.checked,
     onboardingFeeA: parseMoney(document.getElementById('onboardingFeeA')?.value || '0'),
-    onboardingFeeB: parseMoney(document.getElementById('onboardingFeeB')?.value || '0')
+    onboardingFeeB: parseMoney(document.getElementById('onboardingFeeB')?.value || '0'),
+    // Protector / Steward archetype fork. Captured live by clicking a card on the
+    // intro slide (in-memory only — no storage), or pre-set via ?persona=steward|protector.
+    persona: ['protector', 'steward'].includes((urlParams.get('persona') || '').toLowerCase())
+      ? (urlParams.get('persona') || '').toLowerCase() : ''
   };
   if (!inputs.balance || inputs.balance < 50000) {
     alert('Please enter a valid IRA balance ($50,000 or more).');
@@ -4629,6 +4718,38 @@ function onGenerate(e) {
     }
     apply();
   }
+  // ── Persona fork (Protector / Steward): the live Tailor gate ──
+  // Clicking an archetype card on the intro slide highlights it, swaps the Full
+  // Circle close to the matching version, and routes the "Your Choice" tier
+  // (Steward → Accelerator, Protector → White Glove) by reusing the tier-card
+  // click handlers wired above. In-memory only; re-derives from inputs.persona
+  // (?persona=) on an auto-render / refresh.
+  const personaCards = wrap.querySelectorAll('.persona-card');
+  const fcVariants = wrap.querySelectorAll('.fc-variant');
+  function applyPersona(p, routeTier) {
+    personaCards.forEach(c => {
+      const on = c.dataset.persona === p;
+      c.style.boxShadow = on ? '0 0 0 3px var(--gold-400)' : 'none';
+      const chk = c.querySelector('.persona-check');
+      if (chk) {
+        chk.textContent = on ? '✓' : '';
+        chk.style.background = on ? (c.dataset.persona === 'steward' ? 'var(--gold-400)' : 'var(--gold-500)') : 'transparent';
+        chk.style.color = on ? (c.dataset.persona === 'steward' ? 'var(--ink-900)' : '#fff') : 'transparent';
+      }
+    });
+    // Full Circle close: show the matching variant (default Steward when unset).
+    const shown = p || 'steward';
+    fcVariants.forEach(v => { v.style.display = v.dataset.persona === shown ? '' : 'none'; });
+    // Route the tier choice to match — reuse the existing tier-card click logic.
+    if (routeTier && p) {
+      const t = p === 'protector' ? 'wg' : 'co';
+      const card = wrap.querySelector('.tier-card[data-tier="' + t + '"]');
+      if (card) card.click();
+    }
+  }
+  personaCards.forEach(c => c.addEventListener('click', () => applyPersona(c.dataset.persona, true)));
+  // Initial paint from the pre-set param (no tier override on load when unset).
+  applyPersona(inputs.persona || '', !!inputs.persona);
   document.getElementById('input-screen').style.display = 'none';
   document.getElementById('presentation-screen').classList.add('active');
   // Honor a #slide=N hash so a refresh / shared link restores the right slide.
@@ -4650,6 +4771,7 @@ function persistInputsToUrl(inputs) {
     if (inputs.balance) params.set('balance', String(Math.round(inputs.balance)));
     if (inputs.currentAge) params.set('currentAge', String(inputs.currentAge));
     if (inputs.filingStatus) params.set('filingStatus', inputs.filingStatus);
+    if (inputs.persona) params.set('persona', inputs.persona);
     if (inputs.totalIncomeNeeds) params.set('totalIncomeNeeds', String(Math.round(inputs.totalIncomeNeeds)));
     if (inputs.socialSecurity) params.set('socialSecurity', String(Math.round(inputs.socialSecurity)));
     if (inputs.otherIncome) params.set('otherIncome', String(Math.round(inputs.otherIncome)));
