@@ -5052,8 +5052,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (i >= 0 && typeof show === 'function') show(i + 1);
   }
 
-  /* ---- localStorage presets ---- */
+  /* ---- presets: built-in (shipped) + user (localStorage) ---- */
   const LS_KEY = 'roth_deck_flow_presets';
+  // Shipped arrangements. "Restructured Close" = the four-movement Challenger close:
+  // Criteria(34) before Captains(33); Wheel(40) before Relationship(39); the
+  // Accelerator moved to after the price (Fee) as a friction-remover. Front 30 slides
+  // unchanged. Ids missing for a given filing status are dropped automatically.
+  const BUILT_IN_PRESETS = {
+    'Restructured Close — 4 movements': '1,persona-fork,2,2-divider,6,7,8,8-divider,9,11,12,10,22,14,solution-intro,three-levers,buffett-dips,16,18,17,19,lever2-intro,1040,hist-rates,debt-gdp,two-exits,budget-pie,one-choice,13,the-turn,21,23,24,all-assets,wedge-permission,wedge-platform,5,4,planning-wheel,relationship,value-stack,full-circle,cost-divider,two-ways,fee,accelerator,scarcity,risk-reversal,25'
+  };
   function loadPresets() { try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch (_) { return {}; } }
   function savePresets(p) { try { localStorage.setItem(LS_KEY, JSON.stringify(p)); } catch (_) {} }
 
@@ -5159,10 +5166,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function refreshPresetDropdown() {
     const sel = panel.querySelector('.fl-presets');
     const cur = sel.value;
-    const presets = loadPresets();
-    sel.innerHTML = '<option value="">Load preset&hellip;</option>' +
-      Object.keys(presets).map(function (n) { return '<option value="' + encodeURIComponent(n) + '">' + n + '</option>'; }).join('');
+    let html = '<option value="">Load preset&hellip;</option>';
+    const bi = Object.keys(BUILT_IN_PRESETS);
+    if (bi.length) html += '<optgroup label="Built-in">' + bi.map(function (n) { return '<option value="b:' + encodeURIComponent(n) + '">' + n + '</option>'; }).join('') + '</optgroup>';
+    const u = Object.keys(loadPresets());
+    if (u.length) html += '<optgroup label="Saved">' + u.map(function (n) { return '<option value="u:' + encodeURIComponent(n) + '">' + n + '</option>'; }).join('') + '</optgroup>';
+    sel.innerHTML = html;
     sel.value = cur;
+  }
+  function applyFlowString(str) {
+    window.FLOW = str.split(',').filter(Boolean).map(function (t) {
+      return t.charAt(0) === '!' ? { id: t.slice(1), on: false } : { id: t, on: true };
+    });
+    repaint(); renderList();
   }
   function onSave() {
     const name = prompt('Save this flow as:');
@@ -5172,19 +5188,18 @@ document.addEventListener('DOMContentLoaded', () => {
     savePresets(presets); refreshPresetDropdown();
   }
   function onLoadPreset(e) {
-    const name = decodeURIComponent(e.target.value || '');
-    if (!name) return;
-    const str = loadPresets()[name];
-    if (!str) return;
-    window.FLOW = str.split(',').filter(Boolean).map(function (t) {
-      return t.charAt(0) === '!' ? { id: t.slice(1), on: false } : { id: t, on: true };
-    });
-    repaint(); renderList();
+    const v = e.target.value || '';
+    if (!v) return;
+    const name = decodeURIComponent(v.slice(2));
+    const str = v.charAt(0) === 'b' ? BUILT_IN_PRESETS[name] : loadPresets()[name];
+    if (str) applyFlowString(str);
   }
   function onDeletePreset() {
     const sel = panel.querySelector('.fl-presets');
-    const name = decodeURIComponent(sel.value || '');
-    if (!name) { alert('Pick a preset to delete first.'); return; }
+    const v = sel.value || '';
+    if (!v) { alert('Pick a saved preset to delete first.'); return; }
+    if (v.charAt(0) === 'b') { alert('Built-in presets can\'t be deleted.'); return; }
+    const name = decodeURIComponent(v.slice(2));
     if (!confirm('Delete preset "' + name + '"?')) return;
     const presets = loadPresets(); delete presets[name]; savePresets(presets); refreshPresetDropdown();
   }
