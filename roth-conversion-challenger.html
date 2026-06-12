@@ -1370,6 +1370,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const heirPlus20Str = fmtMoney(heir.lost * 1.2);
   const runwayYears = Math.max(0, rmdAge - inputs.currentAge);
 
+  // Scenario savings: the lifetime savings shown grows if future rates rise, because
+  // converting now locks today's low rates. Illustrative flat scaling by the rate shift
+  // (same convention as heirPlus20 above; conservative — it doesn't hold the conversion
+  // cost fixed). Slides 21 & 23 default to +20% and stay in sync with the rate-sensitivity
+  // slide's tab selection (see renderRateIncChart).
+  const savingsPlus20Str = fmtMoney(savings * 1.20);
+
   const slides = [];
 
 
@@ -2670,6 +2677,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">Saved in your lifetime</div>
           <div style="font-family:var(--font-serif);font-weight:700;font-size:44px;color:var(--gold-700);line-height:1;">${saveStr}</div>
           <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:8px;line-height:1.45;">Converting at low brackets instead of paying RMD tax at the top.</div>
+          <div data-base-savings="${Math.round(savings)}" style="margin-top:12px;display:inline-flex;align-items:baseline;gap:9px;background:#F6E9CC;border-radius:8px;padding:7px 13px;"><span data-sav-label style="font-family:var(--font-sans);font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--gold-700);">if rates rise 20%</span><span data-sav-figure style="font-family:var(--font-serif);font-weight:700;font-size:21px;color:var(--gold-700);line-height:1;">${savingsPlus20Str}</span></div>
         </div>
         <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:20px 26px;">
           <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">${widowAnnual > 0 ? 'Widow&rsquo;s penalty, erased' : 'Single-filer penalty, avoided'}</div>
@@ -2701,7 +2709,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
 
         <div class="compare-cell row-label">Lifetime Tax Bill</div>
         <div class="compare-cell val bad">${lifeTax} (projected)</div>
-        <div class="compare-cell val good">~${fmtMoney(sim.lifetimeTax - savings)} net <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 10px;margin-left:8px;white-space:nowrap;">saves ${saveStr}</span></div>
+        <div class="compare-cell val good">~${fmtMoney(sim.lifetimeTax - savings)} net <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 10px;margin-left:8px;white-space:nowrap;">saves ${saveStr}</span><span data-base-savings="${Math.round(savings)}" style="display:block;margin-top:7px;font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--gold-700);"><span data-sav-label>if rates rise 20%</span>, you save <span data-sav-figure>${savingsPlus20Str}</span></span></div>
 
         <div class="compare-cell row-label">Rate Your Heirs Pay</div>
         <div class="compare-cell val bad">${Math.round(heir.heirRate*100)}% &mdash; top bracket</div>
@@ -4288,6 +4296,17 @@ function renderCharts(inputs, sim, savings) {
         const prizeFallback = (riExtra[0.2] || []).reduce((s, t) => s + Math.round(t), 0);
         prizeEl.textContent = fmtMoney(shift === 0 ? prizeFallback : extraLife, true);
       }
+      // Keep the lifetime-savings figures on the prize/choice slides (data-slide 21 & 23)
+      // in sync with the selected scenario: savings scales with the rate shift. Current
+      // Rates falls back to +20% so the framing never reads "$0 saved" (like turn-prize).
+      document.querySelectorAll('[data-base-savings]').forEach(box => {
+        const base = parseFloat(box.dataset.baseSavings) || 0;
+        const pct  = shift === 0 ? 20 : Math.round(shift * 100);
+        const fig = box.querySelector('[data-sav-figure]');
+        const lbl = box.querySelector('[data-sav-label]');
+        if (fig) fig.textContent = fmtMoney(base * (1 + pct / 100));
+        if (lbl) lbl.textContent = 'if rates rise ' + pct + '%';
+      });
       const dynEl = document.getElementById('rate-dynamic-line');
       if (dynEl) {
         const pct = Math.round(shift * 100);
