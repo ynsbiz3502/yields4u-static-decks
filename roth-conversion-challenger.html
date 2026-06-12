@@ -3489,7 +3489,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  return slides.join('');
+  // Flow Lab hook: filter/reorder slides by data-slide per the active FLOW config
+  // (no-op when FLOW is unset → a clean URL always renders the full default deck).
+  return (typeof applyFlow === 'function' ? applyFlow(slides) : slides).join('');
 }
 
 /* ===============================================================
@@ -4671,6 +4673,15 @@ function onGenerate(e) {
   const heir = computeHeirImpact(inputs);
   const widow = computeWidowPenalty(inputs, sim);
 
+  window.__deckArgs = { inputs, sim, savings, heir, widow };
+  paintDeck(inputs, sim, savings, heir, widow);
+}
+
+// Paint (or re-paint) the deck body. Split out of onGenerate so the Flow Lab can
+// re-render after toggling/reordering slides without recomputing the simulation.
+// opts.keepSlide keeps the viewer near the current slide instead of honoring the hash.
+function paintDeck(inputs, sim, savings, heir, widow, opts) {
+  opts = opts || {};
   const wrap = document.getElementById('slidesWrap');
   wrap.innerHTML = buildSlides(inputs, sim, savings, heir, widow);
   // Challenger reorder changed slide positions — renumber the corner labels to match actual order.
@@ -4756,11 +4767,12 @@ function onGenerate(e) {
   document.getElementById('input-screen').style.display = 'none';
   document.getElementById('presentation-screen').classList.add('active');
   // Honor a #slide=N hash so a refresh / shared link restores the right slide.
-  show(getSlideFromHash() || 1);
+  show(opts.keepSlide ? Math.min(currentSlide, document.querySelectorAll('.slide').length || 1) : (getSlideFromHash() || 1));
   // Persist the inputs into the URL so a refresh restores the same values.
   // Runs AFTER show(), so the current #slide=N hash is included.
   persistInputsToUrl(inputs);
   requestAnimationFrame(() => renderCharts(inputs, sim));
+  try { window.dispatchEvent(new Event('deckpainted')); } catch (_) { /* no-op */ }
 }
 
 // Encode the current inputs as URL query params so a refresh / share keeps
@@ -4792,6 +4804,10 @@ function persistInputsToUrl(inputs) {
       if (inputs.onboardingFeeA) params.set('onboardingFeeA', String(Math.round(inputs.onboardingFeeA)));
       if (inputs.onboardingFeeB) params.set('onboardingFeeB', String(Math.round(inputs.onboardingFeeB)));
     }
+    // Flow Lab: persist a non-default slide flow so the URL shares/bookmarks it.
+    try { var __fp = (typeof flowParamString === 'function') ? flowParamString() : ''; if (__fp) params.set('flow', __fp); } catch (_) { /* no-op */ }
+    // Keep ?edit=1 in the URL so reloads / shared edit links stay in Flow Lab mode.
+    try { var __ed = new URLSearchParams(window.location.search).get('edit'); if (__ed === '1' || __ed === 'true') params.set('edit', '1'); } catch (_) { /* no-op */ }
     const newUrl = window.location.pathname + '?' + params.toString() + window.location.hash;
     history.replaceState(null, '', newUrl);
   } catch (_) { /* no-op on file:// */ }
@@ -4947,6 +4963,280 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => onGenerate(), 0);
   }
 });
+</script>
+<script>
+/* ===========================================================================
+ *  FLOW LAB — experiment with sales flows: toggle slides on/off and reorder
+ *  them live. Gated and client-safe:
+ *    • A clean URL always renders the full default deck (FLOW stays null).
+ *    • The editor is hidden by default. Open it with ?edit=1 or Shift+E.
+ *    • A ?flow=... URL applies a saved arrangement SILENTLY (no editor chrome),
+ *      so you can present a custom flow by sharing its link.
+ *  Non-invasive: keys the slides built by buildSlides() on their data-slide id,
+ *  then filters/reorders them. No slide builders were changed.
+ * ======================================================================= */
+(function () {
+  'use strict';
+
+  // FLOW: ordered array of { id, on }. null === default (all slides, source order).
+  window.FLOW = parseFlowParam();
+  // Capture ?edit intent NOW — persistInputsToUrl() rewrites the URL on first paint
+  // and would otherwise strip it before the deckpainted handler runs.
+  const wantEdit = (function () { const e = new URLSearchParams(location.search).get('edit'); return e === '1' || e === 'true'; })();
+  let opened = false, editMode = false, editInitDone = false, dragFrom = null;
+  let panel = null, fab = null;
+
+  /* ---- parsing slide metadata out of the built HTML strings ---- */
+  function cleanText(s) {
+    return s ? s.replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/g, ' ').replace(/\s+/g, ' ').trim() : '';
+  }
+  function slideMeta(html) {
+    const id = (html.match(/data-slide="([^"]+)"/) || [])[1] || null;
+    const kicker = cleanText((html.match(/class="kicker"[^>]*>([\s\S]*?)<\/div>/) || [])[1]);
+    let title = cleanText((html.match(/<h2[^>]*class="[^"]*\btitle\b[^"]*"[^>]*>([\s\S]*?)<\/h2>/) || [])[1]);
+    if (!title) title = cleanText((html.match(/class="hero-title"[^>]*>([\s\S]*?)<\/h1>/) || [])[1]);
+    return { id: id, kicker: kicker, title: title };
+  }
+
+  /* ---- the hook buildSlides() calls: capture registry + apply FLOW ---- */
+  window.applyFlow = function (slides) {
+    const registry = slides.map(function (html) {
+      const m = slideMeta(html); m.html = html; return m;
+    }).filter(function (r) { return r.id; });
+    const byId = {};
+    registry.forEach(function (r) { byId[r.id] = r.html; });
+    window.__slideRegistry = registry.map(function (r) { return { id: r.id, kicker: r.kicker, title: r.title }; });
+    if (!window.FLOW) return slides; // default — leave the deck untouched
+    // Reconcile against the current registry: drop ids that no longer exist
+    // (e.g. conditional slides), append any new ids (on by default).
+    const seen = {};
+    window.FLOW.forEach(function (f) { seen[f.id] = true; });
+    let flow = window.FLOW.filter(function (f) { return byId[f.id] != null; });
+    registry.forEach(function (r) { if (!seen[r.id]) flow.push({ id: r.id, on: true }); });
+    window.FLOW = flow;
+    const out = flow.filter(function (f) { return f.on; }).map(function (f) { return byId[f.id]; });
+    return out.length ? out : slides; // never render a completely empty deck
+  };
+
+  /* ---- URL <-> flow encoding (ids comma-joined; "!" prefix = off) ---- */
+  function parseFlowParam() {
+    const v = new URLSearchParams(location.search).get('flow');
+    if (!v) return null;
+    return v.split(',').filter(Boolean).map(function (t) {
+      return t.charAt(0) === '!' ? { id: t.slice(1), on: false } : { id: t, on: true };
+    });
+  }
+  window.flowParamString = function () {
+    if (!window.FLOW || !window.__slideRegistry) return '';
+    const natural = window.__slideRegistry.map(function (r) { return r.id; });
+    const cur = window.FLOW;
+    const isDefault = cur.length === natural.length &&
+      cur.every(function (f, i) { return f.id === natural[i] && f.on; });
+    if (isDefault) return '';
+    return cur.map(function (f) { return (f.on ? '' : '!') + f.id; }).join(',');
+  };
+
+  /* ---- helpers ---- */
+  function ensureDefaultFlow() {
+    if (!window.FLOW) {
+      window.FLOW = (window.__slideRegistry || []).map(function (r) { return { id: r.id, on: true }; });
+    }
+  }
+  function repaint() {
+    const a = window.__deckArgs;
+    if (a && typeof paintDeck === 'function') paintDeck(a.inputs, a.sim, a.savings, a.heir, a.widow, { keepSlide: true });
+  }
+  function jumpTo(id) {
+    const onIds = window.FLOW.filter(function (f) { return f.on; }).map(function (f) { return f.id; });
+    const i = onIds.indexOf(id);
+    if (i >= 0 && typeof show === 'function') show(i + 1);
+  }
+
+  /* ---- localStorage presets ---- */
+  const LS_KEY = 'roth_deck_flow_presets';
+  function loadPresets() { try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch (_) { return {}; } }
+  function savePresets(p) { try { localStorage.setItem(LS_KEY, JSON.stringify(p)); } catch (_) {} }
+
+  /* ---- panel ---- */
+  function injectStyles() {
+    if (document.getElementById('flowLabStyles')) return;
+    const s = document.createElement('style');
+    s.id = 'flowLabStyles';
+    s.textContent =
+      '#flowLab{position:fixed;top:0;right:0;width:368px;max-width:94vw;height:100vh;z-index:99999;background:#fff;border-left:1px solid var(--border,#e3e0d8);box-shadow:-10px 0 34px rgba(0,0,0,.14);display:flex;flex-direction:column;font-family:var(--font-sans,system-ui);transform:translateX(100%);transition:transform .2s ease;}' +
+      '#flowLab.open{transform:none;}' +
+      '#flowLab header{padding:14px 16px;border-bottom:1px solid var(--border,#eee);display:flex;align-items:center;justify-content:space-between;gap:8px;}' +
+      '#flowLab header b{font-size:14px;color:var(--ink-900,#1a1a1a);}' +
+      '#flowLab header .sub{display:block;font-size:10px;font-weight:600;letter-spacing:.04em;color:var(--fg-subtle,#999);margin-top:2px;}' +
+      '#flowLab .fl-x{border:none;background:none;font-size:22px;line-height:1;cursor:pointer;color:#999;}' +
+      '#flowLab .fl-list{flex:1;overflow-y:auto;padding:8px;}' +
+      '#flowLab .fl-item{display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid var(--border,#eee);border-radius:8px;margin-bottom:6px;background:#fff;}' +
+      '#flowLab .fl-item.dragging{opacity:.35;}' +
+      '#flowLab .fl-item.over{border-color:var(--gold-500,#c9a84c);box-shadow:0 0 0 2px rgba(201,168,76,.25);}' +
+      '#flowLab .fl-item.off{opacity:.5;}' +
+      '#flowLab .fl-grip{cursor:grab;color:#c4c0b6;font-size:13px;letter-spacing:-2px;user-select:none;}' +
+      '#flowLab .fl-item input[type=checkbox]{width:16px;height:16px;flex:none;accent-color:var(--gold-600,#b08a2e);}' +
+      '#flowLab .fl-meta{flex:1;min-width:0;}' +
+      '#flowLab .fl-meta .k{font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold-600,#b08a2e);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}' +
+      '#flowLab .fl-meta .t{font-size:12.5px;color:var(--ink-900,#222);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}' +
+      '#flowLab .fl-jump{border:none;background:none;color:#c4c0b6;cursor:pointer;font-size:13px;padding:2px 4px;}' +
+      '#flowLab .fl-jump:hover{color:var(--gold-600,#b08a2e);}' +
+      '#flowLab footer{border-top:1px solid var(--border,#eee);padding:10px 12px;display:flex;flex-direction:column;gap:8px;}' +
+      '#flowLab footer .row{display:flex;gap:8px;}' +
+      '#flowLab footer button,#flowLab footer select{font-family:inherit;font-size:12px;border:1px solid var(--border,#ddd);border-radius:7px;padding:7px 10px;background:#fff;cursor:pointer;color:var(--ink-900,#222);}' +
+      '#flowLab footer button.primary{background:var(--ink-900,#1a1a1a);color:#fff;border-color:var(--ink-900,#1a1a1a);}' +
+      '#flowLab .fl-count{font-size:11px;font-weight:600;color:var(--fg-subtle,#999);}' +
+      '#flowLabBtn{position:fixed;bottom:18px;right:18px;z-index:99998;background:var(--ink-900,#1a1a1a);color:#fff;border:none;border-radius:999px;padding:10px 16px;font-family:var(--font-sans,system-ui);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.22);}' +
+      '@media print{#flowLab,#flowLabBtn{display:none !important;}}';
+    document.head.appendChild(s);
+  }
+  function buildPanel() {
+    if (panel) return;
+    injectStyles();
+    panel = document.createElement('aside');
+    panel.id = 'flowLab';
+    panel.innerHTML =
+      '<header><div><b>Flow Lab</b><span class="sub">EXPERIMENT &middot; never shown to clients</span></div><button class="fl-x" title="Close (Shift+E)">&times;</button></header>' +
+      '<div class="fl-list"></div>' +
+      '<footer>' +
+        '<div class="fl-count"></div>' +
+        '<div class="row"><button class="fl-reset" style="flex:1;">Reset to default</button><button class="fl-save" style="flex:1;">Save preset</button></div>' +
+        '<div class="row"><select class="fl-presets" style="flex:1;"><option value="">Load preset&hellip;</option></select><button class="fl-del" title="Delete the selected preset">Delete</button></div>' +
+        '<div class="row"><button class="fl-share primary" style="flex:1;">Copy share link</button></div>' +
+      '</footer>';
+    document.body.appendChild(panel);
+    panel.querySelector('.fl-x').onclick = function () { toggle(false); };
+    panel.querySelector('.fl-reset').onclick = function () {
+      window.FLOW = (window.__slideRegistry || []).map(function (r) { return { id: r.id, on: true }; });
+      repaint(); renderList();
+    };
+    panel.querySelector('.fl-save').onclick = onSave;
+    panel.querySelector('.fl-presets').onchange = onLoadPreset;
+    panel.querySelector('.fl-del').onclick = onDeletePreset;
+    panel.querySelector('.fl-share').onclick = onShare;
+  }
+  function renderList() {
+    if (!panel) return;
+    ensureDefaultFlow();
+    const reg = {};
+    (window.__slideRegistry || []).forEach(function (r) { reg[r.id] = r; });
+    const list = panel.querySelector('.fl-list');
+    list.innerHTML = '';
+    window.FLOW.forEach(function (f, idx) {
+      const meta = reg[f.id] || { kicker: '', title: f.id };
+      const item = document.createElement('div');
+      item.className = 'fl-item' + (f.on ? '' : ' off');
+      item.draggable = true;
+      item.innerHTML =
+        '<span class="fl-grip" title="Drag to reorder">&#8942;&#8942;</span>' +
+        '<input type="checkbox"' + (f.on ? ' checked' : '') + '>' +
+        '<div class="fl-meta"><div class="k">' + (meta.kicker || '&nbsp;') + '</div><div class="t">' + (meta.title || f.id) + '</div></div>' +
+        '<button class="fl-jump" title="Go to this slide">&#9656;</button>';
+      item.querySelector('input').onchange = function (e) { window.FLOW[idx].on = e.target.checked; repaint(); renderList(); };
+      item.querySelector('.fl-jump').onclick = function () { jumpTo(f.id); };
+      item.addEventListener('dragstart', function () { dragFrom = idx; item.classList.add('dragging'); });
+      item.addEventListener('dragend', function () {
+        item.classList.remove('dragging');
+        list.querySelectorAll('.over').forEach(function (x) { x.classList.remove('over'); });
+      });
+      item.addEventListener('dragover', function (e) { e.preventDefault(); item.classList.add('over'); });
+      item.addEventListener('dragleave', function () { item.classList.remove('over'); });
+      item.addEventListener('drop', function (e) {
+        e.preventDefault(); item.classList.remove('over');
+        if (dragFrom != null && dragFrom !== idx) {
+          const moved = window.FLOW.splice(dragFrom, 1)[0];
+          window.FLOW.splice(idx, 0, moved);
+          repaint(); renderList();
+        }
+        dragFrom = null;
+      });
+      list.appendChild(item);
+    });
+    const onCount = window.FLOW.filter(function (f) { return f.on; }).length;
+    panel.querySelector('.fl-count').textContent = onCount + ' of ' + window.FLOW.length + ' slides on';
+    refreshPresetDropdown();
+  }
+  function refreshPresetDropdown() {
+    const sel = panel.querySelector('.fl-presets');
+    const cur = sel.value;
+    const presets = loadPresets();
+    sel.innerHTML = '<option value="">Load preset&hellip;</option>' +
+      Object.keys(presets).map(function (n) { return '<option value="' + encodeURIComponent(n) + '">' + n + '</option>'; }).join('');
+    sel.value = cur;
+  }
+  function onSave() {
+    const name = prompt('Save this flow as:');
+    if (!name) return;
+    const presets = loadPresets();
+    presets[name] = window.FLOW.map(function (f) { return (f.on ? '' : '!') + f.id; }).join(',');
+    savePresets(presets); refreshPresetDropdown();
+  }
+  function onLoadPreset(e) {
+    const name = decodeURIComponent(e.target.value || '');
+    if (!name) return;
+    const str = loadPresets()[name];
+    if (!str) return;
+    window.FLOW = str.split(',').filter(Boolean).map(function (t) {
+      return t.charAt(0) === '!' ? { id: t.slice(1), on: false } : { id: t, on: true };
+    });
+    repaint(); renderList();
+  }
+  function onDeletePreset() {
+    const sel = panel.querySelector('.fl-presets');
+    const name = decodeURIComponent(sel.value || '');
+    if (!name) { alert('Pick a preset to delete first.'); return; }
+    if (!confirm('Delete preset "' + name + '"?')) return;
+    const presets = loadPresets(); delete presets[name]; savePresets(presets); refreshPresetDropdown();
+  }
+  function onShare() {
+    repaint(); // persists the flow into the URL via persistInputsToUrl
+    const url = location.href;
+    const btn = panel.querySelector('.fl-share');
+    const done = function () { const o = btn.textContent; btn.textContent = 'Link copied ✓'; setTimeout(function () { btn.textContent = o; }, 1300); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { prompt('Copy this link:', url); });
+    else prompt('Copy this link:', url);
+  }
+
+  /* ---- open / close + floating button ---- */
+  function ensureFab() {
+    if (fab) return;
+    injectStyles();
+    fab = document.createElement('button');
+    fab.id = 'flowLabBtn';
+    fab.textContent = '✎ Flow Lab';
+    fab.title = 'Toggle Flow Lab (Shift+E)';
+    fab.onclick = function () { toggle(); };
+    document.body.appendChild(fab);
+  }
+  function toggle(force) {
+    buildPanel(); ensureFab();
+    opened = (force == null) ? !opened : force;
+    if (opened) { renderList(); panel.classList.add('open'); }
+    else if (panel) panel.classList.remove('open');
+  }
+
+  function deckIsLive() {
+    const p = document.getElementById('presentation-screen');
+    return p && p.classList.contains('active');
+  }
+  // Shift+E toggles the lab once the deck is on screen.
+  window.addEventListener('keydown', function (e) {
+    if (!e.shiftKey || (e.key !== 'E' && e.key !== 'e')) return;
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    if (!deckIsLive()) return;
+    e.preventDefault(); editMode = true; ensureFab(); toggle();
+  });
+  // After the deck renders: honor ?edit=1, and refresh the list if open.
+  window.addEventListener('deckpainted', function () {
+    if (!editInitDone) {
+      editInitDone = true;
+      if (wantEdit) { editMode = true; ensureFab(); toggle(true); }
+    }
+    if (editMode) ensureFab();
+    if (opened) renderList();
+  });
+})();
 </script>
 </body>
 </html>
