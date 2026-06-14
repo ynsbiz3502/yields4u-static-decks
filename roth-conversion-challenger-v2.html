@@ -4843,14 +4843,11 @@ function show(slideN) {
   (function() {
     const cp = document.getElementById('pres-cue-panel');
     if (!cp) return;
-    // In the clean audience window the cue panel stays hidden — never auto-open it.
+    // In the clean audience window the cue panel stays hidden — never populate it.
     if (document.body.classList.contains('audience-mode')) return;
-    if (!cp.dataset.initialized) {
-      cp.classList.add('visible');
-      const btn = document.getElementById('cueBtn');
-      if (btn) btn.classList.add('cue-active');
-      cp.dataset.initialized = '1';
-    }
+    // Cues start hidden; the presenter opens them with the "Cues" button or the C
+    // key. We still keep the panel's content in sync so it shows the right cue the
+    // moment it's opened.
     const tmpl = tgt ? tgt.querySelector('template.pres-cue') : null;
     cp.innerHTML = tmpl ? tmpl.innerHTML : '<div class="cue-note">No cue for this slide.</div>';
   })();
