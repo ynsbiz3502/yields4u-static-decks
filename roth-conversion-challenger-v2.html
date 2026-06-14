@@ -1169,7 +1169,7 @@ body.console-mode { overflow: hidden; }
 </div>
 
 <!-- PowerPoint-style presenter console (controls the audience window) -->
-<div id="presenter-console" aria-hidden="true">
+<div id="presenter-console" aria-hidden="true" tabindex="-1">
   <div class="pc-bar">
     <div class="pc-clock"><span id="pc-time">--:--</span> &nbsp;&middot;&nbsp; Elapsed <span id="pc-elapsed">00:00</span></div>
     <div class="pc-count">Slide <span id="pc-cur">1</span> / <span id="pc-tot">&ndash;</span></div>
@@ -5325,6 +5325,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     // Announce readiness so a (re)opened audience jumps to the live slide.
     window.addEventListener('deckpainted', function () { aud.post({ type: 'hello' }); });
+    // If the presenter navigates while THIS window has focus, drive it locally AND
+    // tell the console so its previews/notes/counter stay in sync. Capture phase +
+    // stopPropagation so the deck's own arrow handler doesn't double-advance.
+    document.addEventListener('keydown', function (e) {
+      var d = 0;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') d = 1;
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') d = -1;
+      else return;
+      e.preventDefault(); e.stopPropagation();
+      var cur = (typeof currentSlide === 'number' && currentSlide) ? currentSlide : 1;
+      if (typeof show === 'function') show(cur + d);
+      var actual = (typeof currentSlide === 'number') ? currentSlide : cur + d;
+      try { aud.post({ type: 'goto', slide: actual }); } catch (_) {}
+    }, true);
     return;
   }
   // ---- Console preview iframes: inert; driven directly by the parent ----
@@ -5335,6 +5349,12 @@ document.addEventListener('DOMContentLoaded', () => {
   var ctrl = makeChannel('y4-deck-sync', function (msg) {
     msg = msg || {};
     if (msg.type === 'hello' && pvActive) ctrl.post({ type: 'goto', slide: pvCur });
+    // The audience window navigated under its own focus — mirror it here WITHOUT
+    // re-broadcasting (it already moved), so the previews/notes/counter follow.
+    else if (msg.type === 'goto' && pvActive && typeof msg.slide === 'number') {
+      pvCur = Math.max(1, Math.min(pvTotal || 9999, msg.slide));
+      pvSync(true);
+    }
   });
 
   function buildViewUrl(extra) {
@@ -5396,7 +5416,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('pc-elapsed').textContent = pad(Math.floor(s / 60)) + ':' + pad(s % 60);
   }
 
-  function pvSync() {
+  function pvSync(skipBroadcast) {
     var curF = document.getElementById('pc-current-frame');
     var nextF = document.getElementById('pc-next-frame');
     try {
@@ -5409,7 +5429,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (_) {}
     try { if (frameReady(nextF)) nextF.contentWindow.show(Math.min(pvCur + 1, pvTotal)); } catch (_) {}
-    ctrl.post({ type: 'goto', slide: pvCur });
+    if (!skipBroadcast) ctrl.post({ type: 'goto', slide: pvCur });
     document.getElementById('pc-cur').textContent = pvCur;
     document.getElementById('pc-tot').textContent = pvTotal;
     document.getElementById('pc-prev').disabled = pvCur <= 1;
@@ -5446,8 +5466,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clockTimer) clearInterval(clockTimer);
     clockTimer = setInterval(updateClock, 1000);
     updateClock();
-    waitForFrames(function () { pvSync(); setTimeout(fitFrames, 300); });
+    waitForFrames(function () { pvSync(); attachFrameKeys(); setTimeout(fitFrames, 300); });
     document.addEventListener('keydown', pvKey, true);
+    // The freshly-opened audience popup steals focus; pull it back so arrow keys
+    // land on the console window (where pvKey listens) by default.
+    try { window.focus(); } catch (_) {}
+    try { document.getElementById('presenter-console').focus(); } catch (_) {}
+  }
+
+  // Clicking into a preview iframe moves keyboard focus inside it, so the parent's
+  // pvKey never sees the arrows. Forward keydowns from each (same-origin) iframe to
+  // pvKey, which navigates the whole console and stops the iframe's own local nav.
+  function attachFrameKeys() {
+    ['pc-current-frame', 'pc-next-frame'].forEach(function (id) {
+      var f = document.getElementById(id);
+      try {
+        var idoc = f && (f.contentDocument || f.contentWindow.document);
+        if (idoc && !idoc.__pvKeys) { idoc.__pvKeys = 1; idoc.addEventListener('keydown', pvKey, true); }
+      } catch (_) {}
+    });
   }
   function pvExit() {
     if (!pvActive) return;
