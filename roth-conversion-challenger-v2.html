@@ -3388,7 +3388,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <p class="subtitle fee-scope" data-wg="White Glove covers all of it &mdash; investing, conversion timing, tax, estate, long-term care, Social Security, and the relationship. One kitchen, one bill." data-co="Conversion Only is the tax engine, all-in &mdash; Strategic Roth Conversions and tax-smart management of every account, two strategy meetings a year.">Same tax engine either way. The difference is everything <em>around</em> the numbers.</p>
       </div>
       <!-- Tier cards: clicking selects CO / WG and updates bar chart -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:1180px;margin:16px auto 0;align-items:start;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:1180px;margin:16px auto 0;align-items:stretch;">
         <!-- Do Nothing card — no .tier-card class so fee JS ignores it; visual anchor only -->
         <div style="background:#FEF8F7;border:1px solid #F0D4D0;border-top:4px solid #C0392B;border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
           <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C0392B;margin-bottom:4px;">Do Nothing</div>
@@ -3402,7 +3402,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             <li style="display:flex;gap:10px;"><span style="color:#C0392B;font-weight:800;">&times;</span>RMDs taxed at your peak bracket</li>
             <li style="display:flex;gap:10px;"><span style="color:#C0392B;font-weight:800;">&times;</span>Heirs face the 10-year rule drain</li>
           </ul>
-          <div style="margin-top:12px;background:rgba(192,57,43,0.07);border:1px solid #F0D4D0;border-radius:8px;padding:9px 12px;font-family:var(--font-sans);font-size:11.5px;color:#8B2020;line-height:1.45;">Based on your numbers, heirs could otherwise keep an estimated <strong>${heirLost}</strong> that would go to the IRS under the 10-year rule.</div>
+          <div style="margin-top:auto;padding-top:12px;background:rgba(192,57,43,0.07);border:1px solid #F0D4D0;border-radius:8px;padding:9px 12px;font-family:var(--font-sans);font-size:11.5px;color:#8B2020;line-height:1.45;">Based on your numbers, heirs could otherwise keep an estimated <strong>${heirLost}</strong> that would go to the IRS under the 10-year rule.</div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:11px;border:1px solid #F0D4D0;border-radius:9px;padding:10px 14px;background:rgba(192,57,43,0.04);">
+            <span style="width:20px;height:20px;border-radius:5px;border:2px solid #C0392B;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:800;line-height:1;color:transparent;"></span>
+            <span style="font-family:var(--font-sans);font-size:13px;font-weight:700;color:var(--ink-700);">I'll stay the course</span>
+          </div>
         </div>
         <div class="tier-card" data-tier="co" style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-400);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s;">
           <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:4px;">Conversion Only</div>
@@ -3413,7 +3417,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Tax-smart management of all your accounts</li>
             <li style="display:flex;gap:10px;"><span style="color:var(--gold-600);font-weight:800;">&check;</span>Two strategy meetings a year</li>
           </ul>
-          <div style="margin-top:14px;display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:9px;padding:10px 14px;">
+          <div style="margin-top:auto;padding-top:14px;display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:9px;padding:10px 14px;">
             <span class="tier-check" style="width:20px;height:20px;border-radius:5px;border:2px solid var(--gold-500);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:12px;font-weight:800;line-height:1;"></span>
             <span style="font-family:var(--font-sans);font-size:13px;font-weight:700;color:var(--ink-900);">Choose the Accelerator</span>
           </div>
@@ -3431,7 +3435,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Tax-return coordination &mdash; in-house EAs</li>
             <li style="display:flex;gap:10px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>The survivor plan &amp; the team that knows you</li>
           </ul>
-          <div style="margin-top:14px;display:flex;align-items:center;gap:11px;border:1px solid rgba(255,255,255,0.25);border-radius:9px;padding:10px 14px;">
+          <div style="margin-top:auto;padding-top:14px;display:flex;align-items:center;gap:11px;border:1px solid rgba(255,255,255,0.25);border-radius:9px;padding:10px 14px;">
             <span class="tier-check" style="width:20px;height:20px;border-radius:5px;border:2px solid var(--gold-400);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink-900);font-size:12px;font-weight:800;line-height:1;"></span>
             <span style="font-family:var(--font-sans);font-size:13px;font-weight:700;color:#fff;">Choose White Glove</span>
           </div>
