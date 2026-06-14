@@ -5317,32 +5317,33 @@ document.addEventListener('DOMContentLoaded', () => {
   // paintDeck's click handlers call this; suppressed while replaying a remote click.
   window.__deckUi = function (msg) { if (!applyingRemote && msg) uiChan.post(msg); };
 
+  // ---- Laser pointer (shared by the audience window AND the console preview iframe):
+  // draw a glowing dot at normalized coords over the active slide. Normalizing by the
+  // slide's bounding box keeps it on the same content across different window sizes. ----
+  function y4Pointer() {
+    var p = document.getElementById('y4-pointer');
+    if (!p) {
+      var s = document.createElement('style');
+      s.textContent = '#y4-pointer{position:fixed;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(circle,rgba(255,70,55,.95) 0%,rgba(255,70,55,.55) 45%,rgba(255,70,55,0) 72%);box-shadow:0 0 16px 5px rgba(255,70,55,.5);pointer-events:none;z-index:2147483647;opacity:0;transition:transform .07s linear,opacity .18s ease;}#y4-pointer.on{opacity:1;}#y4-pointer::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid rgba(255,70,55,.45);animation:y4ping 1.5s ease-out infinite;}@keyframes y4ping{0%{transform:scale(.55);opacity:.85;}100%{transform:scale(1.9);opacity:0;}}';
+      (document.head || document.documentElement).appendChild(s);
+      p = document.createElement('div');
+      p.id = 'y4-pointer';
+      document.body.appendChild(p);
+    }
+    return p;
+  }
+  function showPointer(nx, ny) {
+    var slide = document.querySelector('.slide.active');
+    if (!slide) return;
+    var r = slide.getBoundingClientRect();
+    var p = y4Pointer();
+    p.style.transform = 'translate(' + (r.left + nx * r.width) + 'px,' + (r.top + ny * r.height) + 'px)';
+    p.classList.add('on');
+  }
+  function hidePointer() { var p = document.getElementById('y4-pointer'); if (p) p.classList.remove('on'); }
+
   // ---- Audience window: just follow the presenter ----
   if (isAudience && !isEmbed) {
-    // Laser pointer: the console sends normalized coords; draw a glowing dot at the
-    // matching spot over the active slide. Normalizing by the slide's bounding box
-    // (not the viewport) keeps it on the same content across different window sizes.
-    function y4Pointer() {
-      var p = document.getElementById('y4-pointer');
-      if (!p) {
-        var s = document.createElement('style');
-        s.textContent = '#y4-pointer{position:fixed;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(circle,rgba(255,70,55,.95) 0%,rgba(255,70,55,.55) 45%,rgba(255,70,55,0) 72%);box-shadow:0 0 16px 5px rgba(255,70,55,.5);pointer-events:none;z-index:2147483647;opacity:0;transition:transform .07s linear,opacity .18s ease;}#y4-pointer.on{opacity:1;}#y4-pointer::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid rgba(255,70,55,.45);animation:y4ping 1.5s ease-out infinite;}@keyframes y4ping{0%{transform:scale(.55);opacity:.85;}100%{transform:scale(1.9);opacity:0;}}';
-        (document.head || document.documentElement).appendChild(s);
-        p = document.createElement('div');
-        p.id = 'y4-pointer';
-        document.body.appendChild(p);
-      }
-      return p;
-    }
-    function showPointer(nx, ny) {
-      var slide = document.querySelector('.slide.active');
-      if (!slide) return;
-      var r = slide.getBoundingClientRect();
-      var p = y4Pointer();
-      p.style.transform = 'translate(' + (r.left + nx * r.width) + 'px,' + (r.top + ny * r.height) + 'px)';
-      p.classList.add('on');
-    }
-    function hidePointer() { var p = document.getElementById('y4-pointer'); if (p) p.classList.remove('on'); }
     function applyMsg(m) {
       m = m || {};
       if (m.type === 'goto' && typeof m.slide === 'number' && typeof show === 'function') { show(m.slide); hidePointer(); }
@@ -5382,7 +5383,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   // ---- Console preview iframes: inert; driven directly by the parent ----
-  if (isEmbed) return;
+  // Expose the pointer renderer so the console can show the laser dot in the preview
+  // too (so the presenter sees what the audience sees).
+  if (isEmbed) {
+    window.__y4ShowPointer = showPointer;
+    window.__y4HidePointer = hidePointer;
+    return;
+  }
 
   // ---- Presenter console (runs in the normal deck window) ----
   var audienceWin = null, pvActive = false, pvCur = 1, pvTotal = 1, clockTimer = null, startTs = 0;
@@ -5561,10 +5568,17 @@ document.addEventListener('DOMContentLoaded', () => {
         var r = slide.getBoundingClientRect();
         if (!r.width || !r.height) return;
         var nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
-        if (nx < -0.03 || nx > 1.03 || ny < -0.03 || ny > 1.03) { postToAudience({ type: 'pointer', visible: false }); return; }
-        postToAudience({ type: 'pointer', visible: true, nx: Math.max(0, Math.min(1, nx)), ny: Math.max(0, Math.min(1, ny)) });
+        if (nx < -0.03 || nx > 1.03 || ny < -0.03 || ny > 1.03) { ptrOut(); return; }
+        nx = Math.max(0, Math.min(1, nx)); ny = Math.max(0, Math.min(1, ny));
+        postToAudience({ type: 'pointer', visible: true, nx: nx, ny: ny });
+        // also render the dot in the console's own preview so the presenter sees it
+        try { if (f.contentWindow && f.contentWindow.__y4ShowPointer) f.contentWindow.__y4ShowPointer(nx, ny); } catch (_) {}
       });
-      idoc.addEventListener('mouseleave', function () { postToAudience({ type: 'pointer', visible: false }); });
+      function ptrOut() {
+        postToAudience({ type: 'pointer', visible: false });
+        try { if (f.contentWindow && f.contentWindow.__y4HidePointer) f.contentWindow.__y4HidePointer(); } catch (_) {}
+      }
+      idoc.addEventListener('mouseleave', ptrOut);
     } catch (_) {}
   }
   function pvExit() {
