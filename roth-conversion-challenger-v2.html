@@ -1535,7 +1535,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const feeBStr = fmtMoneyFull(feeB);
   const peak = fmtMoney(sim.peakRMD);
   const lifeRMD = fmtMoney(sim.lifetimeRMD);
-  const lifeTax = fmtMoney(sim.lifetimeTax);
+  // "Lifetime tax if you do nothing" — use the inflation-INDEXED all-years total
+  // (sim.lifetimeFederalTax), the same figure the legislative-risk slide (29) and slide 9
+  // use. sim.lifetimeTax is a legacy RMD-incremental total computed on NON-indexed brackets,
+  // which overstates the bill (frozen-bracket creep) and disagreed with those slides.
+  const lifeTax = fmtMoney(sim.lifetimeFederalTax);
   const saveStr = fmtMoney(savings);
   const heirBefore = fmtMoney(heir.before);
   const heirAfter = fmtMoney(heir.after);
@@ -2321,7 +2325,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div class="hook-stat">
             <div class="stat-label">Lifetime Tax &mdash; Doing Nothing</div>
             <div class="stat-val">${lifeTax}</div>
-            <div class="stat-meta">Your projected total bill on RMDs alone</div>
+            <div class="stat-meta">Your projected lifetime federal tax bill</div>
           </div>
           <div class="hook-stat">
             <div class="stat-label">Your Kids&rsquo; Tax Bill</div>
@@ -2942,7 +2946,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
 
         <div class="compare-cell row-label">Lifetime Tax Bill</div>
         <div class="compare-cell val bad">${lifeTax} (projected)</div>
-        <div class="compare-cell val good">~${fmtMoney(sim.lifetimeTax - savings)} net <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 10px;margin-left:8px;white-space:nowrap;">saves ${saveStr}</span><span data-base-savings="${Math.round(savings)}" style="display:block;margin-top:7px;font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--gold-700);"><span data-sav-label>if rates rise 20%</span>, you save <span data-sav-figure>${savingsPlus20Str}</span></span></div>
+        <div class="compare-cell val good">~${fmtMoney(Math.max(0, sim.lifetimeFederalTax - savings))} net <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 10px;margin-left:8px;white-space:nowrap;">saves ${saveStr}</span><span data-base-savings="${Math.round(savings)}" style="display:block;margin-top:7px;font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--gold-700);"><span data-sav-label>if rates rise 20%</span>, you save <span data-sav-figure>${savingsPlus20Str}</span></span></div>
 
         <div class="compare-cell row-label">Rate Your Heirs Pay</div>
         <div class="compare-cell val bad">${Math.round(heir.heirRate*100)}% &mdash; top bracket</div>
@@ -4838,8 +4842,8 @@ function renderCharts(inputs, sim, savings) {
   // ---- Proof / savings chart (slide 14) ----
   const proofEl = document.getElementById('chart-proof');
   if (proofEl) {
-    const doNothingTax = sim.lifetimeTax;
-    const withUsTax = Math.max(0, sim.lifetimeTax - savings);
+    const doNothingTax = sim.lifetimeFederalTax;          // indexed, consistent with slides 7/9/29/32
+    const withUsTax = Math.max(0, sim.lifetimeFederalTax - savings); // convert-path lifetime tax
     chartInstances.proof = new Chart(proofEl, {
       type: 'bar',
       data: {
