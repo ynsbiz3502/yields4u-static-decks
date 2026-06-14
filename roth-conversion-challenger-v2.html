@@ -973,6 +973,53 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .icon-btn.cue-active { background: #C8AA50; color: #1A1A1F; border-color: #C8AA50; }
 @media print { #pres-cue-panel { display: none !important; } }
 
+/* ── Audience mode (?view=audience): clean slides, no presenter chrome ── */
+body.audience-mode .topbar { display: none !important; }
+body.audience-mode #pres-cue-panel { display: none !important; }
+body.audience-mode #presentBtn { display: none !important; }
+body.audience-mode #flowLabBtn { display: none !important; }
+body.console-mode { overflow: hidden; }
+
+/* ── Presenter console (PowerPoint-style two-window view) ── */
+#presenter-console {
+  display: none; position: fixed; inset: 0; z-index: 10000;
+  background: #15151A; color: #E8E6DF;
+  font-family: system-ui, -apple-system, sans-serif;
+  flex-direction: column;
+}
+#presenter-console.open { display: flex; }
+.pc-bar {
+  flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 22px; border-bottom: 1px solid #2C2C36; gap: 16px;
+}
+.pc-clock { font-size: 14px; color: #B8B4A8; font-variant-numeric: tabular-nums; }
+.pc-clock #pc-time { color: #fff; font-weight: 700; }
+.pc-clock #pc-elapsed { color: #C8AA50; font-weight: 700; }
+.pc-count { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #9A8A5A; font-weight: 700; }
+.pc-actions { display: flex; gap: 10px; }
+.pc-btn { background: #2A2A34; color: #E8E6DF; border: 1px solid #3A3A46; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.pc-btn:hover { background: #34343F; }
+.pc-btn--ghost { background: transparent; }
+.pc-main { flex: 1 1 auto; display: grid; grid-template-columns: 1.7fr 1fr; gap: 20px; padding: 18px 20px 20px; min-height: 0; }
+.pc-current { display: flex; flex-direction: column; min-height: 0; }
+.pc-side { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+.pc-label { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #7A7A86; font-weight: 700; margin-bottom: 8px; }
+.pc-frame-wrap { position: relative; width: 100%; background: #0E0E12; border: 1px solid #2C2C36; border-radius: 10px; overflow: hidden; }
+.pc-current .pc-frame-wrap { flex: 1 1 auto; min-height: 0; }
+.pc-next .pc-frame-wrap { height: 30vh; flex: 0 0 auto; }
+.pc-frame-wrap iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; border: 0; transform-origin: top left; background: #FBFAF7; }
+.pc-nav { flex: 0 0 auto; display: flex; gap: 12px; margin-top: 14px; }
+.pc-arrow { flex: 1; background: #2A2A34; color: #fff; border: 1px solid #3A3A46; border-radius: 10px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; }
+.pc-arrow:hover { background: #3A3A46; }
+.pc-arrow:disabled { opacity: .35; cursor: default; }
+.pc-arrow--next { background: var(--gold-500, #C8AA50); color: #1A1A1F; border-color: var(--gold-500, #C8AA50); }
+.pc-arrow--next:hover:not(:disabled) { filter: brightness(1.06); }
+.pc-next { flex: 0 0 auto; }
+.pc-notes { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; background: #1A1A1F; border: 1px solid #2C2C36; border-radius: 10px; padding: 14px 16px; overflow: auto; }
+.pc-notes-body { flex: 1 1 auto; }
+.pc-empty { font-size: 13px; color: #5A5A66; font-style: italic; }
+@media print { #presenter-console { display: none !important; } }
+
 </style>
 </head>
 <body>
@@ -1109,6 +1156,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     </div>
     <div class="topbar-right">
       <button class="icon-btn" id="editBtn">Edit inputs</button>
+      <button class="icon-btn" id="presentBtn">Presenter View [P]</button>
       <button class="icon-btn" id="cueBtn">Cues [C]</button>
       <button class="icon-btn" id="printBtn">Print</button>
     </div>
@@ -1118,6 +1166,38 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     <!-- Slides injected by JS -->
   </div>
   <div id="pres-cue-panel"></div>
+</div>
+
+<!-- PowerPoint-style presenter console (controls the audience window) -->
+<div id="presenter-console" aria-hidden="true">
+  <div class="pc-bar">
+    <div class="pc-clock"><span id="pc-time">--:--</span> &nbsp;&middot;&nbsp; Elapsed <span id="pc-elapsed">00:00</span></div>
+    <div class="pc-count">Slide <span id="pc-cur">1</span> / <span id="pc-tot">&ndash;</span></div>
+    <div class="pc-actions">
+      <button class="pc-btn" id="pc-reopen">Re-open audience &#8599;</button>
+      <button class="pc-btn pc-btn--ghost" id="pc-exit">Exit [Esc]</button>
+    </div>
+  </div>
+  <div class="pc-main">
+    <div class="pc-current">
+      <div class="pc-label">Current slide</div>
+      <div class="pc-frame-wrap" id="pc-current-wrap"><iframe id="pc-current-frame" title="Current slide"></iframe></div>
+      <div class="pc-nav">
+        <button class="pc-arrow" id="pc-prev">&lsaquo;&nbsp; Previous</button>
+        <button class="pc-arrow pc-arrow--next" id="pc-next">Next&nbsp; &rsaquo;</button>
+      </div>
+    </div>
+    <div class="pc-side">
+      <div class="pc-next">
+        <div class="pc-label">Next slide</div>
+        <div class="pc-frame-wrap" id="pc-next-wrap"><iframe id="pc-next-frame" title="Next slide"></iframe></div>
+      </div>
+      <div class="pc-notes">
+        <div class="pc-label">Presenter notes</div>
+        <div class="pc-notes-body" id="pc-notes-body"><div class="pc-empty">No notes for this slide.</div></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -4763,6 +4843,8 @@ function show(slideN) {
   (function() {
     const cp = document.getElementById('pres-cue-panel');
     if (!cp) return;
+    // In the clean audience window the cue panel stays hidden — never auto-open it.
+    if (document.body.classList.contains('audience-mode')) return;
     if (!cp.dataset.initialized) {
       cp.classList.add('visible');
       const btn = document.getElementById('cueBtn');
@@ -4944,6 +5026,7 @@ function paintDeck(inputs, sim, savings, heir, widow, opts) {
   // Runs AFTER show(), so the current #slide=N hash is included.
   persistInputsToUrl(inputs);
   requestAnimationFrame(() => { renderCharts(inputs, sim); requestAnimationFrame(fitSlidesToViewport); });
+  window.__deckPainted = true;
   try { window.dispatchEvent(new Event('deckpainted')); } catch (_) { /* no-op */ }
 }
 
@@ -5174,6 +5257,220 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => onGenerate(), 0);
   }
 });
+</script>
+<script>
+/* ===========================================================================
+ *  PRESENTER VIEW — PowerPoint-style two-window presenting.
+ *    • Audience window  (?view=audience): clean slides only, no chrome. Follows
+ *      the presenter over a BroadcastChannel. This is the window you screen-share
+ *      in Zoom or drag onto the projector.
+ *    • Presenter console (this window, after clicking "Presenter View"): current
+ *      slide + next slide + notes + clock/elapsed timer + Prev/Next. Drives the
+ *      audience window AND its own two preview iframes from one place.
+ *    • One screen? Share the audience window in Zoom — it keeps updating in the
+ *      background while you stay on the console and click Prev/Next (or arrows).
+ *  Notes are read straight from each slide's existing <template class="pres-cue">.
+ * ======================================================================= */
+(function () {
+  'use strict';
+  var params    = new URLSearchParams(location.search);
+  var isAudience = params.get('view') === 'audience';
+  var isEmbed    = params.get('embed') === '1';
+
+  // Clean chrome immediately (before the deferred auto-run paints / fits).
+  if (isAudience) document.body.classList.add('audience-mode');
+
+  // Tiny cross-window channel: BroadcastChannel, with a localStorage fallback.
+  function makeChannel(name, onmsg) {
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        var bc = new BroadcastChannel(name);
+        if (onmsg) bc.onmessage = function (e) { onmsg(e.data); };
+        return { post: function (m) { try { bc.postMessage(m); } catch (_) {} } };
+      }
+    } catch (_) { /* fall through */ }
+    var key = '__chan_' + name;
+    if (onmsg) window.addEventListener('storage', function (e) {
+      if (e.key === key && e.newValue) { try { onmsg(JSON.parse(e.newValue)); } catch (_) {} }
+    });
+    return { post: function (m) { try { localStorage.setItem(key, JSON.stringify(Object.assign({ __t: Date.now() }, m))); } catch (_) {} } };
+  }
+
+  // ---- Audience window: just follow the presenter ----
+  if (isAudience && !isEmbed) {
+    var aud = makeChannel('y4-deck-sync', function (msg) {
+      msg = msg || {};
+      if (msg.type === 'goto' && typeof msg.slide === 'number' && typeof show === 'function') show(msg.slide);
+    });
+    // Announce readiness so a (re)opened audience jumps to the live slide.
+    window.addEventListener('deckpainted', function () { aud.post({ type: 'hello' }); });
+    return;
+  }
+  // ---- Console preview iframes: inert; driven directly by the parent ----
+  if (isEmbed) return;
+
+  // ---- Presenter console (runs in the normal deck window) ----
+  var audienceWin = null, pvActive = false, pvCur = 1, pvTotal = 1, clockTimer = null, startTs = 0;
+  var ctrl = makeChannel('y4-deck-sync', function (msg) {
+    msg = msg || {};
+    if (msg.type === 'hello' && pvActive) ctrl.post({ type: 'goto', slide: pvCur });
+  });
+
+  function buildViewUrl(extra) {
+    var u = new URL(location.href);
+    u.searchParams.set('view', 'audience');
+    u.searchParams.set('auto', '1');
+    u.searchParams.delete('edit');
+    if (extra) Object.keys(extra).forEach(function (k) { u.searchParams.set(k, extra[k]); });
+    u.hash = '';
+    return u.toString();
+  }
+  function audienceUrl()   { return buildViewUrl(null) + '#slide=' + pvCur; }
+  function embedUrl(n)     { return buildViewUrl({ embed: '1' }) + '#slide=' + n; }
+
+  function frameReady(f) {
+    try { return f && f.contentWindow && f.contentWindow.__deckPainted && typeof f.contentWindow.show === 'function'; }
+    catch (_) { return false; }
+  }
+  function waitForFrames(cb) {
+    var curF = document.getElementById('pc-current-frame');
+    var nextF = document.getElementById('pc-next-frame');
+    var tries = 0;
+    (function poll() {
+      if (!pvActive) return;
+      if (frameReady(curF) && frameReady(nextF)) { cb(); return; }
+      if (tries++ > 160) { cb(); return; } // ~8s safety
+      setTimeout(poll, 50);
+    })();
+  }
+
+  function fitFrames() {
+    [['pc-current-frame', 'pc-current-wrap'], ['pc-next-frame', 'pc-next-wrap']].forEach(function (p) {
+      var f = document.getElementById(p[0]), w = document.getElementById(p[1]);
+      if (!f || !w) return;
+      var k = Math.min(w.clientWidth / 1280, w.clientHeight / 800);
+      var offX = (w.clientWidth - 1280 * k) / 2, offY = (w.clientHeight - 800 * k) / 2;
+      f.style.transform = 'translate(' + offX + 'px,' + offY + 'px) scale(' + k + ')';
+    });
+  }
+
+  function updateNotes() {
+    var body = document.getElementById('pc-notes-body');
+    var curF = document.getElementById('pc-current-frame');
+    var html = '';
+    try {
+      var doc = curF.contentDocument || curF.contentWindow.document;
+      var active = doc.querySelector('.slide.active') || doc.querySelectorAll('.slide')[pvCur - 1];
+      var tmpl = active ? active.querySelector('template.pres-cue') : null;
+      html = tmpl ? tmpl.innerHTML : '';
+    } catch (_) {}
+    body.innerHTML = html || '<div class="pc-empty">No notes for this slide.</div>';
+  }
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function updateClock() {
+    var now = new Date();
+    document.getElementById('pc-time').textContent = pad(now.getHours()) + ':' + pad(now.getMinutes());
+    var s = Math.max(0, Math.floor((Date.now() - startTs) / 1000));
+    document.getElementById('pc-elapsed').textContent = pad(Math.floor(s / 60)) + ':' + pad(s % 60);
+  }
+
+  function pvSync() {
+    var curF = document.getElementById('pc-current-frame');
+    var nextF = document.getElementById('pc-next-frame');
+    try {
+      if (frameReady(curF)) {
+        curF.contentWindow.show(pvCur);
+        // TOTAL_SLIDES is a lexical global (not a window property) — count the DOM instead.
+        var cdoc = curF.contentDocument || curF.contentWindow.document;
+        var cnt = cdoc.querySelectorAll('.slide').length;
+        if (cnt) pvTotal = cnt;
+      }
+    } catch (_) {}
+    try { if (frameReady(nextF)) nextF.contentWindow.show(Math.min(pvCur + 1, pvTotal)); } catch (_) {}
+    ctrl.post({ type: 'goto', slide: pvCur });
+    document.getElementById('pc-cur').textContent = pvCur;
+    document.getElementById('pc-tot').textContent = pvTotal;
+    document.getElementById('pc-prev').disabled = pvCur <= 1;
+    document.getElementById('pc-next').disabled = pvCur >= pvTotal;
+    updateNotes();
+    fitFrames();
+  }
+  function pvGoto(n) {
+    if (!pvActive) return;
+    pvCur = Math.max(1, Math.min(pvTotal || 9999, n));
+    pvSync();
+  }
+
+  function openAudience() {
+    try { audienceWin = window.open(audienceUrl(), 'y4-audience', 'width=1280,height=800,menubar=no,toolbar=no,location=no,status=no'); } catch (_) {}
+    if (!audienceWin) {
+      alert('Your browser blocked the audience window. Allow pop-ups for this page, then click "Re-open audience".');
+    }
+    return audienceWin;
+  }
+
+  function pvEnter() {
+    if (pvActive) return;
+    var pres = document.getElementById('presentation-screen');
+    if (!pres || !pres.classList.contains('active')) { alert('Generate the plan first, then open Presenter View.'); return; }
+    pvActive = true;
+    pvCur = (typeof currentSlide === 'number' && currentSlide) ? currentSlide : 1;
+    document.getElementById('presenter-console').classList.add('open');
+    document.body.classList.add('console-mode');
+    document.getElementById('pc-current-frame').src = embedUrl(pvCur);
+    document.getElementById('pc-next-frame').src = embedUrl(pvCur + 1);
+    openAudience();
+    startTs = Date.now();
+    if (clockTimer) clearInterval(clockTimer);
+    clockTimer = setInterval(updateClock, 1000);
+    updateClock();
+    waitForFrames(function () { pvSync(); setTimeout(fitFrames, 300); });
+    document.addEventListener('keydown', pvKey, true);
+  }
+  function pvExit() {
+    if (!pvActive) return;
+    pvActive = false;
+    document.getElementById('presenter-console').classList.remove('open');
+    document.body.classList.remove('console-mode');
+    document.removeEventListener('keydown', pvKey, true);
+    if (clockTimer) { clearInterval(clockTimer); clockTimer = null; }
+    var curF = document.getElementById('pc-current-frame'); if (curF) curF.src = 'about:blank';
+    var nextF = document.getElementById('pc-next-frame'); if (nextF) nextF.src = 'about:blank';
+    try { if (audienceWin && !audienceWin.closed) audienceWin.close(); } catch (_) {}
+    try { if (typeof show === 'function') show(pvCur); } catch (_) {}
+  }
+
+  function pvKey(e) {
+    if (!pvActive) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { pvGoto(pvCur + 1); e.preventDefault(); e.stopPropagation(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { pvGoto(pvCur - 1); e.preventDefault(); e.stopPropagation(); }
+    else if (e.key === 'Escape') { pvExit(); e.preventDefault(); e.stopPropagation(); }
+  }
+
+  function wire() {
+    [['presentBtn', pvEnter], ['pc-exit', pvExit],
+     ['pc-prev', function () { pvGoto(pvCur - 1); }], ['pc-next', function () { pvGoto(pvCur + 1); }],
+     ['pc-reopen', function () { openAudience(); setTimeout(function () { ctrl.post({ type: 'goto', slide: pvCur }); }, 700); }]
+    ].forEach(function (pair) {
+      var el = document.getElementById(pair[0]);
+      if (el && !el.__pvWired) { el.__pvWired = 1; el.addEventListener('click', pair[1]); }
+    });
+  }
+  if (document.readyState !== 'loading') wire(); else document.addEventListener('DOMContentLoaded', wire);
+  window.addEventListener('resize', function () { if (pvActive) fitFrames(); });
+
+  // Global "P" shortcut opens the presenter view (ignored while typing).
+  window.addEventListener('keydown', function (e) {
+    if (pvActive) return;
+    var t = e.target;
+    if (t && /^(input|textarea|select)$/i.test(t.tagName)) return;
+    if ((e.key === 'p' || e.key === 'P') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      var pres = document.getElementById('presentation-screen');
+      if (pres && pres.classList.contains('active')) { pvEnter(); e.preventDefault(); }
+    }
+  });
+})();
 </script>
 <script>
 /* ===========================================================================
