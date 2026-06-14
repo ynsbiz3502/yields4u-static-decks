@@ -912,6 +912,27 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .intake-text { font-family: var(--font-serif); font-style: italic; font-weight: 500; font-size: 24px; line-height: 1.42; color: var(--ink-900); margin: 0; }
 .intake-title em { color: var(--gold-600); font-style: italic; font-weight: 500; }
 
+/* ── ATF: compress whitespace so every slide fits above the fold ── */
+.slides-wrap { padding: 8px 24px !important; min-height: 0 !important; }
+.slide { padding: 28px 60px 36px !important; min-height: 0 !important; }
+.slide h2.title { font-size: 34px !important; margin-bottom: 8px !important; }
+.slide .subtitle { font-size: 17px !important; margin-bottom: 14px !important; line-height: 1.45 !important; }
+.slide .title-block { margin-bottom: 14px !important; }
+.slide .title-block.center { margin-bottom: 16px !important; }
+.kicker { margin-bottom: 8px !important; }
+.box-card { padding: 16px 20px !important; min-height: 0 !important; }
+.box-card .box-body { font-size: 14px !important; line-height: 1.45 !important; }
+.hook-stat { padding: 16px 18px !important; }
+.hook-stat .stat-val { font-size: 36px !important; }
+.hook-stat .stat-label { margin-bottom: 8px !important; }
+.hook-stat .stat-meta { margin-top: 6px !important; font-size: 13px !important; }
+.hook-stats { gap: 14px !important; }
+.hook-hero { padding: 14px 0 20px !important; }
+.hook-hero .hero-title { font-size: 48px !important; margin-bottom: 14px !important; }
+.hook-hero .hero-sub { font-size: 17px !important; margin-bottom: 20px !important; }
+.grid-4 { gap: 16px !important; margin-top: 8px !important; }
+.cta-plans { margin-bottom: 20px !important; }
+
 </style>
 </head>
 <body>
@@ -2784,7 +2805,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div style="display:grid;grid-template-columns:0.92fr 1.08fr;gap:36px;max-width:1240px;margin:26px auto 0;align-items:center;">
         <div style="background:#FBFAF7;border:1px solid var(--border);border-radius:14px;padding:14px;">
-          <img src="img/two-captains.jpg" alt="One ship, two captains each steering a divergent heading into the fog — toward a hidden rock that is your tax bracket." style="display:block;margin:0 auto;width:auto;max-width:100%;max-height:470px;border-radius:8px;">
+          <img src="img/two-captains.jpg" alt="One ship, two captains each steering a divergent heading into the fog — toward a hidden rock that is your tax bracket." style="display:block;margin:0 auto;width:auto;max-width:100%;max-height:240px;border-radius:8px;">
         </div>
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div style="background:white;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:15px 22px;">
@@ -2977,7 +2998,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <p class="subtitle">Real planning isn&rsquo;t one thing &mdash; it&rsquo;s five, working together. We build every piece around the life you actually want, with one question at the center of it all: are you free to live your dreams?</p>
       </div>
       <div style="max-width:430px;margin:8px auto 0;">
-        <img src="img/planning-wheel.png" alt="The Yields For You planning philosophy wheel: five areas &mdash; Investments, Tax Minimization, Income, Life Planning, and Financial Continuity &mdash; centered on living your dreams." style="width:100%;height:auto;display:block;">
+        <img src="img/planning-wheel.png" alt="The Yields For You planning philosophy wheel: five areas &mdash; Investments, Tax Minimization, Income, Life Planning, and Financial Continuity &mdash; centered on living your dreams." style="width:auto;height:auto;max-height:220px;max-width:100%;display:block;margin:0 auto;">
       </div>
       <div style="max-width:1120px;margin:16px auto 0;background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 30px;display:flex;align-items:center;justify-content:center;gap:34px;flex-wrap:wrap;">
         <div style="text-align:left;max-width:440px;">
@@ -4765,13 +4786,45 @@ function paintDeck(inputs, sim, savings, heir, widow, opts) {
   applyPersona(inputs.persona || '', !!inputs.persona);
   document.getElementById('input-screen').style.display = 'none';
   document.getElementById('presentation-screen').classList.add('active');
+  fitSlidesToViewport();
   // Honor a #slide=N hash so a refresh / shared link restores the right slide.
   show(opts.keepSlide ? Math.min(currentSlide, document.querySelectorAll('.slide').length || 1) : (getSlideFromHash() || 1));
   // Persist the inputs into the URL so a refresh restores the same values.
   // Runs AFTER show(), so the current #slide=N hash is included.
   persistInputsToUrl(inputs);
-  requestAnimationFrame(() => renderCharts(inputs, sim));
+  requestAnimationFrame(() => { renderCharts(inputs, sim); requestAnimationFrame(fitSlidesToViewport); });
   try { window.dispatchEvent(new Event('deckpainted')); } catch (_) { /* no-op */ }
+}
+
+// ── ATF: scale any slide whose natural height exceeds the viewport ──
+// Uses CSS zoom (not transform) so the element's layout size shrinks with it,
+// preventing the page from scrolling. zoom also does not conflict with the
+// slideIn animation which only touches transform/opacity.
+function fitSlidesToViewport() {
+  const wrap = document.getElementById('slidesWrap');
+  if (!wrap) return;
+  const nav = document.querySelector('.topbar');
+  const navH = nav ? nav.getBoundingClientRect().height : 72;
+  const cs = getComputedStyle(wrap);
+  const wrapPT = parseFloat(cs.paddingTop) || 0;
+  const wrapPB = parseFloat(cs.paddingBottom) || 0;
+  const maxH = Math.floor(window.innerHeight - navH - wrapPT - wrapPB) - 4;
+  if (maxH < 100) return;
+
+  const slides = wrap.querySelectorAll('.slide');
+  // Reset any prior zoom so measurements are of natural height
+  slides.forEach(s => { s.style.zoom = ''; s.style.transform = ''; s.style.marginBottom = ''; });
+  // Temporarily show all slides to measure their scrollHeight
+  slides.forEach(s => { s.style.display = 'block'; });
+  void wrap.offsetHeight; // force synchronous layout
+  slides.forEach(s => {
+    const h = s.scrollHeight;
+    s.style.display = ''; // restore to CSS default (display:none / display:block via .active)
+    if (h > maxH && h > 0) {
+      // zoom shrinks the element AND its layout footprint — no extra margin tricks needed
+      s.style.zoom = (maxH / h).toFixed(5);
+    }
+  });
 }
 
 // Encode the current inputs as URL query params so a refresh / share keeps
