@@ -3234,9 +3234,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
 
   // ── Mission slide: who we serve and how — positioned after the planning wheel ──
   slides.push(`
-    <section class="slide" data-slide="mission">
-      <div style="min-height:620px;display:flex;align-items:center;padding:0 40px;">
-      <div style="max-width:1180px;width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
+    <section class="slide" data-slide="mission" style="display:flex;flex-direction:column;justify-content:center;">
+      <div style="max-width:1180px;width:100%;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;">
         <!-- Left: copy -->
         <div>
           <div class="kicker" style="margin-bottom:10px;">About Yields For You</div>
@@ -3284,7 +3283,6 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <img src="nyse-bell.gif" alt="NYSE Closing Bell — Helping One Million People Retire with Financial Security"
                style="width:100%;max-width:520px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
         </div>
-      </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">mission</div>
