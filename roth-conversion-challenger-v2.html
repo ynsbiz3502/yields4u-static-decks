@@ -788,7 +788,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .compare-cell:last-child, .compare-grid > div:nth-last-child(-n+3) { border-bottom: none; }
 .compare-note {
   font-family: var(--font-serif); font-style: italic;
-  font-size: 15px; color: var(--fg-subtle); margin-top: 18px;
+  font-size: 10px; line-height: 1.25; color: var(--fg-subtle); margin-top: 18px;
+}
+.slide-disc {
+  font-family: var(--font-sans); font-size: 10px; line-height: 1.25;
+  color: var(--fg-subtle); text-align: center;
 }
 
 /* =========== CTA SLIDE =========== */
@@ -2287,7 +2291,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div id="rate-stat-extra-sub" style="font-size:13px;color:#B91C1C;opacity:0.75;margin-top:4px;">select a scenario above</div>
         </div>
       </div>
-      <div style="max-width:980px;margin:12px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Source: OECD Tax Database / Tax Foundation &mdash; top combined statutory personal income tax rates, 2024: Japan 55.97%, France 55.4%, Canada 53.5%, Germany 47.5%, U.K. 45%. U.S. top federal rate is 37% (&approx;42% combined with the average state).</div>
+      <div style="max-width:980px;margin:12px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Source: OECD Tax Database / Tax Foundation &mdash; top combined statutory personal income tax rates, 2024: Japan 55.97%, France 55.4%, Canada 53.5%, Germany 47.5%, U.K. 45%. U.S. top federal rate is 37% (&approx;42% combined with the average state).</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">13</div>
     </section>
@@ -2490,7 +2494,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
                in the loaded series — full years + current-year YTD. -->
         </div>
       </div>
-      <div style="max-width:1300px;margin:14px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Source: EOD Historical Data (eodhd.com), S&amp;P 500 (GSPC). Index levels and returns are price-only &mdash; they do not include reinvested dividends; the 500-stock gain/loss counts use split- and dividend-adjusted closes. Data as of <span id="spx-data-asof">&mdash;</span>.</div>
+      <div style="max-width:1300px;margin:14px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Source: EOD Historical Data (eodhd.com), S&amp;P 500 (GSPC). Index levels and returns are price-only &mdash; they do not include reinvested dividends; the 500-stock gain/loss counts use split- and dividend-adjusted closes. Data as of <span id="spx-data-asof">&mdash;</span>.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">18</div>
     </section>
@@ -2689,7 +2693,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1150px;margin:16px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 28px;text-align:center;">
         <span style="font-family:var(--font-serif);font-size:21px;color:white;line-height:1.4;">Same ${convStr1040} conversion. <em style="color:var(--gold-400);font-style:italic;">Half the tax</em> &mdash; ${fmtMoneyFull(packedTax1040 - leanTax1040)} kept in a single planned year.</span>
       </div>
-      <div style="max-width:1150px;margin:10px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Illustrative amounts &mdash; Standard deduction ${fmtMoney(sd1040)} &middot; Social Security ${fmtMoney(ssAmt1040)} &middot; ${bombs1040.map(([l, a]) => l + ' ' + fmtMoney(a)).join(' &middot; ')}</div>
+      <div style="max-width:1150px;margin:10px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Illustrative amounts &mdash; Standard deduction ${fmtMoney(sd1040)} &middot; Social Security ${fmtMoney(ssAmt1040)} &middot; ${bombs1040.map(([l, a]) => l + ' ' + fmtMoney(a)).join(' &middot; ')}</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">1040</div>
     </section>
@@ -2720,7 +2724,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div style="font-family:var(--font-sans);font-size:12px;color:rgba(255,255,255,0.72);margin-top:6px;">Top bracket today &mdash; near the modern floor</div>
         </div>
       </div>
-      <div style="max-width:1300px;margin:12px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Sources: IRS Statistics of Income; Tax Foundation. Statutory marginal rates for the lowest and highest federal income-tax brackets, 1913&ndash;2026. Excludes temporary surcharges and credits.</div>
+      <div style="max-width:1300px;margin:12px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Sources: IRS Statistics of Income; Tax Foundation. Statutory marginal rates for the lowest and highest federal income-tax brackets, 1913&ndash;2026. Excludes temporary surcharges and credits.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">23</div>
     </section>
@@ -2748,7 +2752,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           </div>
         </div>
       </div>
-      <div style="max-width:1100px;margin:24px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Sources: U.S. Treasury Fiscal Data &mdash; gross federal debt, April 2026; BEA &mdash; nominal GDP, trailing 12 months. Debt held by the public alone now equals roughly 100% of GDP (CBO).</div>
+      <div style="max-width:1100px;margin:24px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Sources: U.S. Treasury Fiscal Data &mdash; gross federal debt, April 2026; BEA &mdash; nominal GDP, trailing 12 months. Debt held by the public alone now equals roughly 100% of GDP (CBO).</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">24</div>
     </section>
@@ -2816,7 +2820,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1300px;margin:18px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
         <span style="font-family:var(--font-serif);font-size:21px;color:white;line-height:1.45;">There&rsquo;s nothing left to cut &mdash; except the 58%. <em style="color:var(--gold-400);font-style:italic;">Your benefits are the budget.</em></span>
       </div>
-      <div style="max-width:1300px;margin:12px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Source: U.S. Treasury Fiscal Data / CBO &mdash; FY2025 federal outlays, &approx;$7.0 trillion; FY2025 deficit &approx;$1.8 trillion. Categories rounded to the nearest percent.</div>
+      <div style="max-width:1300px;margin:12px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Source: U.S. Treasury Fiscal Data / CBO &mdash; FY2025 federal outlays, &approx;$7.0 trillion; FY2025 deficit &approx;$1.8 trillion. Categories rounded to the nearest percent.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">25</div>
     </section>
@@ -2931,7 +2935,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1120px;margin:20px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
         <span style="font-family:var(--font-serif);font-size:19px;color:white;line-height:1.5;">And these are today&rsquo;s historically low rates &mdash; at +20%, your heirs avoid closer to <em style="color:var(--gold-400);font-style:italic;">${heirPlus20Str}.</em> It&rsquo;s the biggest it will ever be: every year you wait the window shrinks, and at ${rmdAge}, RMDs force the worst of it.</span>
       </div>
-      <div style="max-width:1120px;margin:10px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Illustrative: assumes the full IRA is converted to Roth over your pre-RMD years; heir figure estimates the 10-year-rule drain at peak rates. Actual results vary with markets and future tax law.</div>
+      <div style="max-width:1120px;margin:10px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Illustrative: assumes the full IRA is converted to Roth over your pre-RMD years; heir figure estimates the 10-year-rule drain at peak rates. Actual results vary with markets and future tax law.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">21</div>
     </section>
@@ -3428,7 +3432,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:960px;margin:32px auto 0;text-align:center;">
         <span style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.5;">The Steward and the Protector were never two people. <em style="color:var(--gold-600);font-style:italic;">They were two reasons to make the same decision.</em></span>
       </div>
-      <div style="max-width:960px;margin:14px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Illustrative only &mdash; heir figures estimate the 10-year-rule drain at peak rates. Actual results vary with markets and future tax law.</div>
+      <div style="max-width:960px;margin:14px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Illustrative only &mdash; heir figures estimate the 10-year-rule drain at peak rates. Actual results vary with markets and future tax law.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">full-circle</div>
     </section>
@@ -3631,7 +3635,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <button class="fee-tier-tab" data-tier="wg">White Glove</button>
         <button class="fee-tier-tab" data-tier="co">Conversion Only</button>
       </div>
-      <div style="max-width:1000px;margin:10px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Scenarios A&ndash;C are illustrative, not projections or a promise of results. The dollar figure applies your tier&rsquo;s rate to your ${balStr} balance; in practice the fee covers every account we manage. Start where you&rsquo;re comfortable &mdash; upgrade or downgrade anytime.</div>
+      <div style="max-width:1000px;margin:10px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Scenarios A&ndash;C are illustrative, not projections or a promise of results. The dollar figure applies your tier&rsquo;s rate to your ${balStr} balance; in practice the fee covers every account we manage. Start where you&rsquo;re comfortable &mdash; upgrade or downgrade anytime.</div>
       <template class="pres-cue">
         <div class="cue-label">Fee Slide &mdash; Tier Recommendation + Tax Drag Anchor</div>
         <div class="cue-ask">&ldquo;White Glove is what I&rsquo;d put you in. The ongoing plan, the survivor model, the dip-watch &mdash; that&rsquo;s where the work lives. But Conversion Only is a real option if you want to start smaller and upgrade later.&rdquo;</div>
