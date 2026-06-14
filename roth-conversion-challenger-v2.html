@@ -933,6 +933,45 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .grid-4 { gap: 16px !important; margin-top: 8px !important; }
 .cta-plans { margin-bottom: 20px !important; }
 
+/* ── Presenter Cue Panel ── */
+#pres-cue-panel {
+  display: none;
+  position: fixed;
+  right: 0; top: 0; bottom: 0;
+  width: 300px;
+  background: #1A1A1F;
+  border-left: 2px solid #3A3A44;
+  z-index: 9999;
+  overflow-y: auto;
+  padding: 20px 16px 32px;
+  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.45);
+}
+#pres-cue-panel.visible { display: block; }
+.cue-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #9A8A5A; margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid #3A3A44;
+}
+.cue-ask {
+  font-size: 13px; color: #F0EDD8; line-height: 1.55; margin-bottom: 8px;
+  background: rgba(200,170,80,0.1); border-left: 3px solid #C8AA50;
+  padding: 9px 11px; border-radius: 0 6px 6px 0;
+}
+.cue-stop {
+  font-size: 12px; font-weight: 700; color: #E05555; letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.cue-branches { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+.cue-branch {
+  font-size: 12px; color: #C8C0A8; line-height: 1.5;
+  background: rgba(255,255,255,0.04); border-radius: 6px; padding: 7px 9px;
+}
+.cue-branch strong { color: #F0EDD8; }
+.cue-note { font-size: 12px; color: #5A5A66; font-style: italic; }
+.icon-btn.cue-active { background: #C8AA50; color: #1A1A1F; border-color: #C8AA50; }
+@media print { #pres-cue-panel { display: none !important; } }
+
 </style>
 </head>
 <body>
@@ -1069,6 +1108,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     </div>
     <div class="topbar-right">
       <button class="icon-btn" id="editBtn">Edit inputs</button>
+      <button class="icon-btn" id="cueBtn">Cues [C]</button>
       <button class="icon-btn" id="printBtn">Print</button>
     </div>
   </div>
@@ -1076,6 +1116,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   <div class="slides-wrap" id="slidesWrap">
     <!-- Slides injected by JS -->
   </div>
+  <div id="pres-cue-panel"></div>
 </div>
 
 <script>
@@ -2795,6 +2836,32 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── Gate A: strategy commitment — before advancing to firm/all-assets slides ──
+  slides.push(`
+    <section class="slide" data-slide="gate-strategy" style="background:var(--ink-900);border-color:var(--ink-700);">
+      <div style="max-width:760px;margin:0 auto;">
+        <div class="eyebrow eyebrow--on-dark" style="margin-bottom:14px;">Before We Go Further</div>
+        <h2 style="font-family:var(--font-serif);font-weight:600;font-size:38px;line-height:1.2;letter-spacing:-0.02em;color:#fff;margin:0 0 16px;">Before we talk about <em style="color:var(--gold-400);font-style:italic;">who runs this</em> &mdash; is the strategy itself right for your family?</h2>
+        <div style="width:64px;height:3px;background:var(--gold-400);margin-bottom:20px;"></div>
+        <p style="font-family:var(--font-serif);font-style:italic;font-size:20px;color:rgba(255,255,255,0.55);line-height:1.6;margin:0 0 28px;">Forget the firm. Forget the fee. Just the two columns you&rsquo;ve just seen &mdash; and whether the math fits.</p>
+        <p style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);">Take your time &mdash; there&rsquo;s no wrong answer here.</p>
+      </div>
+      <template class="pres-cue">
+        <div class="cue-label">Gate A &mdash; Strategy Commitment</div>
+        <div class="cue-ask">&ldquo;Based on everything we&rsquo;ve just walked through &mdash; does converting make sense for you?&rdquo;</div>
+        <div class="cue-stop">&#9726; STOP. Say nothing. Let them answer first.</div>
+        <div class="cue-branches">
+          <div class="cue-branch"><strong>Yes / leaning yes:</strong> &ldquo;Good &mdash; then the question is who runs it and how. Let me show you the firm.&rdquo; &rarr; advance.</div>
+          <div class="cue-branch"><strong>Uncertain / &ldquo;more info&rdquo;:</strong> Surface the specific number or concern, re-anchor on bracket math (slide 23), then re-ask.</div>
+          <div class="cue-branch"><strong>No / &ldquo;our CPA said no&rdquo;:</strong> &ldquo;What number would need to be different?&rdquo; or &ldquo;Would it be OK if I showed you exactly where your CPA&rsquo;s math may diverge from this?&rdquo;</div>
+          <div class="cue-branch"><strong>Spouse not in room:</strong> Book a 20-minute joint call before advancing to the firm slides.</div>
+        </div>
+      </template>
+      <div class="slide-footer" style="border-top-color:rgba(255,255,255,0.14);"><span style="color:rgba(255,255,255,0.38);">Yields4u.com</span><span style="color:rgba(255,255,255,0.38);">Build The Life Of Your Dreams</span></div>
+      <div class="slide-number" style="color:rgba(255,255,255,0.28);">gate-A</div>
+    </section>
+  `);
+
   // ── Wedge: one 1040, one set of hands — why every account must be under our roof ──
   const _captainsSlide = `
     <section class="slide" data-slide="all-assets">
@@ -2862,6 +2929,12 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1100px;margin:22px auto 0;text-align:center;">
         <span style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.5;">Score your own advisor, honestly. Most can&rsquo;t check the <em style="color:var(--gold-600);font-style:italic;">first two boxes.</em> Here&rsquo;s why &rarr;</span>
       </div>
+      <template class="pres-cue">
+        <div class="cue-label">The Four Boxes &mdash; Let the Canvas Do the Work</div>
+        <div class="cue-ask">&ldquo;Before you score them &mdash; which of these four jobs does your current advisor actually do today?&rdquo;</div>
+        <div class="cue-stop">&#9726; STOP. Let them score it out loud. Don&rsquo;t fill the silence.</div>
+        <div class="cue-note" style="margin-top:8px;">The unchecked boxes close the sale. Don&rsquo;t point them out &mdash; let the prospect see them.</div>
+      </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">24</div>
     </section>
@@ -3216,6 +3289,30 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
+  // ── Gate B: value commitment — before advancing to fee slides ──
+  slides.push(`
+    <section class="slide" data-slide="gate-value" style="background:#FBFAF7;border-color:var(--border);">
+      <div style="max-width:760px;margin:0 auto;">
+        <div class="eyebrow" style="margin-bottom:14px;">Before We Talk Fees</div>
+        <h2 style="font-family:var(--font-serif);font-weight:600;font-size:38px;line-height:1.2;letter-spacing:-0.02em;color:var(--ink-900);margin:0 0 16px;">The math only works if you <em style="color:var(--gold-600);font-style:italic;">actually use it.</em> Do the four jobs fit what you need?</h2>
+        <div style="width:64px;height:3px;background:var(--gold-500);margin-bottom:20px;"></div>
+        <p style="font-family:var(--font-serif);font-style:italic;font-size:20px;color:var(--fg-muted);line-height:1.6;margin:0 0 28px;">Every advisor looks good on a chart. The question is whether they can check all four boxes when the market moves.</p>
+        <p style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);">No pressure &mdash; I&rsquo;d rather you be honest than polite here.</p>
+      </div>
+      <template class="pres-cue">
+        <div class="cue-label">Gate B &mdash; Value Commitment</div>
+        <div class="cue-ask">&ldquo;Of the four jobs &mdash; tax advice, dip-watching, one roof for all accounts, and the spouse &amp; heir plan &mdash; which one matters most to you?&rdquo;</div>
+        <div class="cue-stop">&#9726; STOP. Let them answer.</div>
+        <div class="cue-branches">
+          <div class="cue-branch"><strong>Names one or more:</strong> Echo it back: &ldquo;That&rsquo;s exactly where we start.&rdquo; &rarr; advance to cost-divider.</div>
+          <div class="cue-branch"><strong>&ldquo;All of them&rdquo; / easy yes:</strong> &ldquo;Good &mdash; then the fee conversation is easy. Let me show you what it looks like.&rdquo; &rarr; advance.</div>
+        </div>
+      </template>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">gate-B</div>
+    </section>
+  `);
+
   // ── Section divider: ask the money question head-on (Challenger "take control") ──
   slides.push(`
     <section class="slide" data-slide="cost-divider">
@@ -3368,6 +3465,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <button class="fee-tier-tab" data-tier="co">Conversion Only</button>
       </div>
       <div style="max-width:1000px;margin:10px auto 0;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);text-align:center;line-height:1.5;">Scenarios A&ndash;C are illustrative, not projections or a promise of results. The dollar figure applies your tier&rsquo;s rate to your ${balStr} balance; in practice the fee covers every account we manage. Start where you&rsquo;re comfortable &mdash; upgrade or downgrade anytime.</div>
+      <template class="pres-cue">
+        <div class="cue-label">Fee Slide &mdash; Tier Recommendation + Tax Drag Anchor</div>
+        <div class="cue-ask">&ldquo;White Glove is what I&rsquo;d put you in. The ongoing plan, the survivor model, the dip-watch &mdash; that&rsquo;s where the work lives. But Conversion Only is a real option if you want to start smaller and upgrade later.&rdquo;</div>
+        <div class="cue-note" style="margin-top:10px;text-align:left;">If they push on fee cost:</div>
+        <div class="cue-ask" style="margin-top:6px;">&ldquo;The most expensive advisor in this room is the IRS at ${todayBracketPct}%. Everything else is rounding error compared to what the plan could otherwise save.&rdquo;</div>
+        <div class="cue-stop" style="margin-top:8px;">&#9726; STOP after the anchor. Let the math land.</div>
+      </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">fee</div>
     </section>
@@ -3450,60 +3554,63 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // SLIDE 20 — CLOSING PROCESS
+  // SLIDE 20 — CLOSING PROCESS (flush → release → assume close)
   slides.push(`
     <section class="slide" data-slide="25">
-      <div class="title-block">
+      <div class="title-block" style="margin-bottom:10px;">
         <div class="kicker">Your Move</div>
         <h2 class="title">Take back the timing.</h2>
-        <p class="subtitle">Everything you just saw &mdash; in motion within 30 days.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1.65fr;gap:22px;align-items:start;margin-bottom:18px;">
+      <div style="display:grid;grid-template-columns:1fr 1.65fr;gap:20px;align-items:start;margin-bottom:14px;">
         <div class="cta-plan premium" style="margin-bottom:0;background:var(--ink-900);">
           <div class="cta-plan-tag">What You Take Back</div>
-          <ul style="list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:14px;">
-            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14.5px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>You pick the year you pay &mdash; not the IRS at ${rmdAge}</span></li>
-            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14.5px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>You pick the bracket &mdash; <strong>${todayBracketPct}%</strong> now, not <strong>${peakBracketPct}%</strong> later</span></li>
-            ${inputs.filingStatus === 'MFJ' ? `<li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14.5px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>Your spouse never faces the widow&rsquo;s penalty alone</span></li>` : ``}
-            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14.5px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>Your kids inherit a Roth, not a ${heirLost} tax bill</span></li>
+          <ul style="list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:11px;">
+            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>You pick the year you pay &mdash; not the IRS at ${rmdAge}</span></li>
+            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>You pick the bracket &mdash; <strong>${todayBracketPct}%</strong> now, not <strong>${peakBracketPct}%</strong> later</span></li>
+            ${inputs.filingStatus === 'MFJ' ? `<li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>Your spouse never faces the widow&rsquo;s penalty alone</span></li>` : ``}
+            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>Your kids inherit a Roth, not a ${heirLost} tax bill</span></li>
           </ul>
         </div>
         <div>
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:12px;">The Only Firm That Checks Every Box</div>
-          <div style="display:flex;flex-direction:column;gap:9px;">
-            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:13px 18px;">
-              <div class="cta-step-num" style="flex-shrink:0;background:var(--gold-400);color:var(--ink-900);">&#10003;</div>
-              <div><div class="cta-step-title">Allowed to give you tax advice</div><div class="cta-step-body">We&rsquo;re Enrolled Agents &mdash; licensed by the IRS. Most advisors aren&rsquo;t permitted.</div></div>
-            </div>
-            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:13px 18px;">
-              <div class="cta-step-num" style="flex-shrink:0;background:var(--gold-400);color:var(--ink-900);">&#10003;</div>
-              <div><div class="cta-step-title">Watches the market daily</div><div class="cta-step-body">Our own platform &mdash; we convert on the dip, not the calendar.</div></div>
-            </div>
-            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:13px 18px;">
-              <div class="cta-step-num" style="flex-shrink:0;background:var(--gold-400);color:var(--ink-900);">&#10003;</div>
-              <div><div class="cta-step-title">Manages every account on your 1040</div><div class="cta-step-body">Every source, under one roof &mdash; nothing we can&rsquo;t see.</div></div>
-            </div>
-            <div class="cta-step" style="display:flex;align-items:flex-start;gap:14px;padding:13px 18px;">
-              <div class="cta-step-num" style="flex-shrink:0;background:var(--gold-400);color:var(--ink-900);">&#10003;</div>
-              <div><div class="cta-step-title">${inputs.filingStatus === 'MFJ' ? 'Plans for your spouse &amp; your heirs' : 'Plans for your heirs'}</div><div class="cta-step-body">The survivor plan and the 10-year inherited-IRA rule &mdash; built in.</div></div>
-            </div>
-          </div>
-          <div style="margin-top:12px;display:flex;align-items:flex-start;gap:10px;">
-            <div style="flex-shrink:0;width:20px;height:20px;border-radius:5px;background:var(--ink-900);color:var(--gold-400);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-top:1px;">&#10003;</div>
-            <div style="font-family:var(--font-sans);font-size:12px;color:var(--ink-700);line-height:1.45;">Every advisor you&rsquo;ll ever talk to checks <strong>one or two.</strong> We&rsquo;re built for all four &mdash; and we take just one or two families a month.</div>
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:10px;">Your First 30 Days</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">1</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">Sign one document &mdash; about 20 minutes. Today.</div></div>
+            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">2</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">Schwab accounts open &mdash; your name, your control.</div></div>
+            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">3</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">Money transfers in-kind &mdash; nothing sold.</div></div>
+            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">4</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">Year One plan goes live.</div></div>
+            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">5</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">First conversion fires on the next dip.</div></div>
           </div>
         </div>
       </div>
-      <div class="cta-contact">
+      <div style="text-align:center;padding:12px 0 8px;">
+        <p style="font-family:var(--font-serif);font-style:italic;font-size:22px;color:var(--gold-600);line-height:1.4;margin:0;">&ldquo;What&rsquo;s the one thing that would stop you from starting today?&rdquo;</p>
+        <p style="font-family:var(--font-serif);font-style:italic;font-size:14px;color:var(--fg-muted);margin:6px 0 0;">A &ldquo;not yet&rdquo; is a fine answer.</p>
+      </div>
+      <div class="cta-contact" style="margin-top:12px;padding:14px 22px;">
         <div class="cta-contact-text">
-          <h3>Who picks the dates &mdash; you, or Congress?</h3>
-          <p>The analysis is done and the plan is built. One yes puts it in motion &mdash; want me to hold your spot and start the paperwork today?</p>
+          <h3 style="font-size:20px;">Who picks the dates &mdash; you, or Congress?</h3>
+          <p style="font-size:13px;">Your accounts live at Schwab, in your name. One phone call removes us in five minutes.</p>
         </div>
         <div class="cta-contact-actions">
           <a href="tel:4109144894" class="primary">410-914-4894</a>
           <a href="https://yields4u.com" target="_blank" rel="noopener" class="secondary">Yields4u.com</a>
         </div>
       </div>
+      <template class="pres-cue">
+        <div class="cue-label">Close &mdash; Flush &rarr; Release &rarr; Assume</div>
+        <div class="cue-ask">1 &middot; FLUSH: &ldquo;What&rsquo;s the one thing that would stop you from starting today?&rdquo;</div>
+        <div class="cue-stop">&#9726; STOP &mdash; say nothing until they answer.</div>
+        <div class="cue-ask" style="margin-top:8px;">2 &middot; RELEASE: &ldquo;Just so it&rsquo;s said &mdash; if today&rsquo;s a no or a not-yet, that&rsquo;s completely fine. I&rsquo;d rather you start when it&rsquo;s right than because you felt pushed.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;">3 &middot; ASSUME: &ldquo;The next dip doesn&rsquo;t wait for us to decide. If it feels right, let&rsquo;s get that one document signed today. Want me to start the paperwork?&rdquo;</div>
+        <div class="cue-stop" style="margin-top:4px;">&#9726; STOP &mdash; let them answer.</div>
+        <div class="cue-branches">
+          <div class="cue-branch"><strong>Yes:</strong> Go to docs. Do not re-sell.</div>
+          <div class="cue-branch"><strong>&ldquo;Think about it&rdquo;:</strong> Name what specifically (strategy / firm / fee). Book a dated next step before hanging up.</div>
+          <div class="cue-branch"><strong>Spouse not in room:</strong> Book a 20-min joint call this week.</div>
+          <div class="cue-branch"><strong>Price flinch:</strong> Re-anchor on the four jobs + tax drag, then offer Conversion Only 0.5% as the step-down.</div>
+          <div class="cue-branch"><strong>&ldquo;My CPA can do it&rdquo;:</strong> Most firms prohibit tax advice &mdash; score them on the four boxes.</div>
+        </div>
+      </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">25</div>
     </section>
@@ -4629,6 +4736,19 @@ function show(slideN) {
   document.getElementById('prevBtn').disabled = slideN === 1;
   document.getElementById('nextBtn').disabled = slideN === TOTAL_SLIDES;
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Sync cue panel with active slide's embedded cue template; auto-open on first call
+  (function() {
+    const cp = document.getElementById('pres-cue-panel');
+    if (!cp) return;
+    if (!cp.dataset.initialized) {
+      cp.classList.add('visible');
+      const btn = document.getElementById('cueBtn');
+      if (btn) btn.classList.add('cue-active');
+      cp.dataset.initialized = '1';
+    }
+    const tmpl = tgt ? tgt.querySelector('template.pres-cue') : null;
+    cp.innerHTML = tmpl ? tmpl.innerHTML : '<div class="cue-note">No cue for this slide.</div>';
+  })();
   // Persist current slide in the URL hash so a refresh restores it.
   // replaceState (not pushState) keeps Back/Forward focused on app-level navigation,
   // not slide-by-slide. Wrap in try/catch in case the page is served from file://.
@@ -4638,6 +4758,14 @@ function show(slideN) {
       history.replaceState(null, '', desired);
     }
   } catch (_) { /* no-op */ }
+}
+
+function toggleCues() {
+  const panel = document.getElementById('pres-cue-panel');
+  const btn = document.getElementById('cueBtn');
+  if (!panel) return;
+  panel.classList.toggle('visible');
+  if (btn) btn.classList.toggle('cue-active', panel.classList.contains('visible'));
 }
 
 function getSlideFromHash() {
@@ -4980,6 +5108,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const printBtn = document.getElementById('printBtn');
   if (printBtn) printBtn.addEventListener('click', () => window.print());
 
+  const cueBtn = document.getElementById('cueBtn');
+  if (cueBtn) cueBtn.addEventListener('click', toggleCues);
+
   // Growth slider live label
   const growth = document.getElementById('growthRate');
   const growthVal = document.getElementById('growthVal');
@@ -5007,6 +5138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!pres || !pres.classList.contains('active')) return;
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { show(currentSlide + 1); e.preventDefault(); }
     else if (e.key === 'ArrowLeft'  || e.key === 'PageUp')  { show(currentSlide - 1); e.preventDefault(); }
+    else if (e.key === 'c' || e.key === 'C') { toggleCues(); e.preventDefault(); }
   });
 
   // Auto-run the presentation when URL params include ?auto=1 — skips the intake

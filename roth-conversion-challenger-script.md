@@ -1,7 +1,7 @@
 # Strategic Roth Conversion — Deck Reference & Advisor Script
 
 The complete slide-by-slide lockdown for the **Roth Conversion (Challenger)** deck
-(`roth-conversion-challenger.html`). For every slide you get: the **on-screen text**
+(`roth-conversion-challenger-v2.html`). For every slide you get: the **on-screen text**
 (verbatim), a short **description**, its **purpose** in the Challenger arc, and the
 **talk track**. Read the talk track in your own voice; don't recite it.
 
@@ -22,8 +22,7 @@ inevitable, not pushed.
   numbers." Route updated claims through compliance. See `[[deck-copy-compliance-language]]`.
 
 **Deck mechanics & conditional slides**
-- **49 slides** in the canonical render (MFJ + onboarding-fee toggle off). Corner numbers
-  auto-renumber to actual order at render time.
+- **46 slides** in the canonical render (MFJ; onboarding-fee toggle retired as of 2026-06-12 — `showFee` hardcoded false). Corner numbers auto-renumber to actual order at render time. All 46 slides verified above-the-fold at 1280×768 (commit `e9dd5ab`).
 - **Filing status:** Slides 10–11 (the widow's-penalty pair) render **only for Married Filing
   Jointly**. Single filers don't see them (≈47 slides), and the Full Circle close (Slide 42)
   swaps its spouse payoff for a single-filer version.
@@ -31,11 +30,9 @@ inevitable, not pushed.
   pre-selects the matching tier on "Your Choice" (Slide 45) and selects the matching variant of
   the **Full Circle** close (Slide 42). Unset defaults to Steward so the close is always coherent.
   See `[[protector-steward-archetypes]]`.
-- **Onboarding-fee toggle** (intake → Advanced, or `?onboardingFee=1`): when **on**, a
-  "Choose the onboarding structure" slide is inserted right after the 30-Day Roth Accelerator
-  (Slide 44), before the tiers, and the third card on the risk-reversal slide (Slide 48) swaps
-  from "billed in arrears" to "refundable after 90 days." Off by default. See
-  `[[onboarding-fee-toggle]]`.
+- **Onboarding-fee toggle** — **RETIRED 2026-06-12.** `showFee` is hardcoded `false`; Slide 44b
+  no longer renders and the refundable-90-day card on Slide 48 is gone. See `[[onboarding-fee-toggle]]`
+  for historical context.
 - **Two service tiers** drive the fee slides: Conversion Only 0.5% / White Glove 1.5%. See
   `[[yields4u-service-tiers]]`.
 
@@ -334,11 +331,9 @@ inevitable, not pushed.
 - **Purpose:** The signature onboarding process — concrete, fast, low-effort on the prospect's side. Placed right after the cost question so the 30-day process leads straight into the price; the Conversion Only tier *is* "The 30-Day Roth Accelerator." Replaces the legacy 90-day "Tax-Free Retirement Accelerator" + "Year One" pair.
 - **Talk track:** "Here's our signature process. You sign in about twenty minutes; your accounts move to Schwab in-kind over a week or so; by about day 21 we walk through and sign your conversion plan — then we're live, watching daily for the dips. One more meeting at year-end trues it all up. Most firms are still scheduling your kickoff — you'd already be funded, signed, and ready."
 
-### Slide 44b — Choose the onboarding structure · `data-slide="onboarding-structure"` *(only when the onboarding-fee toggle is ON; inserted after the Accelerator, before the tiers)*
-- **Kicker:** Two Ways To Get Started **Title:** Choose the onboarding structure that fits you. **Subtitle:** Most of the work happens in the first 90 days… Same work, same team, same outcome either way.
-- **On screen:** **Option A · Committed** (Best Price) — one-time onboarding investment, non-refundable, lowest total cost. **Option B · Refundable** (Most Flexible) — same onboarding, refundable after 90 days. Amounts set on intake (defaults $15k / $18k). "Same outcome. Same team. The only difference is how you structure the one-time investment."
-- **Purpose:** Present an optional upfront onboarding-fee model (committed vs refundable). Hidden by default. *Compliance: upfront/partly-non-refundable advisory fees carry SEC/FINRA implications — review before live use.*
-- **Talk track:** "Most of the work is the first 90 days. You can handle that one-time investment two ways — commit for the best price, or keep the refundable option for extra confidence."
+### ~~Slide 44b — Choose the onboarding structure~~ *(RETIRED 2026-06-12 — no longer renders)*
+- Upfront onboarding fee removed; `showFee` hardcoded `false`. This slide does not appear in v2.
+  The Slide 48 refundable-90-day card is also gone. See `[[onboarding-fee-toggle]]`.
 
 ### Slide 45 — Which way do you want to work together? · `data-slide="two-ways"`
 - **Kicker:** Your Choice **Title:** Which way do you want to work together? **Subtitle:** Same tax engine either way — the difference is everything around the numbers.
