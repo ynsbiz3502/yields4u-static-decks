@@ -357,6 +357,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 .slide.active { display: flex; flex-direction: column; justify-content: center; animation: slideIn 0.3s cubic-bezier(0.22, 0.61, 0.36, 1); }
 .leibel-slide.active { display: block; }
+.slide.active > div:not(.slide-footer):not(.slide-number),
+.slide.active > p { width: 100%; box-sizing: border-box; }
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -4772,6 +4774,7 @@ function renderCharts(inputs, sim, savings) {
         }]
       },
       options: {
+        animation: false,
         responsive: true, maintainAspectRatio: false,
         plugins: {
           title: { display: true, text: 'Federal Budget 2025',
@@ -4860,6 +4863,13 @@ function show(slideN) {
       history.replaceState(null, '', desired);
     }
   } catch (_) { /* no-op */ }
+  if (tgt && typeof chartInstances !== 'undefined') {
+    requestAnimationFrame(function() {
+      Object.values(chartInstances).forEach(function(c) {
+        try { if (c && typeof c.resize === 'function' && c.canvas && tgt.contains(c.canvas)) c.resize(); } catch (_) {}
+      });
+    });
+  }
 }
 
 function toggleCues() {
