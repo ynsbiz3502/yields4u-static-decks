@@ -277,10 +277,10 @@ inevitable, not pushed.
 - **Purpose:** Wedge 2 — the tooling gap. Establishes a moat only this firm can cross.
 - **Talk track:** "Off-the-shelf tools give a clean answer by assuming away reality. Building software like this is what I do for a living."
 
-### Slide 37 — Leibel Sternbach · `data-slide="5"`
-- **On screen:** Four credentials only — **Enrolled Agent** (licensed by the IRS to give the tax advice most advisors can't) · **Fintech CTO** (built and runs the platform that executes this daily) · **Portfolio Manager, ETF YFYA** · **Educating retirees since 2007**. (linktr.ee/LeibelSternbach). *Trimmed from the old list — author / APMA / ChFC / NSSA / RSMV-sponsor removed so the two wedge-proving creds (EA = permission, CTO = tooling) carry the slide.*
-- **Purpose:** Credibility — the person behind the wedges, focused on the two that prove them.
-- **Talk track:** "Enrolled Agent — so I'm allowed to give the tax advice most can't. And I built the software that runs this. That's the whole game; this is all I do."
+### Slide 37 — Leibel Sternbach · `data-slide="5"` *(renders as corner #38)*
+- **On screen:** Full nine-credential list — **Bestselling Author** of *Living with Financial Anxiety* · **Enrolled Agent with the IRS** · **Accredited Portfolio Management Advisor** · **Chartered Financial Consultant** · **National Social Security Advisor Certificate Holder** · **Portfolio Manager for ETF: YFYA** · **Financial Sponsor for the ETF: RSMV** · **Frequently quoted as an expert in the media** · **Been helping educate retirees since 2007**. Portrait + "Featured On" media logos (CNN, Forbes, Yahoo Finance, CBS, WSJ, etc.). (linktr.ee/LeibelSternbach). *Restored 2026-06-14 to the full credential list (the prior trim to 4 EA/CTO creds was reverted); list spacing tightened (15px / 6px padding) so all nine fit above the fold.*
+- **Purpose:** Credibility — the full résumé behind the strategy.
+- **Talk track:** "Enrolled Agent — so I'm allowed to give the tax advice most can't. Author, portfolio manager, ETF sponsor, educating retirees since 2007. This is all I do."
 
 ### Slide 38 — Meet the team · `data-slide="4"`
 - **Kicker:** The People Behind The Plan **Title:** Meet The Yields For You Team **Subtitle:** Portfolio managers, advisors, and traders — all focused on retiree tax planning.
