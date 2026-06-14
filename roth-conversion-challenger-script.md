@@ -22,7 +22,7 @@ inevitable, not pushed.
   numbers." Route updated claims through compliance. See `[[deck-copy-compliance-language]]`.
 
 **Deck mechanics & conditional slides**
-- **48 slides** in the canonical render (MFJ; onboarding-fee toggle retired as of 2026-06-12 — `showFee` hardcoded false). Corner numbers auto-renumber to actual order at render time. All 48 slides verified above-the-fold at 1280×768 (commit `0af53cd`).
+- **48 slides** in the canonical render (MFJ; onboarding-fee toggle retired as of 2026-06-12 — `showFee` hardcoded false), **46 for single filers** (the two MFJ widow slides drop). Corner numbers auto-renumber to actual order at render time. All slides verified above-the-fold at 1280×768 (commit `0af53cd`; v4 close rebuild re-verified figure-free + above-the-fold on MFJ and single at commit `d8231e8`).
 - **Filing status:** Slides 10–11 (the widow's-penalty pair) render **only for Married Filing
   Jointly**. Single filers don't see them (≈46 slides), and the Full Circle close (Slide 42)
   swaps its spouse payoff for a single-filer version.
@@ -36,6 +36,8 @@ inevitable, not pushed.
   for historical context.
 - **Two service tiers** drive the fee slides: Conversion Only 0.5% / White Glove 1.5%. See
   `[[yields4u-service-tiers]]`.
+- **Presenter cue layer (`C`):** Each slide can carry a `<template class="pres-cue">` (verbatim ask + STOP + objection branches) that's hoisted into a right-side panel toggled with the **`C`** key — presenter-only, hidden in print and `?view=audience`, and never painted on the client canvas (confirm pixel-identical with cues on/off before screen-sharing). Two **commitment gates** ride this layer: **Gate A** (strategy, after Slide 32) and **Gate B** (value, after Slide 42) — figure-free *question* slides whose branch logic lives only in the cue.
+- **Objection-jump bar (`J`; rides the `C` toggle):** A persistent, collapsible bar in the presenter layer (auto-expands on the close, Slide 49) that jumps to the slide answering whatever the prospect just said — by `data-slide` anchor, with a **return stack** so "← Back to where we were" pops to the launch slide and chained jumps unwind in order. Buttons are the prospect's words: *"How does it work?"* → Accelerator (44) · *"Is this safe?"* → risk-reversal (48) · *"Let me think"* → scarcity (47) · *"Talk to my spouse"* → Spouse Mobilizer action card. Hidden with the cues for screen-share; never on the client canvas or in print/export.
 
 ---
 
@@ -249,6 +251,11 @@ inevitable, not pushed.
 - **Purpose:** Crystallize the decision as a two-column comparison; collapse "later" into "nothing" — still before any vendor/price content.
 - **Talk track:** "Doing nothing and deciding later are the *same column*. You pick — but only until *[75]*. After that the IRS picks."
 
+### Gate A — Is it the right move for your family? *(commitment gate)* · `data-slide="gate-strategy"`
+- **Treatment:** dark/ink (the heavy turn). **On screen (client):** Eyebrow "Before we go further" · Headline "Before we talk about who runs this — *is it the right move for your family?*" · gold rule · "Forget the firm. Forget the fee. Just the strategy — and the two columns you've just seen." · stop cue "Take your time — there's no wrong answer here." **No figures, no buttons** — a slide that's *only* a question, so the advisor has to ask it and stop.
+- **Purpose:** Strategy commitment *before* any vendor/price content — separate "is this right for us?" from "who runs it" and "what it costs." Universal (all filing statuses and personas).
+- **Cue (presenter only):** ASK "Set me aside for a second — forget I'm the one who'd run this. Just those two columns: is the right-hand column the one you want for your family? … And is there anything about the strategy itself that still doesn't sit right?" → **STOP.** Branches: *clear yes* → "Then the only two questions left are who runs it, and what it costs" → advance to the captains slide; *hesitation* → **don't advance**, "tell me what's giving you pause" (timing/market → the levers; "just moves the tax" → widow + heir math); *"ask my spouse"* → book a 20-min joint call this week; *"think about it"* → "about what — the strategy, the firm, or the fee?"
+
 ---
 
 ## TAKE CONTROL — Why this needs one set of hands
@@ -322,6 +329,11 @@ inevitable, not pushed.
 - **Purpose:** Pays off the persona-fork open loop from Slide 2 — hands the prospect the fear they *didn't* name, so a single decision satisfies both motives. Emotional capstone right before the price question. See `[[protector-steward-archetypes]]`.
 - **Talk track:** "You came in as the [Steward / Protector]. Here's what surprises most people: the very move you came for does the other thing too — [it erases the widow's penalty for your spouse / it gets your kids the money, not the IRS]. The Steward and the Protector were never two people. They were two reasons to make the same decision." *(Let it sit, then turn to price.)*
 
+### Gate B — The right hands for your money? *(commitment gate)* · `data-slide="gate-value"`
+- **Treatment:** light/paper (a quick beat before price). **On screen (client):** Eyebrow "Before the numbers" · Headline "Does this feel like *the right hands* for your money?" · gold rule · "You've seen the whole job — and the people who'd actually do it. The only question left is what it costs." · stop cue "A 'yes' here just means we've earned the cost conversation." **No figures.**
+- **Purpose:** Value commitment immediately *before* price — a short beat that earns the right to the cost conversation. Universal.
+- **Cue (presenter only):** ASK "Before I answer the cost question you've been too polite to ask — does the way we'd run this feel like the right hands for your money?" → **STOP.** Branches: *yes/nod* → "Then let's talk about what it costs" → advance; *"what's it cost?"* → "Exactly where I'm headed" → advance and weight the tax-drag anchor on the fee slide.
+
 ---
 
 ## THE OFFER & THE CLOSE
@@ -366,11 +378,11 @@ inevitable, not pushed.
 - **Purpose:** Risk reversal right before the ask — remove every reason to hesitate.
 - **Talk track:** "There's no risk in starting. Say stop anytime. One call to Schwab removes us in five minutes. And we bill in arrears — you feel what working with us is like before we're ever paid."
 
-### Slide 49 — Take back the timing *(the close)* · `data-slide="25"`
-- **Kicker:** Your Move **Title:** Take back the timing. **Subtitle:** Everything you just saw — your plan, your accounts, your names on everything — in motion within 30 days.
-- **On screen:** **What You Take Back** (4 checks): You pick the year you pay — not the IRS at 75 · You pick the bracket — **12% now, not 24% later** (bound; Single shows 22% → 35%) · *(MFJ only)* Your spouse never faces the widow's penalty alone · Your kids inherit a Roth, not a **$2.5M** tax bill (bound). **Your First 30 Days** (5 steps): 1) You sign one document (~20 min) · 2) Your Schwab accounts open — your name, your control · 3) Your money transfers in-kind, nothing sold · 4) Your Year One plan goes live · 5) Your first conversion fires on the next dip. Safety line: "Your accounts live at Schwab, in your name. One phone call removes us in five minutes." Contact: **"Who picks the dates — you, or Congress?"** · 410-914-4894 · Yields4u.com.
-- **Purpose:** Owner-voiced close — frames the decision as *taking back control*, concrete 30-day steps, the safety net, the final question. Then stop talking.
-- **Talk track:** "Take back the timing. You sign one document, your Schwab accounts open in your name, money transfers in-kind, your Year One plan goes live, and your first conversion fires on the next dip. Who picks the dates — you, or Congress? … Want me to start the paperwork?" *(Then stop. Let them answer.)*
+### Slide 49 — Take back the timing *(the close — v4, figure-free)* · `data-slide="25"`
+- **Kicker:** Your Move **Title:** Take back the timing.
+- **On screen:** **"What waiting actually costs"** — a four-row *qualitative, figure-free* stack: **Low-bracket room this year** — gone if you don't use it · **At 73, your own RMDs push you up your brackets** — your rate climbs even if the law never moves · *(MFJ only)* **If one of you passes, the survivor files single** — a higher rate on the same income, permanently · **A bigger balance later** — the same rates on a larger pile. Led directive: "The only thing that needs your signature today is **one document.** Everything else, we handle." Easing line: "You're never locked in — one call to Schwab unwinds it in five minutes." Contact: **"Who picks the dates — you, or Congress?"** · 410-914-4894 · Yields4u.com. **No dollar/percent figures anywhere on this slide — by design.**
+- **Purpose:** Owner-voiced close rebuilt to the v4 spec. Re-confronts the cost of *waiting* qualitatively (the four mechanisms above, none of which depend on rates rising), hands the prospect one small assumptive motion, eases the stakes, then stops. The old "What You Take Back" 4-check block and the 5-step "First 30 Days" list were removed — the process now lives on-demand on the Accelerator (Slide 44), keeping the close light. Survivor row is MFJ-only; single filers see the 3-row variant.
+- **Talk track (four-beat spine — presenter cue):** **Re-confront:** "Doing nothing isn't avoiding the decision — it's making it. Here's what waiting costs, none of it depending on rates going up: low-bracket room this year that's gone if you don't use it; at 73 your own RMDs push you up your brackets; if one of you passes the survivor files single at a higher rate on the same income; and a bigger balance means the same rates on a larger pile. The window closes a little every year — and for good at 73." → **Lead:** "The only thing that needs your signature today is one document. Everything else we handle. Let's get that one part done while we're together." → **Ease:** "And you're never locked in — one call to Schwab unwinds it in five minutes." → **Stop.** *(⚠ Guardrail: never quote a cost-of-delay dollar figure. If pushed: "That's exactly what the planning meeting produces. What's certain is the window is open — and closing.")*
 
 ---
 
@@ -379,8 +391,9 @@ inevitable, not pushed.
 - **Match the persona.** They pick on Slide 2; the Full Circle close (Slide 42) and the tier (Slide 45) follow automatically — but lean into the language of *their* pick (Protector vs Steward) all the way through. See `[[protector-steward-archetypes]]`.
 - **Commit to the strategy before the vendor.** Slides 31–32 (the prize + the choice) lead the close — get the "yes, this strategy is for me" before any price or process. Don't jump to cost early.
 - **Justify before you price.** Slide 41 (four jobs) and Slide 42 (Full Circle) do the value work right before the cost question on Slide 43 — don't skip them to get to the number faster.
-- **Hold the tension** on Slides 10–13 (the threats) and 33–36 (the captains + the two wedges).
+- **Hold the tension** on Slides 10–13 (the threats) and 33–36 (the captains + the two wedges). **The widow's penalty (Slides 10–11) is the rate-jump permanence can't fix:** with the 2017 rates now permanent, the filing-status cliff is the cleanest place the prospect's *own* rate actually moves — slow down and hold the tension there the way you do on the captains slide.
 - **The numbers are illustrative** — say it on Slides 23, 31, 32, 41, 42, and 46. Route updated claims through compliance.
 - **The Accelerator (Slide 44) is the process, not a quote.** Never give a specific conversion size or savings figure there — the real plan is built only after the full analysis.
+- **Never quote a cost-of-delay figure at the close.** Slide 49's "what waiting costs" stack is qualitative *by design* (and so is its cue) — the *certainty* of the loss carries the beat, not a digit the intake may not support. If pushed for a number: "that's exactly what the planning meeting produces — what's certain is the window is open, and closing."
 - **Personalize** the open (Slide 1) and the prize (Slide 31) — those two are where specificity wins or loses the room.
-- **Conditional content:** Slides 10–11 are MFJ-only; the Full Circle payoff (Slide 42) and the final-slide spouse line (Slide 49) swap for single filers; the onboarding-structure slide (44b) and the Slide 48 refund card appear only with the onboarding-fee toggle on.
+- **Conditional content:** Slides 10–11 are MFJ-only; the Full Circle payoff (Slide 42) and the final-slide survivor row (Slide 49) swap for single filers (single sees the 3-row waiting-cost variant); the onboarding-structure slide (44b) and the Slide 48 refund card appear only with the onboarding-fee toggle on. **Gates A and B are universal** — they render for every filing status and persona.
