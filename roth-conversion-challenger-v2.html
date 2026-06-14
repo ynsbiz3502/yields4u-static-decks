@@ -2952,7 +2952,13 @@ function buildSlides(inputs, sim, savings, heir, widow) {
 
         <div class="compare-cell row-label">Lifetime Tax Bill</div>
         <div class="compare-cell val bad">${lifeTax} (projected)</div>
-        <div class="compare-cell val good">~${fmtMoney(Math.max(0, sim.lifetimeFederalTax - savings))} net <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 10px;margin-left:8px;white-space:nowrap;">saves ${saveStr}</span><span data-base-savings="${Math.round(savings)}" style="display:block;margin-top:7px;font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--gold-700);"><span data-sav-label>if rates rise 20%</span>, you save <span data-sav-figure>${savingsPlus20Str}</span></span></div>
+        <div class="compare-cell val good" style="flex-direction:column;align-items:flex-start;gap:8px;">
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:9px;">
+            <span>~${fmtMoney(Math.max(0, sim.lifetimeFederalTax - savings))} net</span>
+            <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 11px;white-space:nowrap;">saves ${saveStr}</span>
+          </div>
+          <div data-base-savings="${Math.round(savings)}" style="font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--gold-700);line-height:1.3;"><span data-sav-label>if rates rise 20%</span>, you save <span data-sav-figure>${savingsPlus20Str}</span></div>
+        </div>
 
         <div class="compare-cell row-label">Rate Your Heirs Pay</div>
         <div class="compare-cell val bad">${Math.round(heir.heirRate*100)}% &mdash; top bracket</div>
