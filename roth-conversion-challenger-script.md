@@ -22,10 +22,11 @@ inevitable, not pushed.
   numbers." Route updated claims through compliance. See `[[deck-copy-compliance-language]]`.
 
 **Deck mechanics & conditional slides**
-- **46 slides** in the canonical render (MFJ; onboarding-fee toggle retired as of 2026-06-12 — `showFee` hardcoded false). Corner numbers auto-renumber to actual order at render time. All 46 slides verified above-the-fold at 1280×768 (commit `e9dd5ab`).
+- **48 slides** in the canonical render (MFJ; onboarding-fee toggle retired as of 2026-06-12 — `showFee` hardcoded false). Corner numbers auto-renumber to actual order at render time. All 48 slides verified above-the-fold at 1280×768 (commit `0af53cd`).
 - **Filing status:** Slides 10–11 (the widow's-penalty pair) render **only for Married Filing
-  Jointly**. Single filers don't see them (≈47 slides), and the Full Circle close (Slide 42)
+  Jointly**. Single filers don't see them (≈46 slides), and the Full Circle close (Slide 42)
   swaps its spouse payoff for a single-filer version.
+- **Chart rendering (2026-06-14):** Slides 24 (hist-rates), 25 (debt-gdp), 27 (budget-pie), and 29 (legRiskSlide) were fixed for full-width layout. Root cause: `display:flex` on `.slide.active` caused `margin:auto` children to shrink to canvas default width. Fix: `width:100%` on direct slide children + `c.resize()` on navigation + `animation:false` on the pie chart.
 - **Persona fork:** Slide 2 lets the prospect self-select **Protector** vs **Steward**. The pick
   pre-selects the matching tier on "Your Choice" (Slide 45) and selects the matching variant of
   the **Full Circle** close (Slide 42). Unset defaults to Steward so the close is always coherent.
@@ -302,6 +303,12 @@ inevitable, not pushed.
 - **On screen:** The 5-area planning wheel (`img/planning-wheel.png`) around a **Live Your Dreams** center: **1 Investments** (grow & protect) · **2 Tax Minimization** (keep more of what you earn) · **3 Income** (sustainable, predictable) · **4 Life Planning** (care, dignity, control) · **5 Financial Continuity** (a legacy, not a burden). Capstone: "Five areas. One plan. Built entirely around you."
 - **Purpose:** Introduce the *philosophy / scope* of what we plan (the 5 areas) before the value-stack and the price — high-level frame first.
 - **Talk track:** "Here's everything we actually plan around. Five areas, one plan, all built around the life you want."
+
+### Slide 40b — About Yields For You · `data-slide="mission"`
+- **Kicker:** Our Mission **Title:** About *Yields For You.* **Hero line:** Help *ONE MILLION people* retire with financial security.
+- **On screen:** Two-column layout. Left — "How We Accomplish This": FREE Education (Blog, Podcast, TikTok, etc.) · FREE & PAID Classes · ETF Sponsorships (YFYA & RSMV) · Advisor Support · Limited one-on-one clients. Right — the NYSE closing-bell GIF (`nyse-bell.gif`).
+- **Purpose:** Mission frame right before the value-stack — situates the 1:1 engagement at the top of a much larger free-education funnel, so the prospect understands they've reached the most exclusive tier. The "limited one-on-one clients" line foreshadows the scarcity slide (Slide 47).
+- **Talk track:** "Our mission is to help one million people retire with financial security. Most of that is free — the blog, the podcast, the classes, the ETFs. The one-on-one work is the smallest, most limited tier. That's the one you're in."
 
 ### Slide 41 — Four prices, or four different jobs? · `data-slide="value-stack"`
 - **Kicker:** Before You Compare The Price **Title:** It looks like four prices. *It's really four different jobs — and three of them stop halfway.* **Subtitle:** A price only tells you what it costs, not what you get. So here's the whole job a tax-free retirement actually takes — read down the list, then look at who's still in the column when you reach the bottom.
