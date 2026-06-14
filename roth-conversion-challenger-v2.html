@@ -5323,8 +5323,22 @@ document.addEventListener('DOMContentLoaded', () => {
       msg = msg || {};
       if (msg.type === 'goto' && typeof msg.slide === 'number' && typeof show === 'function') show(msg.slide);
     });
+    // Two transports for reliability: BroadcastChannel (same-origin http/https) AND
+    // a direct postMessage to the opener. postMessage is what makes this work on
+    // file:// and in embedded/cross-context setups where BroadcastChannel doesn't
+    // connect between the two windows. show() is idempotent, so double-delivery is fine.
+    function postToConsole(m) {
+      try { aud.post(m); } catch (_) {}
+      try { if (window.opener && !window.opener.closed) window.opener.postMessage(Object.assign({ __y4: 'deck' }, m), '*'); } catch (_) {}
+    }
+    window.addEventListener('message', function (e) {
+      var m = e.data;
+      if (!m || m.__y4 !== 'deck') return;
+      if (window.opener && e.source !== window.opener) return;
+      if (m.type === 'goto' && typeof m.slide === 'number' && typeof show === 'function') show(m.slide);
+    });
     // Announce readiness so a (re)opened audience jumps to the live slide.
-    window.addEventListener('deckpainted', function () { aud.post({ type: 'hello' }); });
+    window.addEventListener('deckpainted', function () { postToConsole({ type: 'hello' }); });
     // If the presenter navigates while THIS window has focus, drive it locally AND
     // tell the console so its previews/notes/counter stay in sync. Capture phase +
     // stopPropagation so the deck's own arrow handler doesn't double-advance.
@@ -5337,7 +5351,7 @@ document.addEventListener('DOMContentLoaded', () => {
       var cur = (typeof currentSlide === 'number' && currentSlide) ? currentSlide : 1;
       if (typeof show === 'function') show(cur + d);
       var actual = (typeof currentSlide === 'number') ? currentSlide : cur + d;
-      try { aud.post({ type: 'goto', slide: actual }); } catch (_) {}
+      postToConsole({ type: 'goto', slide: actual });
     }, true);
     return;
   }
@@ -5346,15 +5360,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---- Presenter console (runs in the normal deck window) ----
   var audienceWin = null, pvActive = false, pvCur = 1, pvTotal = 1, clockTimer = null, startTs = 0;
-  var ctrl = makeChannel('y4-deck-sync', function (msg) {
+  var ctrl = makeChannel('y4-deck-sync', onSyncMsg);
+  // Push to the audience over BOTH transports: BroadcastChannel + direct postMessage
+  // to the popup handle. postMessage is the reliable path on file:// / embedded setups
+  // where BroadcastChannel doesn't connect across windows.
+  function postToAudience(m) {
+    try { ctrl.post(m); } catch (_) {}
+    try { if (audienceWin && !audienceWin.closed) audienceWin.postMessage(Object.assign({ __y4: 'deck' }, m), '*'); } catch (_) {}
+  }
+  function onSyncMsg(msg) {
     msg = msg || {};
-    if (msg.type === 'hello' && pvActive) ctrl.post({ type: 'goto', slide: pvCur });
+    if (!pvActive) return;
+    if (msg.type === 'hello') postToAudience({ type: 'goto', slide: pvCur });
     // The audience window navigated under its own focus — mirror it here WITHOUT
     // re-broadcasting (it already moved), so the previews/notes/counter follow.
-    else if (msg.type === 'goto' && pvActive && typeof msg.slide === 'number') {
+    else if (msg.type === 'goto' && typeof msg.slide === 'number') {
       pvCur = Math.max(1, Math.min(pvTotal || 9999, msg.slide));
       pvSync(true);
     }
+  }
+  window.addEventListener('message', function (e) {
+    var m = e.data;
+    if (!m || m.__y4 !== 'deck') return;
+    if (audienceWin && e.source !== audienceWin) return;
+    onSyncMsg(m);
   });
 
   function buildViewUrl(extra) {
@@ -5429,7 +5458,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (_) {}
     try { if (frameReady(nextF)) nextF.contentWindow.show(Math.min(pvCur + 1, pvTotal)); } catch (_) {}
-    if (!skipBroadcast) ctrl.post({ type: 'goto', slide: pvCur });
+    if (!skipBroadcast) postToAudience({ type: 'goto', slide: pvCur });
     document.getElementById('pc-cur').textContent = pvCur;
     document.getElementById('pc-tot').textContent = pvTotal;
     document.getElementById('pc-prev').disabled = pvCur <= 1;
@@ -5509,7 +5538,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function wire() {
     [['presentBtn', pvEnter], ['pc-exit', pvExit],
      ['pc-prev', function () { pvGoto(pvCur - 1); }], ['pc-next', function () { pvGoto(pvCur + 1); }],
-     ['pc-reopen', function () { openAudience(); setTimeout(function () { ctrl.post({ type: 'goto', slide: pvCur }); }, 700); }]
+     ['pc-reopen', function () { openAudience(); setTimeout(function () { postToAudience({ type: 'goto', slide: pvCur }); }, 700); }]
     ].forEach(function (pair) {
       var el = document.getElementById(pair[0]);
       if (el && !el.__pvWired) { el.__pvWired = 1; el.addEventListener('click', pair[1]); }
