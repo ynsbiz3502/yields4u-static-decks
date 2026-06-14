@@ -4962,8 +4962,8 @@ function fitSlidesToViewport() {
   if (maxH < 100) return;
 
   const slides = wrap.querySelectorAll('.slide');
-  // Reset any prior zoom so measurements are of natural height
-  slides.forEach(s => { s.style.zoom = ''; s.style.transform = ''; s.style.marginBottom = ''; });
+  // Reset any prior zoom/min-height so measurements are of natural height
+  slides.forEach(s => { s.style.zoom = ''; s.style.transform = ''; s.style.marginBottom = ''; s.style.removeProperty('min-height'); });
   // Temporarily show all slides to measure their scrollHeight
   slides.forEach(s => { s.style.display = 'block'; });
   void wrap.offsetHeight; // force synchronous layout
@@ -4973,6 +4973,10 @@ function fitSlidesToViewport() {
     if (h > maxH && h > 0) {
       // zoom shrinks the element AND its layout footprint — no extra margin tricks needed
       s.style.zoom = (maxH / h).toFixed(5);
+    } else {
+      // short slide: expand to fill all available screen height
+      // inline !important beats the ATF stylesheet's min-height:0 !important
+      s.style.setProperty('min-height', maxH + 'px', 'important');
     }
   });
 }
