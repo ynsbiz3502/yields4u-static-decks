@@ -3388,7 +3388,22 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <p class="subtitle fee-scope" data-wg="White Glove covers all of it &mdash; investing, conversion timing, tax, estate, long-term care, Social Security, and the relationship. One kitchen, one bill." data-co="Conversion Only is the tax engine, all-in &mdash; Strategic Roth Conversions and tax-smart management of every account, two strategy meetings a year.">Same tax engine either way. The difference is everything <em>around</em> the numbers.</p>
       </div>
       <!-- Tier cards: clicking selects CO / WG and updates bar chart -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:1100px;margin:16px auto 0;align-items:start;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:1180px;margin:16px auto 0;align-items:start;">
+        <!-- Do Nothing card — no .tier-card class so fee JS ignores it; visual anchor only -->
+        <div style="background:#FEF8F7;border:1px solid #F0D4D0;border-top:4px solid #C0392B;border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C0392B;margin-bottom:4px;">Do Nothing</div>
+          <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">The IRS decides for you.</div>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #F0D4D0;">
+            <span style="font-family:var(--font-serif);font-size:34px;font-weight:700;color:#C0392B;line-height:1;">${peakBracketPct}%</span>
+            <span style="font-family:var(--font-sans);font-size:12px;color:var(--fg-muted);">bracket at RMD time</span>
+          </div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:13px;color:var(--ink-700);line-height:1.4;display:flex;flex-direction:column;gap:7px;">
+            <li style="display:flex;gap:10px;"><span style="color:#C0392B;font-weight:800;">&times;</span>IRS controls your conversion timing</li>
+            <li style="display:flex;gap:10px;"><span style="color:#C0392B;font-weight:800;">&times;</span>RMDs taxed at your peak bracket</li>
+            <li style="display:flex;gap:10px;"><span style="color:#C0392B;font-weight:800;">&times;</span>Heirs face the 10-year rule drain</li>
+          </ul>
+          <div style="margin-top:12px;background:rgba(192,57,43,0.07);border:1px solid #F0D4D0;border-radius:8px;padding:9px 12px;font-family:var(--font-sans);font-size:11.5px;color:#8B2020;line-height:1.45;">Based on your numbers, heirs could otherwise keep an estimated <strong>${heirLost}</strong> that would go to the IRS under the 10-year rule.</div>
+        </div>
         <div class="tier-card" data-tier="co" style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-400);border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s;">
           <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:4px;">Conversion Only</div>
           <div style="font-family:var(--font-serif);font-size:21px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-bottom:8px;">The 30-Day Roth Accelerator.</div>
