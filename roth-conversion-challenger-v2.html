@@ -1394,17 +1394,62 @@ function simulate(inputs) {
   };
 }
 
-function projectSavings(inputs) {
-  // Approx dip-coupled TLH + Roth conversion savings vs bracket-fill only.
-  // Logic: ~30% of IRA converted during dips (20% market drop) → same tax moves 25% more shares.
-  // Additional 4-5% direct saving; plus avoided RMD on converted Roth dollars over 20+ yrs.
-  // Assumes the full IRA is converted to Roth over the runway, so the entire balance
-  // escapes future RMD and heir tax.
-  const converted = inputs.balance * 1.00;
-  const directSave = converted * 0.044;
-  const futureRoth = converted * Math.pow(1 + inputs.growthRate, 22);
-  const avoidedRMDTax = futureRoth * 0.24 * 0.40; // 40% of future value would be withdrawn & taxed
-  return directSave + avoidedRMDTax * 0.6; // 0.6 haircut for realism / inflation
+// Convert-to-Roth path, simulated year by year. During the pre-RMD runway years the
+// Traditional IRA is evenly drained into a Roth (filling the lower brackets); once it's
+// fully converted the spending gap is met tax-free from the Roth, so only Social Security
+// stays taxable. Mirrors simulate()'s inflation / 85%-of-SS / RMD conventions so the two
+// paths are directly comparable. ratePtShift (e.g. 0.20 = every bracket +20pts, 12%→32%)
+// lets us price the convert path under higher future rates, just like the do-nothing path.
+function simulateConvert(inputs, ratePtShift) {
+  const shift = ratePtShift || 0;
+  const { balance, currentAge, growthRate, filingStatus } = inputs;
+  const needs = inputs.totalIncomeNeeds || 0;
+  const ss = inputs.socialSecurity || 0;
+  const other = inputs.otherIncome || 0;
+  const inflationRate = (inputs.inflationRate != null) ? inputs.inflationRate : 0.04;
+  const rmdStart = rmdStartAge(currentAge), endAge = 95;
+  let trad = balance, roth = 0, lifetimeTax = 0;
+  for (let age = currentAge; age <= endAge; age++) {
+    const inflFactor = Math.pow(1 + inflationRate, age - currentAge);
+    const ssYear = ss * inflFactor;
+    const gap = Math.max(0, needs * inflFactor - ssYear);
+    let taxableInc;
+    if (age < rmdStart && trad > 0) {
+      // Even-deplete the remaining Traditional balance across the runway years left.
+      const yearsLeft = rmdStart - age;
+      const convert = Math.min(Math.max(gap, trad / yearsLeft), trad);
+      taxableInc = convert + 0.85 * ssYear + other;
+      const toRoth = Math.max(0, convert - gap); // gap is spent; the rest funds the Roth
+      trad = (trad - convert) * (1 + growthRate);
+      roth = (roth + toRoth) * (1 + growthRate);
+    } else if (trad > 0) {
+      // Any residual Traditional still takes RMDs / funds the gap (taxable).
+      const rmd = age >= rmdStart ? (trad / (ULT[age] || 8.9)) : 0;
+      const draw = Math.max(rmd, gap);
+      taxableInc = draw + 0.85 * ssYear + other;
+      trad = Math.max(0, trad - draw) * (1 + growthRate);
+    } else {
+      // Fully converted: the gap is met from the Roth, tax-free. Only SS is taxable.
+      taxableInc = 0.85 * ssYear + other;
+      roth = Math.max(0, roth - gap) * (1 + growthRate);
+    }
+    lifetimeTax += computeTaxIndexedShifted(taxableInc, filingStatus, inflFactor, shift);
+  }
+  return { lifetimeTax, finalRoth: roth, finalTrad: trad };
+}
+
+// Lifetime federal tax SAVED by converting vs. doing nothing, under a bracket-point shift.
+// shift = 0.20 means "every bracket +20pts" (12%→32%) — the actual meaning of a 20% rate
+// rise, NOT a flat 1.2x bump on the savings. The do-nothing leg reuses the same per-year
+// taxable income as the legislative-risk slide (sim.yearly), so the payoff/choice slides
+// and the rate-sensitivity toggle all stay consistent with that slide.
+function lifetimeSavingsAtShift(inputs, sim, ratePtShift) {
+  const shift = ratePtShift || 0;
+  const status = inputs.filingStatus;
+  const doNothing = (sim.yearly || []).reduce(
+    (s, y) => s + computeTaxIndexedShifted(y.taxableInc, status, y.inflFactor || 1, shift), 0);
+  const convert = simulateConvert(inputs, shift).lifetimeTax;
+  return Math.max(0, doNothing - convert);
 }
 
 function computeHeirImpact(inputs) {
@@ -1510,17 +1555,18 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const inflationPct = ((inputs.inflationRate != null ? inputs.inflationRate : 0.04) * 100).toFixed(1) + '%';
 
   // ── Payoff + urgency slides (37 & 38): rate amplifier and low-bracket runway ──
-  // heirPlus20: the tax heirs avoid if rates rise ~20% (illustrative).
-  // runwayYears: pre-RMD low-bracket years left today, the conversion window.
-  const heirPlus20Str = fmtMoney(heir.lost * 1.2);
+  // heirPlus20: the tax heirs avoid if rates rise 20pts. The heir drain lands in the top
+  // bracket (heir.heirRate, ~37%); a +20pt shift takes that to ~57%, so the avoided tax
+  // scales by (rate+0.20)/rate — NOT a flat 1.2x. runwayYears = the pre-RMD conversion window.
+  const heirPlus20Str = fmtMoney(heir.lost * ((heir.heirRate + 0.20) / heir.heirRate));
   const runwayYears = Math.max(0, rmdAge - inputs.currentAge);
 
-  // Scenario savings: the lifetime savings shown grows if future rates rise, because
-  // converting now locks today's low rates. Illustrative flat scaling by the rate shift
-  // (same convention as heirPlus20 above; conservative — it doesn't hold the conversion
-  // cost fixed). Slides 21 & 23 default to +20% and stay in sync with the rate-sensitivity
-  // slide's tab selection (see renderRateIncChart).
-  const savingsPlus20Str = fmtMoney(savings * 1.20);
+  // Scenario savings: the lifetime savings grows if future rates rise, because converting
+  // now locks today's low rates. Computed from the true convert-vs-do-nothing model with
+  // every bracket +20pts (12%→32%) — the real meaning of a 20% rate rise, not a flat 1.2x
+  // bump. Slides 21 & 23 default to +20% and stay in sync with the rate-sensitivity slide's
+  // tab selection (see renderRateIncChart / lifetimeSavingsAtShift).
+  const savingsPlus20Str = fmtMoney(lifetimeSavingsAtShift(inputs, sim, 0.20));
 
   const slides = [];
 
@@ -4628,14 +4674,17 @@ function renderCharts(inputs, sim, savings) {
         prizeEl.textContent = fmtMoney(shift === 0 ? prizeFallback : extraLife, true);
       }
       // Keep the lifetime-savings figures on the prize/choice slides (data-slide 21 & 23)
-      // in sync with the selected scenario: savings scales with the rate shift. Current
-      // Rates falls back to +20% so the framing never reads "$0 saved" (like turn-prize).
+      // in sync with the selected scenario. The savings is recomputed from the true
+      // convert-vs-do-nothing model at the selected bracket-point shift (every bracket
+      // +Npts, e.g. 12%→32% at +20) — NOT a flat 1.2x bump. Current Rates falls back to
+      // +20% so the framing never reads "$0 saved" (like turn-prize).
+      const savDispShift = shift === 0 ? 0.20 : shift;
+      const savScenario = lifetimeSavingsAtShift(inputs, sim, savDispShift);
       document.querySelectorAll('[data-base-savings]').forEach(box => {
-        const base = parseFloat(box.dataset.baseSavings) || 0;
         const pct  = shift === 0 ? 20 : Math.round(shift * 100);
         const fig = box.querySelector('[data-sav-figure]');
         const lbl = box.querySelector('[data-sav-label]');
-        if (fig) fig.textContent = fmtMoney(base * (1 + pct / 100));
+        if (fig) fig.textContent = fmtMoney(savScenario);
         if (lbl) lbl.textContent = 'if rates rise ' + pct + '%';
       });
       const dynEl = document.getElementById('rate-dynamic-line');
@@ -4929,7 +4978,7 @@ function onGenerate(e) {
     return;
   }
   const sim = simulate(inputs);
-  const savings = projectSavings(inputs);
+  const savings = lifetimeSavingsAtShift(inputs, sim, 0);
   const heir = computeHeirImpact(inputs);
   const widow = computeWidowPenalty(inputs, sim);
 
