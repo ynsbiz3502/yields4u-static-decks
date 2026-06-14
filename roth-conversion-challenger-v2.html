@@ -1554,6 +1554,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const widowCum = typeof widow === 'object' ? widow.cumulative : widow * 10;
   const widowStr = fmtMoney(widowAnnual);
   const widowCumStr = fmtMoney(widowCum);
+  const widowIncome = typeof widow === 'object' ? widow.income : 0;
+  const widowAnnualPlus20 = widowIncome > 0
+    ? Math.max(0, computeTaxIndexedShifted(widowIncome, 'Single', 1, 0.20) - computeTaxIndexedShifted(widowIncome, 'MFJ', 1, 0.20))
+    : 0;
+  const widowCumPlus20Str = fmtMoney(widowAnnualPlus20 * 10);
   const annualWithdrawal = inputs.annualWithdrawal || 0;
   const annualWithdrawalStr = annualWithdrawal > 0 ? fmtMoney(annualWithdrawal) : '$0';
   const inflationPct = ((inputs.inflationRate != null ? inputs.inflationRate : 0.04) * 100).toFixed(1) + '%';
@@ -2920,6 +2925,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);margin-bottom:6px;">${widowAnnual > 0 ? 'Widow&rsquo;s penalty, erased' : 'Single-filer penalty, avoided'}</div>
           <div style="font-family:var(--font-serif);font-weight:700;font-size:44px;color:var(--gold-700);line-height:1;">${widowAnnual > 0 ? widowCumStr : '$0'}</div>
           <div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-700);margin-top:8px;line-height:1.45;">${widowAnnual > 0 ? `The extra tax your spouse never pays the year one of you is gone.` : `Roth dollars never trigger a single-filer penalty.`}</div>
+          ${widowAnnual > 0 ? `<div style="margin-top:12px;display:inline-flex;align-items:baseline;gap:9px;background:#F6E9CC;border-radius:8px;padding:7px 13px;"><span style="font-family:var(--font-sans);font-size:10.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--gold-700);">if rates rise 20%</span><span style="font-family:var(--font-serif);font-weight:700;font-size:21px;color:var(--gold-700);line-height:1;">${widowCumPlus20Str}</span></div>` : ''}
         </div>
       </div>
       <div style="max-width:1120px;margin:20px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
