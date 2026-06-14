@@ -3437,8 +3437,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           </div>
         </div>
       </div>
-      <!-- Fee context bar chart -->
-      <div style="max-width:1000px;margin:20px auto 0;font-family:var(--font-sans);">
+      <!-- Fee context bar chart (hidden by default; toggle link below reveals it) -->
+      <div style="text-align:center;margin:14px 0 0;">
+        <a id="fee-chart-toggle" href="#" style="font-family:var(--font-sans);font-size:13px;color:var(--gold-600);font-weight:600;text-decoration:none;border-bottom:1px solid var(--gold-400);" onclick="(function(e){e.preventDefault();var w=document.getElementById('fee-chart-wrap');var t=document.getElementById('fee-chart-toggle');if(w.style.display==='none'){w.style.display='block';t.textContent='Hide comparison ↑';}else{w.style.display='none';t.textContent='How does this fee compare to a market move? →';}})(event)">How does this fee compare to a market move? &rarr;</a>
+      </div>
+      <div id="fee-chart-wrap" style="max-width:1000px;margin:14px auto 0;font-family:var(--font-sans);display:none;">
         <div style="font-family:var(--font-sans);font-size:11.5px;color:var(--fg-muted);text-align:center;margin-bottom:10px;">Most firms couldn&rsquo;t deliver this economically &mdash; that was the point. Here&rsquo;s how the fee sits against the scenarios below.</div>
         <div style="display:flex;align-items:center;gap:18px;margin-bottom:12px;">
           <div style="width:150px;text-align:right;font-weight:700;font-size:15px;color:var(--ink-900);">Your fee</div>
