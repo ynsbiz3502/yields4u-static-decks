@@ -3235,30 +3235,32 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Mission slide: who we serve and how — positioned after the planning wheel ──
   slides.push(`
     <section class="slide" data-slide="mission">
-      <div class="title-block">
-        <div class="kicker">About Yields For You</div>
-        <h2 class="title">Build The Life <em>of Your Dreams.</em></h2>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 360px;gap:36px;max-width:1200px;margin:0 auto;align-items:center;">
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:20px 24px;">
-            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:8px;">Day Job</div>
-            <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);line-height:1.25;margin-bottom:6px;">CTO for AdvisorCRM.com</div>
-            <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);line-height:1.45;">Building and running the platform that manages over <strong>$7B+ in assets</strong> for advisors nationwide.</div>
-          </div>
-          <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:20px 24px;">
-            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:8px;">Our Mission</div>
-            <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);line-height:1.25;margin-bottom:6px;">Help <em style="color:var(--gold-600);font-style:italic;">ONE MILLION people</em> retire with financial security.</div>
-            <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);line-height:1.45;">Free education, paid classes, ETF sponsorships (YFYA &amp; RSMV), advisor support, and direct client relationships for the few.</div>
-          </div>
-          <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:20px 24px;">
-            <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:8px;">Why You&rsquo;re Here</div>
-            <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:#fff;line-height:1.25;">You made it to the 1:1 tier. <em style="color:var(--gold-400);font-style:italic;">Intentionally limited.</em></div>
-          </div>
+      <div style="display:grid;grid-template-columns:1fr 420px;gap:48px;max-width:1240px;margin:0 auto;align-items:center;">
+        <div>
+          <div class="kicker" style="margin-bottom:18px;">Our Mission</div>
+          <h2 class="title" style="font-size:54px;line-height:1.08;margin-bottom:28px;">About <em>Yields For You.</em></h2>
+          <p style="font-family:var(--font-serif);font-size:30px;line-height:1.35;color:var(--ink-900);margin:0 0 30px;font-weight:600;">Help <em style="color:var(--gold-600);font-style:italic;">ONE MILLION people</em> retire with financial security.</p>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:16px;">
+            <li style="display:flex;gap:14px;font-family:var(--font-sans);font-size:19px;color:var(--ink-900);line-height:1.4;">
+              <span style="color:var(--gold-500);font-weight:800;flex-shrink:0;">&bull;</span><span>Free education</span>
+            </li>
+            <li style="display:flex;gap:14px;font-family:var(--font-sans);font-size:19px;color:var(--ink-900);line-height:1.4;">
+              <span style="color:var(--gold-500);font-weight:800;flex-shrink:0;">&bull;</span><span>Paid classes</span>
+            </li>
+            <li style="display:flex;gap:14px;font-family:var(--font-sans);font-size:19px;color:var(--ink-900);line-height:1.4;">
+              <span style="color:var(--gold-500);font-weight:800;flex-shrink:0;">&bull;</span><span>ETF sponsorships (YFYA &amp; RSMV)</span>
+            </li>
+            <li style="display:flex;gap:14px;font-family:var(--font-sans);font-size:19px;color:var(--ink-900);line-height:1.4;">
+              <span style="color:var(--gold-500);font-weight:800;flex-shrink:0;">&bull;</span><span>Advisor support</span>
+            </li>
+            <li style="display:flex;gap:14px;font-family:var(--font-sans);font-size:19px;color:var(--ink-900);line-height:1.4;">
+              <span style="color:var(--gold-500);font-weight:800;flex-shrink:0;">&bull;</span><span>Direct client relationships for the few</span>
+            </li>
+          </ul>
         </div>
         <div style="display:flex;align-items:center;justify-content:center;">
           <img src="nyse-bell.gif" alt="NYSE Closing Bell — Helping One Million People Retire with Financial Security"
-               style="width:100%;max-width:360px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+               style="width:100%;max-width:420px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
         </div>
       </div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
