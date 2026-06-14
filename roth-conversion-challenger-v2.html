@@ -979,6 +979,33 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .icon-btn.cue-active { background: #C8AA50; color: #1A1A1F; border-color: #C8AA50; }
 @media print { #pres-cue-panel { display: none !important; } }
 
+/* ── Objection-jump bar (presenter only; rides with the cue toggle) ── */
+#objection-bar {
+  display: none; position: fixed; left: 0; bottom: 0; z-index: 9998;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #15151A; border-top: 1px solid #3A3A44; border-right: 1px solid #3A3A44;
+  border-top-right-radius: 10px; box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  max-width: calc(100vw - 320px);
+}
+#objection-bar.visible { display: block; }
+#objection-bar .ob-strip { display: flex; align-items: center; gap: 10px; padding: 8px 14px; cursor: pointer; user-select: none; }
+#objection-bar .ob-strip-label { font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #9A8A5A; }
+#objection-bar .ob-strip-hint { font-size: 11px; color: #5A5A66; }
+#objection-bar .ob-body { display: none; padding: 2px 14px 14px; }
+#objection-bar.expanded .ob-body { display: block; }
+#objection-bar.expanded .ob-strip-hint::after { content: ' \2014 tap to collapse'; }
+.ob-btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ob-btn { background: #2A2A34; color: #E8E6DF; border: 1px solid #3A3A46; border-radius: 8px; padding: 8px 13px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.ob-btn:hover { background: #34343F; }
+.ob-btn.ob-back { background: var(--gold-500, #C8AA50); color: #1A1A1F; border-color: var(--gold-500, #C8AA50); font-weight: 700; }
+.ob-btn.ob-back:disabled { opacity: 0.3; cursor: default; }
+.ob-spouse-card { display: none; margin-top: 10px; background: #1A1A1F; border: 1px solid #6b4f1e; border-radius: 8px; padding: 11px 13px; max-width: 460px; }
+.ob-spouse-card.show { display: block; }
+.ob-spouse-card h4 { margin: 0 0 6px; font-size: 12px; color: #f0c674; letter-spacing: 0.04em; }
+.ob-spouse-card p { margin: 0 0 5px; font-size: 12px; color: #C8C0A8; line-height: 1.5; }
+body.audience-mode #objection-bar { display: none !important; }
+@media print { #objection-bar { display: none !important; } }
+
 /* ── Audience mode (?view=audience): clean slides, no presenter chrome ── */
 body.audience-mode .topbar { display: none !important; }
 body.audience-mode #pres-cue-panel { display: none !important; }
@@ -1172,6 +1199,27 @@ body.console-mode { overflow: hidden; }
     <!-- Slides injected by JS -->
   </div>
   <div id="pres-cue-panel"></div>
+  <div id="objection-bar" aria-hidden="true">
+    <div class="ob-strip" onclick="toggleObjectionExpand()">
+      <span class="ob-strip-label">Objections</span>
+      <span class="ob-strip-hint">tap or J to expand</span>
+    </div>
+    <div class="ob-body">
+      <div class="ob-btns">
+        <button class="ob-btn" type="button" onclick="objectionJump('accelerator')">&ldquo;How does it work?&rdquo;</button>
+        <button class="ob-btn" type="button" onclick="objectionJump('risk-reversal')">&ldquo;Is this safe?&rdquo;</button>
+        <button class="ob-btn" type="button" onclick="objectionJump('scarcity')">&ldquo;Let me think&rdquo;</button>
+        <button class="ob-btn" type="button" onclick="showSpouseMobilizer()">&ldquo;Talk to my spouse&rdquo;</button>
+        <button class="ob-btn ob-back" type="button" id="obBackBtn" onclick="objectionBack()" disabled>&larr; Back to where we were</button>
+      </div>
+      <div class="ob-spouse-card" id="obSpouseCard">
+        <h4>Spouse Mobilizer</h4>
+        <p>Don&rsquo;t force a signature: &ldquo;I wouldn&rsquo;t want you signing a survivor plan your spouse hasn&rsquo;t seen.&rdquo;</p>
+        <p>&bull; Book the 20-minute joint call this week, before you leave.</p>
+        <p>&bull; Send the leave-behind so the absent spouse sees the same two columns.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- PowerPoint-style presenter console (controls the audience window) -->
@@ -2111,6 +2159,12 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1300px;margin:16px auto 0;background:#FEF2F2;border:1px solid #FBCFCF;border-radius:10px;padding:14px 24px;text-align:center;">
         <span style="font-family:var(--font-serif);font-size:17px;color:var(--ink-900);line-height:1.45;">And it&rsquo;s actually worse than this chart shows &mdash; the smaller Social Security check <strong style="color:#B91C1C;">stops arriving</strong> the month one of you passes. The survivor pays a higher rate on <em>less</em> income.</span>
       </div>
+      <template class="pres-cue">
+        <div class="cue-label">Threat 2 &mdash; The Widow Penalty &middot; the rate-jump permanence can&rsquo;t fix</div>
+        <div class="cue-ask">Slow down and hold the tension here, the way you do on the captains slide. With rates now permanent, this is the one place their rate still jumps: when one of you passes, the survivor files single &mdash; a higher rate on the same income &mdash; and the smaller Social Security check stops arriving.</div>
+        <div class="cue-stop">&#9726; Let it sit. Don&rsquo;t rush to the fix.</div>
+        <div class="cue-note" style="margin-top:8px;">No longer one threat among three &mdash; it&rsquo;s the mechanism where their <em>rate</em> actually moves. Illustrative, bracket-bound to their inputs.</div>
+      </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">11</div>
     </section>
@@ -2171,6 +2225,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div style="font-family:var(--font-sans);font-size:12px;color:rgba(255,255,255,0.7);margin-top:8px;">Converting now reduces the IRA balance &mdash; and the RMDs that drive this penalty</div>
         </div>
       </div>
+      <template class="pres-cue">
+        <div class="cue-label">Threat 2 &mdash; Bigger Brackets &middot; the rate-jump permanence can&rsquo;t fix</div>
+        <div class="cue-ask">&ldquo;Same income. Same chart. The only thing that changed is the filing status &mdash; and the brackets got cut in half.&rdquo; Permanence didn&rsquo;t protect them here; the cliff is structural, not a change in the law.</div>
+        <div class="cue-stop">&#9726; Pause on the &ldquo;extra tax vs. filing jointly&rdquo; figure before you reveal the Roth fix.</div>
+      </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">12</div>
     </section>
@@ -3730,36 +3789,24 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 20 — CLOSING PROCESS (flush → release → assume close)
   slides.push(`
     <section class="slide" data-slide="25">
-      <div class="title-block" style="margin-bottom:10px;">
+      <div class="title-block" style="width:100%;margin-bottom:14px;">
         <div class="kicker">Your Move</div>
         <h2 class="title">Take back the timing.</h2>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1.65fr;gap:20px;align-items:start;margin-bottom:14px;">
-        <div class="cta-plan premium" style="margin-bottom:0;background:var(--ink-900);">
-          <div class="cta-plan-tag">What You Take Back</div>
-          <ul style="list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:11px;">
-            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>You pick the year you pay &mdash; not the IRS at ${rmdAge}</span></li>
-            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>You pick the bracket &mdash; <strong>${todayBracketPct}%</strong> now, not <strong>${peakBracketPct}%</strong> later</span></li>
-            ${inputs.filingStatus === 'MFJ' ? `<li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>Your spouse never faces the widow&rsquo;s penalty alone</span></li>` : ``}
-            <li style="display:flex;align-items:flex-start;gap:12px;font-family:var(--font-sans);font-size:14px;color:#fff;line-height:1.4;"><span style="color:var(--gold-400);font-weight:800;flex-shrink:0;">&check;</span><span>Your kids inherit a Roth, not a ${heirLost} tax bill</span></li>
-          </ul>
-        </div>
-        <div>
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:10px;">Your First 30 Days</div>
-          <div style="display:flex;flex-direction:column;gap:7px;">
-            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">1</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">Sign one document &mdash; about 20 minutes. Today.</div></div>
-            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">2</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">Schwab accounts open &mdash; your name, your control.</div></div>
-            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">3</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">Money transfers in-kind &mdash; nothing sold.</div></div>
-            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">4</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">Year One plan goes live.</div></div>
-            <div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:8px;padding:10px 14px;"><div style="flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:12px;">5</div><div style="font-family:var(--font-sans);font-size:13px;color:var(--ink-900);line-height:1.4;">First conversion fires on the next dip.</div></div>
-          </div>
+      <div style="width:100%;max-width:980px;margin:0 auto 18px;">
+        <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:13px;">What waiting actually costs</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:flex-start;gap:14px;background:#FBFAF7;border:1px solid var(--border);border-left:3px solid var(--gold-400);border-radius:8px;padding:13px 18px;"><span style="color:var(--gold-600);font-weight:800;flex-shrink:0;font-family:var(--font-serif);font-size:15px;line-height:1.4;">&rarr;</span><span style="font-family:var(--font-sans);font-size:15px;color:var(--ink-900);line-height:1.4;">Low-bracket room this year &mdash; <strong>gone if you don&rsquo;t use it.</strong></span></div>
+          <div style="display:flex;align-items:flex-start;gap:14px;background:#FBFAF7;border:1px solid var(--border);border-left:3px solid var(--gold-400);border-radius:8px;padding:13px 18px;"><span style="color:var(--gold-600);font-weight:800;flex-shrink:0;font-family:var(--font-serif);font-size:15px;line-height:1.4;">&rarr;</span><span style="font-family:var(--font-sans);font-size:15px;color:var(--ink-900);line-height:1.4;">At 73, your own RMDs push you up your brackets &mdash; <strong>your rate climbs even if the law never moves.</strong></span></div>
+          ${inputs.filingStatus === 'MFJ' ? `<div style="display:flex;align-items:flex-start;gap:14px;background:#FBFAF7;border:1px solid var(--border);border-left:3px solid var(--gold-400);border-radius:8px;padding:13px 18px;"><span style="color:var(--gold-600);font-weight:800;flex-shrink:0;font-family:var(--font-serif);font-size:15px;line-height:1.4;">&rarr;</span><span style="font-family:var(--font-sans);font-size:15px;color:var(--ink-900);line-height:1.4;">If one of you passes, the survivor files single &mdash; <strong>a higher rate on the same income, permanently.</strong></span></div>` : ``}
+          <div style="display:flex;align-items:flex-start;gap:14px;background:#FBFAF7;border:1px solid var(--border);border-left:3px solid var(--gold-400);border-radius:8px;padding:13px 18px;"><span style="color:var(--gold-600);font-weight:800;flex-shrink:0;font-family:var(--font-serif);font-size:15px;line-height:1.4;">&rarr;</span><span style="font-family:var(--font-sans);font-size:15px;color:var(--ink-900);line-height:1.4;">A bigger balance later &mdash; <strong>the same rates on a larger pile.</strong></span></div>
         </div>
       </div>
-      <div style="text-align:center;padding:12px 0 8px;">
-        <p style="font-family:var(--font-serif);font-style:italic;font-size:22px;color:var(--gold-600);line-height:1.4;margin:0;">&ldquo;What&rsquo;s the one thing that would stop you from starting today?&rdquo;</p>
-        <p style="font-family:var(--font-serif);font-style:italic;font-size:14px;color:var(--fg-muted);margin:6px 0 0;">A &ldquo;not yet&rdquo; is a fine answer.</p>
+      <div style="width:100%;max-width:980px;margin:0 auto;text-align:center;">
+        <p style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.45;margin:0 0 7px;">The only thing that needs your signature today is <strong>one document.</strong> Everything else, we handle.</p>
+        <p style="font-family:var(--font-serif);font-style:italic;font-size:15px;color:var(--fg-muted);margin:0;">You&rsquo;re never locked in &mdash; one call to Schwab unwinds it in five minutes.</p>
       </div>
-      <div class="cta-contact" style="margin-top:12px;padding:14px 22px;">
+      <div class="cta-contact" style="width:100%;margin-top:16px;padding:14px 22px;">
         <div class="cta-contact-text">
           <h3 style="font-size:20px;">Who picks the dates &mdash; you, or Congress?</h3>
           <p style="font-size:13px;">Your accounts live at Schwab, in your name. One phone call removes us in five minutes.</p>
@@ -3770,18 +3817,20 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <template class="pres-cue">
-        <div class="cue-label">Close &mdash; Flush &rarr; Release &rarr; Assume</div>
-        <div class="cue-ask">1 &middot; FLUSH: &ldquo;What&rsquo;s the one thing that would stop you from starting today?&rdquo;</div>
-        <div class="cue-stop">&#9726; STOP &mdash; say nothing until they answer.</div>
-        <div class="cue-ask" style="margin-top:8px;">2 &middot; RELEASE: &ldquo;Just so it&rsquo;s said &mdash; if today&rsquo;s a no or a not-yet, that&rsquo;s completely fine. I&rsquo;d rather you start when it&rsquo;s right than because you felt pushed.&rdquo;</div>
-        <div class="cue-ask" style="margin-top:8px;">3 &middot; ASSUME: &ldquo;The next dip doesn&rsquo;t wait for us to decide. If it feels right, let&rsquo;s get that one document signed today. Want me to start the paperwork?&rdquo;</div>
-        <div class="cue-stop" style="margin-top:4px;">&#9726; STOP &mdash; let them answer.</div>
+        <div class="cue-label">The Ask &mdash; Re-confront &rarr; Lead &rarr; Ease &rarr; Stop</div>
+        <div class="cue-ask"><strong>MOVE:</strong> Take Control &mdash; lead the next step. Don&rsquo;t ask permission; don&rsquo;t hold a silence.</div>
+        <div class="cue-ask" style="margin-top:8px;"><strong>1 &middot; RE-CONFRONT (verbatim):</strong> &ldquo;Doing nothing isn&rsquo;t avoiding the decision &mdash; it&rsquo;s making it. And here&rsquo;s what waiting costs, none of it depending on rates going up. You&rsquo;ve got room in a low bracket this year that&rsquo;s gone if you don&rsquo;t use it. At 73 your own RMDs stack on your income and push you up your brackets &mdash; your rate climbs even if the law never moves. If one of you passes, the survivor files single, at a higher rate on the same income, permanently. And the balance keeps compounding, so finishing later means the same rates on a bigger pile. The window doesn&rsquo;t stay open &mdash; it closes a little every year, and it closes for good at 73.&rdquo;</div>
+        <div class="cue-stop" style="background:#3a2a12;border:1px solid #6b4f1e;color:#f0c674;padding:7px 10px;border-radius:6px;margin-top:7px;">&#9888; GUARDRAIL &mdash; NEVER quote a cost-of-delay dollar figure. If pushed for a number: &ldquo;That&rsquo;s exactly what the planning meeting produces. What&rsquo;s certain right now is the window is open &mdash; and closing.&rdquo; Do not invent precision the intake may not support.</div>
+        <div class="cue-ask" style="margin-top:8px;"><strong>2 &middot; LEAD THE STEP (verbatim):</strong> &ldquo;The only thing that needs your signature today is one document. Everything else &mdash; the accounts, the transfer, the plan &mdash; we handle. Let&rsquo;s get that one part done while we&rsquo;re together.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;"><strong>3 &middot; EASE THE STAKES (verbatim):</strong> &ldquo;And you&rsquo;re never locked in. Accounts are in your name at Schwab; one phone call unwinds the whole thing in five minutes. Starting today doesn&rsquo;t trap you in anything.&rdquo;</div>
+        <div class="cue-stop">&#9726; STOP &mdash; let them answer. You&rsquo;ve handed them an easy motion, so a normal pause is enough; don&rsquo;t force a silence.</div>
         <div class="cue-branches">
-          <div class="cue-branch"><strong>Yes:</strong> Go to docs. Do not re-sell.</div>
-          <div class="cue-branch"><strong>&ldquo;Think about it&rdquo;:</strong> Name what specifically (strategy / firm / fee). Book a dated next step before hanging up.</div>
-          <div class="cue-branch"><strong>Spouse not in room:</strong> Book a 20-min joint call this week.</div>
-          <div class="cue-branch"><strong>Price flinch:</strong> Re-anchor on the four jobs + tax drag, then offer Conversion Only 0.5% as the step-down.</div>
-          <div class="cue-branch"><strong>&ldquo;My CPA can do it&rdquo;:</strong> Most firms prohibit tax advice &mdash; score them on the four boxes.</div>
+          <div class="cue-branch"><strong>Yes:</strong> Go straight to the one document. Don&rsquo;t re-sell. &ldquo;Great &mdash; give me two minutes.&rdquo;</div>
+          <div class="cue-branch"><strong>&ldquo;How does it work / that&rsquo;s a lot of steps&rdquo;:</strong> Jump to <strong>44 (Accelerator)</strong> &mdash; walk the four meetings, then return to the directive.</div>
+          <div class="cue-branch"><strong>&ldquo;Is this safe&rdquo;:</strong> Jump to <strong>48 (risk-reversal)</strong>, then re-ask.</div>
+          <div class="cue-branch"><strong>&ldquo;I need to think about it&rdquo;:</strong> &ldquo;About the strategy, the firm, or the fee?&rdquo; Resolve the named one; jump to <strong>47 (scarcity)</strong> if useful; book a dated next step &mdash; never open-ended.</div>
+          <div class="cue-branch"><strong>Spouse absent:</strong> &ldquo;I wouldn&rsquo;t want you signing a survivor plan your spouse hasn&rsquo;t seen.&rdquo; Book the 20-min joint call this week and send the leave-behind.</div>
+          <div class="cue-branch"><strong>Price flinch:</strong> Re-anchor on the four jobs + tax drag, then &ldquo;Conversion Only is 0.5% &mdash; same engine, lighter wrapping. Start there?&rdquo;</div>
         </div>
       </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
@@ -4925,6 +4974,8 @@ function show(slideN) {
     const tmpl = tgt ? tgt.querySelector('template.pres-cue') : null;
     cp.innerHTML = tmpl ? tmpl.innerHTML : '<div class="cue-note">No cue for this slide.</div>';
   })();
+  // Keep the objection bar in sync with the active slide (auto-expand on the close).
+  if (typeof syncObjectionBar === 'function') syncObjectionBar(tgt);
   // Persist current slide in the URL hash so a refresh restores it.
   // replaceState (not pushState) keeps Back/Forward focused on app-level navigation,
   // not slide-by-slide. Wrap in try/catch in case the page is served from file://.
@@ -4948,7 +4999,67 @@ function toggleCues() {
   const btn = document.getElementById('cueBtn');
   if (!panel) return;
   panel.classList.toggle('visible');
-  if (btn) btn.classList.toggle('cue-active', panel.classList.contains('visible'));
+  const on = panel.classList.contains('visible');
+  if (btn) btn.classList.toggle('cue-active', on);
+  // The objection bar lives in the cue layer — it rides the same toggle, so pressing
+  // C for screen-share hides the bar (and its objection labels) along with the cues.
+  const bar = document.getElementById('objection-bar');
+  if (bar) bar.classList.toggle('visible', on);
+}
+
+/* ── Objection-jump bar (presenter cue layer) ──
+ * Jumps to the slide that answers whatever the prospect just said, by data-slide
+ * anchor (never index, so inserts/reorders don't break it), and keeps a return
+ * stack so "Back to where we were" pops to wherever the rep launched from —
+ * chained jumps unwind in order. */
+let objectionReturnStack = [];
+function slideIndexByAnchor(anchor) {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const i = slides.findIndex(s => s.getAttribute('data-slide') === anchor);
+  return i >= 0 ? i + 1 : null;
+}
+function objectionJump(anchor) {
+  const idx = slideIndexByAnchor(anchor);
+  if (!idx) return;
+  objectionReturnStack.push(currentSlide);
+  show(idx);
+  syncObjectionBack();
+}
+function objectionBack() {
+  if (!objectionReturnStack.length) return;
+  show(objectionReturnStack.pop());
+  syncObjectionBack();
+}
+function syncObjectionBack() {
+  const b = document.getElementById('obBackBtn');
+  if (!b) return;
+  b.disabled = objectionReturnStack.length === 0;
+  b.innerHTML = objectionReturnStack.length
+    ? '&larr; Back to where we were (' + objectionReturnStack.length + ')'
+    : '&larr; Back to where we were';
+}
+function showSpouseMobilizer() {
+  const c = document.getElementById('obSpouseCard');
+  if (c) c.classList.toggle('show');
+  toggleObjectionExpand(true);
+}
+function toggleObjectionExpand(force) {
+  const bar = document.getElementById('objection-bar');
+  if (!bar) return;
+  if (typeof force === 'boolean') bar.classList.toggle('expanded', force);
+  else bar.classList.toggle('expanded');
+}
+// Called on every nav: collapse the spouse card, auto-expand where objections
+// cluster (the close, data-slide="25"), and refresh the Back button state.
+function syncObjectionBar(tgt) {
+  const bar = document.getElementById('objection-bar');
+  if (!bar) return;
+  const card = document.getElementById('obSpouseCard');
+  if (card) card.classList.remove('show');
+  // Collapsed by default; auto-expand where objections cluster (the close). Additive
+  // so a rep who manually expanded the bar elsewhere keeps it open across nav.
+  if (tgt && tgt.getAttribute('data-slide') === '25') bar.classList.add('expanded');
+  syncObjectionBack();
 }
 
 function getSlideFromHash() {
@@ -5330,6 +5441,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { show(currentSlide + 1); e.preventDefault(); }
     else if (e.key === 'ArrowLeft'  || e.key === 'PageUp')  { show(currentSlide - 1); e.preventDefault(); }
     else if (e.key === 'c' || e.key === 'C') { toggleCues(); e.preventDefault(); }
+    else if (e.key === 'j' || e.key === 'J') { toggleObjectionExpand(); e.preventDefault(); }
   });
 
   // Auto-run the presentation when URL params include ?auto=1 — skips the intake
