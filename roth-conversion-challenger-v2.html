@@ -4977,12 +4977,15 @@ function paintDeck(inputs, sim, savings, heir, widow, opts) {
       if (link) link.textContent = state.unit === 'usd' ? 'Show fee in percent' : 'Show fee in dollars';
       syncTierCards();
     };
-    feeSlide.querySelectorAll('.fee-tier-tab').forEach(t => t.addEventListener('click', () => { state.tier = t.dataset.tier; apply(); }));
-    tierCards.forEach(card => card.addEventListener('click', () => { state.tier = card.dataset.tier; apply(); }));
+    feeSlide.querySelectorAll('.fee-tier-tab').forEach(t => t.addEventListener('click', () => { state.tier = t.dataset.tier; apply(); if (window.__deckUi) window.__deckUi({ type: 'tier', tier: t.dataset.tier }); }));
+    tierCards.forEach(card => card.addEventListener('click', () => { state.tier = card.dataset.tier; apply(); if (window.__deckUi) window.__deckUi({ type: 'tier', tier: card.dataset.tier }); }));
     if (link) {
-      link.addEventListener('click', () => { state.unit = state.unit === 'usd' ? 'pct' : 'usd'; apply(); });
-      link.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); state.unit = state.unit === 'usd' ? 'pct' : 'usd'; apply(); } });
+      link.addEventListener('click', () => { state.unit = state.unit === 'usd' ? 'pct' : 'usd'; apply(); if (window.__deckUi) window.__deckUi({ type: 'feeUnit' }); });
+      link.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); state.unit = state.unit === 'usd' ? 'pct' : 'usd'; apply(); if (window.__deckUi) window.__deckUi({ type: 'feeUnit' }); } });
     }
+    // Sync the "compare to a market move" chart show/hide across presenter + audience.
+    const chartToggle = feeSlide.querySelector('#fee-chart-toggle');
+    if (chartToggle) chartToggle.addEventListener('click', () => { if (window.__deckUi) window.__deckUi({ type: 'chartToggle' }); });
     apply();
   }
   // ── Persona fork (Protector / Steward): the live Tailor gate ──
@@ -5014,7 +5017,7 @@ function paintDeck(inputs, sim, savings, heir, widow, opts) {
       if (card) card.click();
     }
   }
-  personaCards.forEach(c => c.addEventListener('click', () => applyPersona(c.dataset.persona, true)));
+  personaCards.forEach(c => c.addEventListener('click', () => { applyPersona(c.dataset.persona, true); if (window.__deckUi) window.__deckUi({ type: 'persona', persona: c.dataset.persona }); }));
   // Initial paint from the pre-set param (no tier override on load when unset).
   applyPersona(inputs.persona || '', !!inputs.persona);
   document.getElementById('input-screen').style.display = 'none';
@@ -5295,6 +5298,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     return { post: function (m) { try { localStorage.setItem(key, JSON.stringify(Object.assign({ __t: Date.now() }, m))); } catch (_) {} } };
   }
+
+  // ---- Shared UI-state sync: persona / fee-tier / toggles (runs in EVERY view) ----
+  // Slide nav has one global entry point (show), but the persona and fee-tier
+  // selections live inside paintDeck closures with no global setter. We mirror
+  // them by replaying the originating click in the other windows, guarded with
+  // `applyingRemote` so a replayed click never echoes back into a loop.
+  var applyingRemote = false;
+  function applyRemoteUi(msg) {
+    msg = msg || {};
+    var el = null;
+    if (msg.type === 'persona') el = document.querySelector('.persona-card[data-persona="' + msg.persona + '"]');
+    else if (msg.type === 'tier') el = document.querySelector('.tier-card[data-tier="' + msg.tier + '"]') || document.querySelector('.fee-tier-tab[data-tier="' + msg.tier + '"]');
+    else if (msg.type === 'feeUnit') el = document.querySelector('.fee-toggle-link');
+    else if (msg.type === 'chartToggle') el = document.getElementById('fee-chart-toggle');
+    if (!el) return;
+    applyingRemote = true;
+    try { el.click(); } finally { applyingRemote = false; }
+  }
+  var uiChan = makeChannel('y4-deck-ui', applyRemoteUi);
+  // paintDeck's click handlers call this; suppressed while replaying a remote click.
+  window.__deckUi = function (msg) { if (!applyingRemote && msg) uiChan.post(msg); };
 
   // ---- Audience window: just follow the presenter ----
   if (isAudience && !isEmbed) {
