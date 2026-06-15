@@ -1207,8 +1207,8 @@ body.console-mode { overflow: hidden; }
     <div class="ob-body">
       <div class="ob-btns">
         <button class="ob-btn" type="button" onclick="objectionJump('accelerator')">&ldquo;How does it work?&rdquo;</button>
-        <button class="ob-btn" type="button" onclick="objectionJump('risk-reversal')">&ldquo;Is this safe?&rdquo;</button>
-        <button class="ob-btn" type="button" onclick="objectionJump('scarcity')">&ldquo;Let me think&rdquo;</button>
+        <button class="ob-btn" type="button" onclick="objectionJump('accelerator')">&ldquo;Is this safe?&rdquo;</button>
+        <button class="ob-btn" type="button" onclick="objectionJump('gate-close')">&ldquo;Let me think&rdquo;</button>
         <button class="ob-btn" type="button" onclick="showSpouseMobilizer()">&ldquo;Talk to my spouse&rdquo;</button>
         <button class="ob-btn ob-back" type="button" id="obBackBtn" onclick="objectionBack()" disabled>&larr; Back to where we were</button>
       </div>
@@ -3335,55 +3335,47 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const acceleratorSlide = `
     <section class="slide" data-slide="accelerator">
       <div class="title-block center">
-        <div class="kicker">Our Signature Process</div>
-        <h2 class="title">The <em>30-Day</em> Roth Accelerator.</h2>
-        <p class="subtitle">Three meetings to lock the plan. Then we watch the market daily and convert on the dips &mdash; you don&rsquo;t lift a finger.</p>
+        <div class="kicker">What Happens Next</div>
+        <h2 class="title">Here&rsquo;s exactly what happens &mdash; <em>and what doesn&rsquo;t.</em></h2>
+        <p class="subtitle">Open the door today. Nothing transfers until you&rsquo;ve seen everything and said go.</p>
       </div>
       <div style="max-width:1180px;margin:26px auto 0;">
-        <!-- Phase banner: First 30 Days → Ongoing -->
-        <div style="display:flex;margin:0 0 14px;">
-          <div style="flex:3;text-align:center;"><span style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);border-bottom:2px solid #E6D3A8;padding-bottom:6px;">First 30 Days</span></div>
-          <div style="flex:1;text-align:center;"><span style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-700);border-bottom:2px solid rgba(14,14,15,0.18);padding-bottom:6px;">Ongoing</span></div>
+        <!-- Phase banner: Today → Then ongoing -->
+        <div style="display:flex;margin:0 0 16px;">
+          <div style="flex:2;text-align:center;"><span style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-600);border-bottom:2px solid #E6D3A8;padding-bottom:6px;">Before a dollar moves</span></div>
+          <div style="flex:1;text-align:center;"><span style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-700);border-bottom:2px solid rgba(14,14,15,0.18);padding-bottom:6px;">Then, ongoing</span></div>
         </div>
-        <!-- Timeline line + meeting nodes -->
-        <div style="position:relative;display:flex;align-items:center;margin:11px 0;">
-          <div style="position:absolute;left:12.5%;right:12.5%;top:50%;height:3px;background:#E6D3A8;transform:translateY(-50%);z-index:0;"></div>
-          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:18px;height:18px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
-          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:18px;height:18px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
-          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:18px;height:18px;border-radius:50%;background:#C9A84C;border:3px solid #fff;box-shadow:0 0 0 1px rgba(14,14,15,0.12);"></div></div>
-          <div style="flex:1;display:flex;justify-content:center;z-index:1;"><div style="width:24px;height:24px;border-radius:50%;background:var(--ink-900);border:3px solid #fff;box-shadow:0 0 0 3px rgba(201,168,76,0.30);"></div></div>
+        <!-- Three de-risk steps -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;">
+          <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Step 1</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:var(--fg-subtle);">Today</span></div>
+            <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-top:9px;">You open the door.</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);line-height:1.5;margin-top:8px;">Schwab emails you; you open your accounts and sign. <strong style="color:var(--ink-900);">Empty accounts, in your name, not ours.</strong> Nothing moves.</div>
+          </div>
+          <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Step 2</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:var(--fg-subtle);">Our next call</span></div>
+            <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-top:9px;">We review everything${inputs.filingStatus === 'MFJ' ? ', together with your spouse' : ''}.</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);line-height:1.5;margin-top:8px;">Top to bottom &mdash; every number, every account, the whole plan. You see all of it before a single dollar moves.</div>
+          </div>
+          <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-400);">Step 3</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);">Only then</span></div>
+            <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:#fff;line-height:1.2;margin-top:9px;">We move only what you choose.</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.82);line-height:1.5;margin-top:8px;">If it still fits, we transfer only the accounts you choose &mdash; and we begin. Then we convert on the dips, with a year-end true-up.</div>
+          </div>
         </div>
-        <!-- Transit / ongoing pills -->
-        <div style="display:flex;justify-content:space-between;margin:2px 4px 0;">
-          <span style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-subtle);background:#F4EFE3;border-radius:999px;padding:3px 11px;margin-left:7%;">Accounts in transit &middot; 7&ndash;10 days</span>
-          <span style="font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold-600);background:#F6E9CC;border-radius:999px;padding:3px 11px;margin-right:14%;">&#8635; Convert on the dips &middot; ongoing</span>
-        </div>
-        <!-- Meeting cards -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px;align-items:stretch;">
-          <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Meeting 1</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:var(--fg-subtle);">Today</span></div>
-            <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-top:9px;">Sign up</div>
-            <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);line-height:1.45;margin-top:7px;">We open your account and handle the paperwork &mdash; about 20 minutes. Today.</div>
-          </div>
-          <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Meeting 2</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:var(--fg-subtle);">~1 week</span></div>
-            <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-top:9px;">Transfer your accounts</div>
-            <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);line-height:1.45;margin-top:7px;">Your accounts move to Schwab in-kind, in your name &mdash; 7 to 10 days, no liquidating.</div>
-          </div>
-          <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Meeting 3</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:var(--fg-subtle);">~Day 21</span></div>
-            <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-top:9px;">Review &amp; sign your Roth conversion plan</div>
-            <div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);line-height:1.45;margin-top:7px;">We walk you through your conversion plan &mdash; built on your full tax picture. You sign, and we go live.</div>
-          </div>
-          <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-400);">Meeting 4</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);">Year-end</span></div>
-            <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:#fff;line-height:1.2;margin-top:9px;">End-of-year tax planning</div>
-            <div style="font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.82);line-height:1.45;margin-top:7px;">We true up this year&rsquo;s conversions against your real return and map next year &mdash; before the Dec 31 window closes.</div>
-          </div>
+        <!-- Ongoing pill -->
+        <div style="display:flex;justify-content:center;margin-top:16px;">
+          <span style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold-600);background:#F6E9CC;border-radius:999px;padding:5px 16px;">&#8635; Convert on the dips &middot; year-end true-up &middot; ongoing</span>
         </div>
       </div>
-      <div style="max-width:1100px;margin:22px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">Most firms are still scheduling your kickoff. <em style="color:var(--gold-600);font-style:italic;">You&rsquo;re funded, signed, and ready for the next dip.</em></div>
+      <div style="max-width:1100px;margin:22px auto 0;text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">Most firms are still scheduling your kickoff. <em style="color:var(--gold-600);font-style:italic;">You&rsquo;ll have the door open and the review booked.</em></div>
       <div style="max-width:1000px;margin:10px auto 0;text-align:center;font-family:var(--font-sans);font-size:11px;color:var(--fg-subtle);line-height:1.5;">Conversions are made when market conditions allow; timing isn&rsquo;t guaranteed. Transfer times depend on your custodian. Illustrative, not a promise of results.</div>
+      <template class="pres-cue">
+        <div class="cue-label">Accelerator &mdash; The Process IS The Risk Reversal</div>
+        <div class="cue-ask">&ldquo;Before you decide, I want you to see exactly what today actually commits you to &mdash; because it&rsquo;s much smaller than it feels. Today: Schwab emails you, you open your accounts and sign. That&rsquo;s it. The accounts are empty and they&rsquo;re in your name. Nothing transfers.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;">&ldquo;Then you and I book a call, we go through everything together${inputs.filingStatus === 'MFJ' ? ', with your spouse' : ''} &mdash; and only then, if it still fits the way it fits right now, do we move the accounts you choose. You see every number before a single dollar moves. Today just opens the door.&rdquo;</div>
+        <div class="cue-stop" style="margin-top:8px;">&#9726; Let the smallness of the commitment land before you go to the gate.</div>
+      </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">accelerator</div>
     </section>
@@ -3502,20 +3494,20 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Gate B: value commitment — before advancing to fee slides ──
   slides.push(`
     <section class="slide" data-slide="gate-value" style="background:#FBFAF7;border-color:var(--border);">
-      <div style="max-width:760px;margin:0 auto;">
-        <div class="eyebrow" style="margin-bottom:14px;">Before We Talk Fees</div>
-        <h2 style="font-family:var(--font-serif);font-weight:600;font-size:38px;line-height:1.2;letter-spacing:-0.02em;color:var(--ink-900);margin:0 0 16px;">The math only works if you <em style="color:var(--gold-600);font-style:italic;">actually use it.</em> Do the four jobs fit what you need?</h2>
-        <div style="width:64px;height:3px;background:var(--gold-500);margin-bottom:20px;"></div>
-        <p style="font-family:var(--font-serif);font-style:italic;font-size:20px;color:var(--fg-muted);line-height:1.6;margin:0 0 28px;">Every advisor looks good on a chart. The question is whether they can check all four boxes when the market moves.</p>
-        <p style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);">No pressure &mdash; I&rsquo;d rather you be honest than polite here.</p>
+      <div style="max-width:780px;margin:0 auto;">
+        <div class="eyebrow" style="margin-bottom:14px;">Before The Numbers</div>
+        <h2 style="font-family:var(--font-serif);font-weight:600;font-size:40px;line-height:1.18;letter-spacing:-0.02em;color:var(--ink-900);margin:0 0 18px;">Does this feel like the <em style="color:var(--gold-600);font-style:italic;">right hands</em> for your money?</h2>
+        <div style="width:64px;height:3px;background:var(--gold-500);margin-bottom:22px;"></div>
+        <p style="font-family:var(--font-serif);font-style:italic;font-size:21px;color:var(--fg-muted);line-height:1.6;margin:0 0 28px;">You&rsquo;ve seen the whole job &mdash; and the people who&rsquo;d actually do it. The only question left is what it costs.</p>
+        <p style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);">A &ldquo;yes&rdquo; here just means we&rsquo;ve earned the cost conversation.</p>
       </div>
       <template class="pres-cue">
-        <div class="cue-label">Gate B &mdash; Value Commitment</div>
-        <div class="cue-ask">&ldquo;Of the four jobs &mdash; tax advice, dip-watching, one roof for all accounts, and the spouse &amp; heir plan &mdash; which one matters most to you?&rdquo;</div>
+        <div class="cue-label">Gate B &mdash; The Right Hands? (value-commitment gate)</div>
+        <div class="cue-ask">&ldquo;Before I answer the cost question you&rsquo;ve been too polite to ask &mdash; does the way we&rsquo;d run this feel like the right hands for your money?&rdquo;</div>
         <div class="cue-stop">&#9726; STOP. Let them answer.</div>
         <div class="cue-branches">
-          <div class="cue-branch"><strong>Names one or more:</strong> Echo it back: &ldquo;That&rsquo;s exactly where we start.&rdquo; &rarr; advance to cost-divider.</div>
-          <div class="cue-branch"><strong>&ldquo;All of them&rdquo; / easy yes:</strong> &ldquo;Good &mdash; then the fee conversation is easy. Let me show you what it looks like.&rdquo; &rarr; advance.</div>
+          <div class="cue-branch"><strong>Yes / nod:</strong> &ldquo;Then let&rsquo;s talk about what it costs.&rdquo; &rarr; advance to the cost divider.</div>
+          <div class="cue-branch"><strong>&ldquo;What&rsquo;s it cost?&rdquo;:</strong> &ldquo;Exactly where I&rsquo;m headed &mdash; and I&rsquo;m going to anchor it against the right thing.&rdquo; &rarr; advance.</div>
         </div>
       </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
@@ -3530,18 +3522,19 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div class="hook-hero" style="padding:0;">
           <div class="kicker" style="text-align:center">The Investment</div>
           <h1 class="hero-title">
-            This will cost
-            <span class="accent">more than you think.</span>
+            So &mdash; what does
+            <span class="accent">all this cost?</span>
           </h1>
         </div>
       </div>
+      <template class="pres-cue">
+        <div class="cue-label">Cost Divider &mdash; Ask It For Them, Then Set The Yardstick</div>
+        <div class="cue-ask">&ldquo;Which brings us to the question you&rsquo;re too polite to ask, so I&rsquo;ll ask it for you &mdash; what does all this cost? And before I give you the number, I&rsquo;m going to tell you what to measure it against. Because the fee is the small number on this slide.&rdquo;</div>
+      </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">cost</div>
     </section>
   `);
-
-  // ── 30-Day Roth Accelerator: now positioned right after the investment divider ──
-  slides.push(acceleratorSlide);
 
   // ── One-time onboarding investment (only when the intake toggle is on) ──
   // Most of the work lands in the first 90 days, so we offer two ways to handle
@@ -3593,9 +3586,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   slides.push(`
     <section class="slide" data-slide="fee">
       <div class="title-block center">
-        <div class="kicker">Your Choice</div>
-        <h2 class="title">Full Service or <em>Just Tax Minimization.</em></h2>
-        <p class="subtitle fee-scope" data-wg="White Glove covers all of it &mdash; investing, conversion timing, tax, estate, long-term care, Social Security, and the relationship. One kitchen, one bill." data-co="Conversion Only is the tax engine, all-in &mdash; Strategic Roth Conversions and tax-smart management of every account, two strategy meetings a year.">Same tax engine either way. The difference is everything <em>around</em> the numbers.</p>
+        <div class="kicker">What It Costs</div>
+        <h2 class="title">The real fee in retirement <em>isn&rsquo;t ours.</em></h2>
+        <p class="subtitle">It&rsquo;s the rate the IRS runs on an unmanaged drawdown &mdash; one fee, all-in, because it&rsquo;s one kitchen. Measure ours against the column on the left.</p>
       </div>
       <!-- Tier cards: clicking selects CO / WG and updates bar chart -->
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:1180px;margin:16px auto 0;align-items:stretch;">
@@ -3696,22 +3689,108 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <button class="fee-tier-tab" data-tier="wg">White Glove</button>
         <button class="fee-tier-tab" data-tier="co">Conversion Only</button>
       </div>
-      <div style="max-width:1000px;margin:10px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Scenarios A&ndash;C are illustrative, not projections or a promise of results. The dollar figure applies your tier&rsquo;s rate to your ${balStr} balance; in practice the fee covers every account we manage. Start where you&rsquo;re comfortable &mdash; upgrade or downgrade anytime.</div>
+      <div style="max-width:1080px;margin:16px auto 0;text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--ink-900);line-height:1.5;">The fee is the thin slice that moves you from the left column to the right. <em style="color:var(--gold-600);font-style:italic;">You&rsquo;re not paying us 1.5% &mdash; measured against the lifetime tax bill on the left, it&rsquo;s how you stop paying that column.</em></div>
+      <div style="max-width:1000px;margin:10px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Figures shown are the same illustrative numbers from earlier slides &mdash; disclosed, not new. Scenarios A&ndash;C are illustrative, not projections or a promise of results. The dollar figure applies your tier&rsquo;s rate to your ${balStr} balance; in practice the fee covers every account we manage. Start where you&rsquo;re comfortable &mdash; upgrade or downgrade anytime.</div>
       <template class="pres-cue">
-        <div class="cue-label">Fee Slide &mdash; Tier Recommendation + Tax Drag Anchor</div>
-        <div class="cue-ask">&ldquo;White Glove is what I&rsquo;d put you in. The ongoing plan, the survivor model, the dip-watch &mdash; that&rsquo;s where the work lives. But Conversion Only is a real option if you want to start smaller and upgrade later.&rdquo;</div>
-        <div class="cue-note" style="margin-top:10px;text-align:left;">If they push on fee cost:</div>
-        <div class="cue-ask" style="margin-top:6px;">&ldquo;The most expensive advisor in this room is the IRS at ${todayBracketPct}%. Everything else is rounding error compared to what the plan could otherwise save.&rdquo;</div>
-        <div class="cue-stop" style="margin-top:8px;">&#9726; STOP after the anchor. Let the math land.</div>
+        <div class="cue-label">Fee Slide &mdash; Re-Anchor On Tax Drag, Not The Advisor Down The Street</div>
+        <div class="cue-ask">&ldquo;Here&rsquo;s the number: one transparent fee, 1.5%, all-in. Now here&rsquo;s what to measure it against &mdash; not the advisor down the street at 1%. Measure it against the column on the left: the lifetime tax bill you&rsquo;re on track to pay by doing nothing.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;">&ldquo;Our fee is the thing that moves you off that column. You&rsquo;re not paying us 1.5%. You&rsquo;re paying the IRS the difference between these two columns if no one runs this &mdash; and our fee is how you stop.&rdquo;</div>
+        <div class="cue-stop" style="margin-top:8px;">&#9726; STOP after the anchor. Let the math land before you show how you&rsquo;d work together.</div>
       </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">fee</div>
     </section>
   `);
-  // V2: accelerator moved to immediately after cost-divider (see push near cost-divider below)
 
-  // ── Genuine scarcity: capacity-limited, mutual-fit, boutique-by-design ──
+  // ── How we'd work together — narrowed so the recommended tier (White Glove) leads;
+  //    Conversion Only is shown as the lighter option, not a coequal fork. Tier cards
+  //    reuse .tier-card[data-tier] so they share selection state with the fee slide and
+  //    the persona routing (Protector → WG, Steward → CO/Accelerator). ──
   slides.push(`
+    <section class="slide" data-slide="two-ways">
+      <div class="title-block center">
+        <div class="kicker">How We Work</div>
+        <h2 class="title">Here&rsquo;s how we&rsquo;d <em>run this for you.</em></h2>
+        <p class="subtitle">Same tax engine either way &mdash; the difference is everything <em>around</em> the numbers.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1.55fr 1fr;gap:22px;max-width:1180px;margin:18px auto 0;align-items:stretch;">
+        <div class="tier-card" data-tier="wg" style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;position:relative;cursor:pointer;transition:box-shadow .15s;">
+          <div style="position:absolute;top:-12px;right:24px;background:var(--gold-400);color:var(--ink-900);font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;border-radius:999px;">Recommended</div>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:4px;">
+            <span style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);">White Glove</span>
+            <span style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:var(--gold-400);line-height:1;">1.5%<span style="font-family:var(--font-sans);font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);">/yr</span></span>
+          </div>
+          <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:#fff;line-height:1.2;margin:6px 0 14px;">Your personal CFO.</div>
+          <ul style="list-style:none;margin:0;padding:0;font-family:var(--font-sans);font-size:14px;color:rgba(255,255,255,0.9);line-height:1.4;display:grid;grid-template-columns:1fr 1fr;gap:9px 18px;">
+            <li style="display:flex;gap:9px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Strategic Roth Conversions</li>
+            <li style="display:flex;gap:9px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Tax-smart management of all accounts</li>
+            <li style="display:flex;gap:9px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Unlimited meetings</li>
+            <li style="display:flex;gap:9px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Standing Nov&ndash;Dec tax meeting</li>
+            <li style="display:flex;gap:9px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Estate &amp; legacy planning</li>
+            <li style="display:flex;gap:9px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>Long-term care &amp; Social Security</li>
+            <li style="display:flex;gap:9px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>In-house EA tax-return coordination</li>
+            <li style="display:flex;gap:9px;"><span style="color:var(--gold-400);font-weight:800;">&check;</span>The survivor plan</li>
+          </ul>
+          <div style="margin-top:auto;padding-top:16px;display:flex;align-items:center;gap:11px;border:1px solid rgba(255,255,255,0.25);border-radius:9px;padding:10px 14px;">
+            <span class="tier-check" style="width:20px;height:20px;border-radius:5px;border:2px solid var(--gold-400);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink-900);font-size:12px;font-weight:800;line-height:1;"></span>
+            <span style="font-family:var(--font-sans);font-size:13px;font-weight:700;color:#fff;">Choose White Glove</span>
+          </div>
+        </div>
+        <div class="tier-card" data-tier="co" style="background:white;border:1px solid var(--border);border-top:4px solid var(--ink-400);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px;">
+            <span style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--fg-subtle);">Conversion Only</span>
+            <span style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--ink-900);line-height:1;">0.5%<span style="font-family:var(--font-sans);font-size:11px;font-weight:600;color:var(--fg-muted);">/yr</span></span>
+          </div>
+          <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);line-height:1.2;margin:6px 0 12px;">Just the engine &mdash; the Accelerator.</div>
+          <div style="font-family:var(--font-sans);font-size:13.5px;color:var(--fg-muted);line-height:1.5;">Strategic Roth Conversions and tax-smart management, run for you &mdash; without the full planning relationship around it.</div>
+          <div style="margin-top:auto;padding-top:16px;display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:9px;padding:10px 14px;">
+            <span class="tier-check" style="width:20px;height:20px;border-radius:5px;border:2px solid var(--gold-500);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:12px;font-weight:800;line-height:1;"></span>
+            <span style="font-family:var(--font-sans);font-size:13px;font-weight:700;color:var(--ink-900);">Choose the Accelerator</span>
+          </div>
+        </div>
+      </div>
+      <div style="max-width:1120px;margin:18px auto 0;text-align:center;">
+        <span class="fc-variant" data-persona="steward" style="font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">For what you&rsquo;re trying to do, White Glove is the one &mdash; <em style="color:var(--gold-600);font-style:italic;">your personal CFO, getting every dollar to the people you chose.</em></span>
+        <span class="fc-variant" data-persona="protector" style="display:none;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.5;">For what you&rsquo;re trying to do, White Glove is the one &mdash; <em style="color:var(--gold-600);font-style:italic;">your personal CFO, protecting your people.</em></span>
+      </div>
+      <template class="pres-cue">
+        <div class="cue-label">Two Ways &mdash; Recommended Tier Leads (don&rsquo;t re-open a coequal fork)</div>
+        <div class="cue-ask">&ldquo;Here&rsquo;s how I&rsquo;d recommend we work together &mdash; White Glove. Same tax engine, but everything wraps around it: the survivor plan, the estate work, your tax return handled in-house &mdash; your personal CFO, [protecting your people / getting every dollar to the people you chose].&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;">&ldquo;If that&rsquo;s more than you want to start, there&rsquo;s a lighter version that&rsquo;s just the engine. But for what you&rsquo;re trying to do, this is the one.&rdquo;</div>
+        <div class="cue-stop" style="margin-top:8px;">&#9726; Lead with White Glove as THE answer. Only fall back to Conversion Only if they flinch.</div>
+      </template>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">two-ways</div>
+    </section>
+  `);
+
+  // ── 30-Day Roth Accelerator: the process IS the de-risk — placed after the tiers ──
+  slides.push(acceleratorSlide);
+
+  // ── Micro-gate: pull the real objection into the open before the close (Challenger take-control) ──
+  slides.push(`
+    <section class="slide" data-slide="gate-close" style="background:#FBFAF7;border-color:var(--border);">
+      <div style="max-width:820px;margin:0 auto;">
+        <div class="eyebrow" style="margin-bottom:14px;">One Straight Question</div>
+        <h2 style="font-family:var(--font-serif);font-weight:600;font-size:42px;line-height:1.18;letter-spacing:-0.02em;color:var(--ink-900);margin:0;">Before the last piece &mdash; is there <em style="color:var(--gold-600);font-style:italic;">anything between you and yes?</em></h2>
+      </div>
+      <template class="pres-cue">
+        <div class="cue-label">Micro-Gate &mdash; Surface The Real Objection Now (don&rsquo;t hope the jump-bar routes it)</div>
+        <div class="cue-ask">&ldquo;Before I take you through the last piece &mdash; straight question: is there anything between you and yes?&rdquo;</div>
+        <div class="cue-stop">&#9726; STOP. Let them answer.</div>
+        <div class="cue-branches">
+          <div class="cue-branch"><strong>Nothing / &ldquo;no, I&rsquo;m good&rdquo;:</strong> Go straight to the close, Beat 5 &mdash; skip the run-up, just ask.</div>
+          <div class="cue-branch"><strong>A real objection surfaces:</strong> Handle it now, then close.</div>
+          <div class="cue-branch"><strong>&ldquo;The cost&rdquo;:</strong> &ldquo;The cost is nothing today &mdash; we bill in arrears, after your money moves, which isn&rsquo;t today. So what&rsquo;s left?&rdquo;</div>
+        </div>
+      </template>
+      <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
+      <div class="slide-number">gate-close</div>
+    </section>
+  `);
+
+  // ── removed: scarcity & risk-reversal — de-risk now folded into the accelerator + close ──
+  void(`
     <section class="slide" data-slide="scarcity">
       <div class="title-block center">
         <div class="kicker">Why We Stay Small</div>
@@ -3749,8 +3828,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // ── Risk reversal: say stop anytime, money stays in your name at Schwab, billed in arrears ──
-  slides.push(`
+  // ── removed: risk-reversal — the de-risk is now structural in the accelerator + close ──
+  void(`
     <section class="slide" data-slide="risk-reversal">
       <div class="title-block center">
         <div class="kicker">No Risk In Starting</div>
@@ -3789,22 +3868,34 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 20 — CLOSING PROCESS (flush → release → assume close)
   slides.push(`
     <section class="slide" data-slide="25">
-      <div class="title-block" style="width:100%;margin-bottom:14px;">
+      <div class="title-block center" style="width:100%;margin-bottom:14px;">
         <div class="kicker">Your Move</div>
-        <h2 class="title">Take back the timing.</h2>
+        <h2 class="title">So &mdash; do we <em>open the door?</em></h2>
+        <p class="subtitle">Not a transfer. Not a dollar moved. Just the door &mdash; open today, or open a little less next year.</p>
       </div>
-      <div style="width:100%;max-width:980px;margin:0 auto 18px;">
-        <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);margin-bottom:13px;">What waiting actually costs</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div style="display:flex;align-items:flex-start;gap:14px;background:#FBFAF7;border:1px solid var(--border);border-left:3px solid var(--gold-400);border-radius:8px;padding:13px 18px;"><span style="color:var(--gold-600);font-weight:800;flex-shrink:0;font-family:var(--font-serif);font-size:15px;line-height:1.4;">&rarr;</span><span style="font-family:var(--font-sans);font-size:15px;color:var(--ink-900);line-height:1.4;">Low-bracket room this year &mdash; <strong>gone if you don&rsquo;t use it.</strong></span></div>
-          <div style="display:flex;align-items:flex-start;gap:14px;background:#FBFAF7;border:1px solid var(--border);border-left:3px solid var(--gold-400);border-radius:8px;padding:13px 18px;"><span style="color:var(--gold-600);font-weight:800;flex-shrink:0;font-family:var(--font-serif);font-size:15px;line-height:1.4;">&rarr;</span><span style="font-family:var(--font-sans);font-size:15px;color:var(--ink-900);line-height:1.4;">At 73, your own RMDs push you up your brackets &mdash; <strong>your rate climbs even if the law never moves.</strong></span></div>
-          ${inputs.filingStatus === 'MFJ' ? `<div style="display:flex;align-items:flex-start;gap:14px;background:#FBFAF7;border:1px solid var(--border);border-left:3px solid var(--gold-400);border-radius:8px;padding:13px 18px;"><span style="color:var(--gold-600);font-weight:800;flex-shrink:0;font-family:var(--font-serif);font-size:15px;line-height:1.4;">&rarr;</span><span style="font-family:var(--font-sans);font-size:15px;color:var(--ink-900);line-height:1.4;">If one of you passes, the survivor files single &mdash; <strong>a higher rate on the same income, permanently.</strong></span></div>` : ``}
-          <div style="display:flex;align-items:flex-start;gap:14px;background:#FBFAF7;border:1px solid var(--border);border-left:3px solid var(--gold-400);border-radius:8px;padding:13px 18px;"><span style="color:var(--gold-600);font-weight:800;flex-shrink:0;font-family:var(--font-serif);font-size:15px;line-height:1.4;">&rarr;</span><span style="font-family:var(--font-sans);font-size:15px;color:var(--ink-900);line-height:1.4;">A bigger balance later &mdash; <strong>the same rates on a larger pile.</strong></span></div>
+      <div style="width:100%;max-width:1080px;margin:6px auto 0;">
+        <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-600);text-align:center;margin-bottom:14px;">What happens next</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;">
+          <div style="background:#FBFAF7;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;"><span style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--gold-600);line-height:1;">1</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Today</span></div>
+            <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.25;">Schwab emails you; you open and sign.</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);line-height:1.5;margin-top:7px;">Nothing moves &mdash; empty accounts, in your name.</div>
+          </div>
+          <div style="background:#FBFAF7;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;"><span style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--gold-600);line-height:1;">2</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Our next call</span></div>
+            <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--ink-900);line-height:1.25;">We review everything${inputs.filingStatus === 'MFJ' ? ', with your spouse' : ''}.</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);line-height:1.5;margin-top:7px;">Top to bottom &mdash; you see every number first.</div>
+          </div>
+          <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;"><span style="font-family:var(--font-serif);font-size:26px;font-weight:700;color:var(--gold-400);line-height:1;">3</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-400);">Only then</span></div>
+            <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:#fff;line-height:1.25;">Transfer the accounts you choose, and begin.</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.82);line-height:1.5;margin-top:7px;">If it still fits &mdash; your call, your accounts.</div>
+          </div>
         </div>
       </div>
-      <div style="width:100%;max-width:980px;margin:0 auto;text-align:center;">
-        <p style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.45;margin:0 0 7px;">The only thing that needs your signature today is <strong>one document.</strong> Everything else, we handle.</p>
-        <p style="font-family:var(--font-serif);font-style:italic;font-size:15px;color:var(--fg-muted);margin:0;">You&rsquo;re never locked in &mdash; one call to Schwab unwinds it in five minutes.</p>
+      <div style="width:100%;max-width:1000px;margin:16px auto 0;text-align:center;">
+        <p style="font-family:var(--font-serif);font-size:20px;color:var(--ink-900);line-height:1.45;margin:0 0 6px;">You hold every card at every step. <strong>Today opens the door &mdash; it doesn&rsquo;t walk you through it.</strong></p>
+        <p style="font-family:var(--font-serif);font-style:italic;font-size:15px;color:var(--fg-muted);margin:0;">Change your mind before our next call? One call to Schwab, five minutes, and your money never left your name.</p>
       </div>
       <div class="cta-contact" style="width:100%;margin-top:16px;padding:14px 22px;">
         <div class="cta-contact-text">
@@ -3817,20 +3908,20 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         </div>
       </div>
       <template class="pres-cue">
-        <div class="cue-label">The Ask &mdash; Re-confront &rarr; Lead &rarr; Ease &rarr; Stop</div>
-        <div class="cue-ask"><strong>MOVE:</strong> Take Control &mdash; lead the next step. Don&rsquo;t ask permission; don&rsquo;t hold a silence.</div>
-        <div class="cue-ask" style="margin-top:8px;"><strong>1 &middot; RE-CONFRONT (verbatim):</strong> &ldquo;Doing nothing isn&rsquo;t avoiding the decision &mdash; it&rsquo;s making it. And here&rsquo;s what waiting costs, none of it depending on rates going up. You&rsquo;ve got room in a low bracket this year that&rsquo;s gone if you don&rsquo;t use it. At 73 your own RMDs stack on your income and push you up your brackets &mdash; your rate climbs even if the law never moves. If one of you passes, the survivor files single, at a higher rate on the same income, permanently. And the balance keeps compounding, so finishing later means the same rates on a bigger pile. The window doesn&rsquo;t stay open &mdash; it closes a little every year, and it closes for good at 73.&rdquo;</div>
-        <div class="cue-stop" style="background:#3a2a12;border:1px solid #6b4f1e;color:#f0c674;padding:7px 10px;border-radius:6px;margin-top:7px;">&#9888; GUARDRAIL &mdash; NEVER quote a cost-of-delay dollar figure. If pushed for a number: &ldquo;That&rsquo;s exactly what the planning meeting produces. What&rsquo;s certain right now is the window is open &mdash; and closing.&rdquo; Do not invent precision the intake may not support.</div>
-        <div class="cue-ask" style="margin-top:8px;"><strong>2 &middot; LEAD THE STEP (verbatim):</strong> &ldquo;The only thing that needs your signature today is one document. Everything else &mdash; the accounts, the transfer, the plan &mdash; we handle. Let&rsquo;s get that one part done while we&rsquo;re together.&rdquo;</div>
-        <div class="cue-ask" style="margin-top:8px;"><strong>3 &middot; EASE THE STAKES (verbatim):</strong> &ldquo;And you&rsquo;re never locked in. Accounts are in your name at Schwab; one phone call unwinds the whole thing in five minutes. Starting today doesn&rsquo;t trap you in anything.&rdquo;</div>
-        <div class="cue-stop">&#9726; STOP &mdash; let them answer. You&rsquo;ve handed them an easy motion, so a normal pause is enough; don&rsquo;t force a silence.</div>
+        <div class="cue-label">The Close &mdash; Five-Beat Spine (deliver in your own voice, then STOP)</div>
+        <div class="cue-ask"><strong>MOVE:</strong> Owner-voiced Challenger close. Collapse &ldquo;think about it&rdquo; into the left column, shrink the commitment to its true size, take control of the process, one easy-out line as power &mdash; then a direct ask, then silence.</div>
+        <div class="cue-ask" style="margin-top:8px;"><strong>1 &middot; COLLAPSE THE THIRD OPTION (hold the tension):</strong> &ldquo;Let me make this simple, because you&rsquo;ve already done the hard part. A few minutes ago you told me the right-hand column &mdash; where [your kids keep what you built / your spouse never faces the penalty] &mdash; that&rsquo;s the one you want. So the strategy question is answered. What&rsquo;s left isn&rsquo;t whether. It&rsquo;s when you start. And here&rsquo;s what most people miss: &lsquo;I&rsquo;ll think about it&rsquo; isn&rsquo;t a third option &mdash; it&rsquo;s the left column with a nicer name. A little of that low-bracket room closes every year you wait, and at 75 it closes for good. Doing nothing and deciding later are the same column. That&rsquo;s not the one you picked for them.&rdquo;</div>
+        <div class="cue-stop" style="background:#3a2a12;border:1px solid #6b4f1e;color:#f0c674;padding:7px 10px;border-radius:6px;margin-top:7px;">&#9888; GUARDRAIL &mdash; NEVER quote a cost-of-delay dollar figure. If pushed for a number: &ldquo;That&rsquo;s exactly what the planning meeting produces. What&rsquo;s certain right now is the window is open &mdash; and closing.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;"><strong>2 &middot; SHRINK THE COMMITMENT (take control of the money):</strong> &ldquo;Now &mdash; the decision in front of you today is much smaller than it feels. I&rsquo;m not asking you to move a dollar. Not today. I&rsquo;m asking you to open the door.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;"><strong>3 &middot; PRESCRIBE THE PROCESS (directive, assumptive):</strong> &ldquo;Here&rsquo;s exactly what happens. The moment we hang up, Schwab sends you an email. You open your accounts and sign &mdash; that&rsquo;s it. The accounts are empty, in your name, not mine. Nothing transfers. Then you and I book our next call, we go through everything top to bottom [with your spouse] &mdash; and only then, if it still fits the way it fits right now, do we move the accounts you choose and begin.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;"><strong>4 &middot; EASY-OUT AS POWER, NOT APOLOGY (one line):</strong> &ldquo;And if anything gives you pause between now and then &mdash; one call to Schwab and we&rsquo;re gone in five minutes. I can say that without blinking, because your money never leaves your name. There&rsquo;s no trap here. There&rsquo;s just a door.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;"><strong>5 &middot; ASK, THEN STOP:</strong> &ldquo;So here&rsquo;s my question, [Name]: you came in to protect [your people / what you built]. The door is open today &mdash; or it&rsquo;s open a little less next year. Do we open it, and get [your spouse and kids] into the right column while the window&rsquo;s still yours?&rdquo;</div>
+        <div class="cue-stop" style="margin-top:7px;">&#9726; STOP. Say nothing. Let them answer. Do not fill the silence.</div>
         <div class="cue-branches">
-          <div class="cue-branch"><strong>Yes:</strong> Go straight to the one document. Don&rsquo;t re-sell. &ldquo;Great &mdash; give me two minutes.&rdquo;</div>
-          <div class="cue-branch"><strong>&ldquo;How does it work / that&rsquo;s a lot of steps&rdquo;:</strong> Jump to <strong>44 (Accelerator)</strong> &mdash; walk the four meetings, then return to the directive.</div>
-          <div class="cue-branch"><strong>&ldquo;Is this safe&rdquo;:</strong> Jump to <strong>48 (risk-reversal)</strong>, then re-ask.</div>
-          <div class="cue-branch"><strong>&ldquo;I need to think about it&rdquo;:</strong> &ldquo;About the strategy, the firm, or the fee?&rdquo; Resolve the named one; jump to <strong>47 (scarcity)</strong> if useful; book a dated next step &mdash; never open-ended.</div>
-          <div class="cue-branch"><strong>Spouse absent:</strong> &ldquo;I wouldn&rsquo;t want you signing a survivor plan your spouse hasn&rsquo;t seen.&rdquo; Book the 20-min joint call this week and send the leave-behind.</div>
-          <div class="cue-branch"><strong>Price flinch:</strong> Re-anchor on the four jobs + tax drag, then &ldquo;Conversion Only is 0.5% &mdash; same engine, lighter wrapping. Start there?&rdquo;</div>
+          <div class="cue-branch"><strong>Clear yes:</strong> &ldquo;Good. Watch for the Schwab email in the next few minutes &mdash; open and sign &mdash; and let&rsquo;s get our next call on the calendar right now.&rdquo; &rarr; book call 2 on the spot.</div>
+          <div class="cue-branch"><strong>&ldquo;Talk to my spouse&rdquo; (MFJ):</strong> &ldquo;That&rsquo;s exactly who belongs on our next call &mdash; let&rsquo;s get [them] there. And let&rsquo;s open the empty accounts today so you&rsquo;re not starting from zero. Nothing moves until you&rsquo;re both in the room.&rdquo; &rarr; open accounts + book joint call 2.</div>
+          <div class="cue-branch"><strong>&ldquo;I need to think about it&rdquo;:</strong> &ldquo;About what, specifically &mdash; the strategy, us, or the cost? The strategy you already said yes to. The cost is nothing today. So the only thing left is the empty account. What&rsquo;s there to decide?&rdquo;</div>
+          <div class="cue-branch"><strong>&ldquo;Send me the deck&rdquo;:</strong> &ldquo;I can. But the deck doesn&rsquo;t open the account, and the low-bracket room doesn&rsquo;t wait for the deck. Let&rsquo;s open the door now &mdash; nothing moves until our next call, and you&rsquo;ll have everything in front of you then.&rdquo;</div>
         </div>
       </template>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
