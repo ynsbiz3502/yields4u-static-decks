@@ -12,7 +12,7 @@
 // Init the onboarding-slide Calendly inline widget once it exists. The slide HTML is
 // injected dynamically (so inline <script> can't run), and re-created on each render —
 // poll keeps it working across regenerations and the async widget.js load.
-(function(){function t(){var e=document.getElementById('calendly-onboarding');if(e&&!e.getAttribute('data-cal-inited')&&window.Calendly&&window.Calendly.initInlineWidget){window.Calendly.initInlineWidget({url:e.getAttribute('data-cal-url'),parentElement:e});e.setAttribute('data-cal-inited','1');}}setInterval(t,500);})();
+(function(){function t(){var e=document.getElementById('calendly-onboarding');if(e&&!e.getAttribute('data-cal-inited')&&window.Calendly&&window.Calendly.initInlineWidget){window.Calendly.initInlineWidget({url:e.getAttribute('data-url'),parentElement:e});e.setAttribute('data-cal-inited','1');}}setInterval(t,500);})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3920,7 +3920,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           </div>
           <p style="margin:18px 0 0;font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.6);">Prefer to talk first? <a href="tel:4109144894" style="color:var(--gold-400);font-weight:700;text-decoration:none;">410-914-4894</a> &middot; <a href="https://yields4u.com" target="_blank" rel="noopener" style="color:var(--gold-400);font-weight:700;text-decoration:none;">Yields4u.com</a></p>
         </div>
-        <div id="calendly-onboarding" data-cal-url="https://calendly.com/leibel-sternbach/30-day-roth-accelerator-onboarding?hide_gdpr_banner=1&amp;background_color=0e0e0f&amp;text_color=ffffff&amp;primary_color=c9a84c" style="width:100%;min-width:320px;height:560px;border-radius:12px;overflow:hidden;background:#141416;"></div>
+        <div id="calendly-onboarding" class="calendly-inline-widget" data-url="https://calendly.com/leibel-sternbach/30-day-roth-accelerator-onboarding?hide_event_type_details=1&amp;hide_gdpr_banner=1" style="width:100%;min-width:320px;height:700px;border-radius:12px;overflow:hidden;background:#fff;"></div>
       </div>
       <template class="pres-cue">
         <div class="cue-label">The Ask &mdash; book the onboarding call live (full closing spine is on the Accelerator, slide 45)</div>
