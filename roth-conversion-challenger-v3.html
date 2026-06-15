@@ -4033,13 +4033,52 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 20 — CLOSING PROCESS (flush → release → assume close)
   slides.push(`
     <section class="slide" data-slide="25" style="background:var(--ink-900);border-color:var(--ink-700);">
-      <div class="title-block center" style="width:100%;margin-bottom:12px;">
+      <div class="title-block center" style="width:100%;margin-bottom:14px;">
         <div class="kicker" style="color:var(--gold-400);">The Door Is Open</div>
         <h2 class="title" style="color:#fff;">Let&rsquo;s book your <em style="color:var(--gold-400);font-style:italic;">onboarding call.</em></h2>
-        <p class="subtitle" style="color:rgba(255,255,255,0.72);">Pick a time below. Nothing moves until we meet &mdash; this just opens the door.</p>
+        <p class="subtitle" style="color:rgba(255,255,255,0.72);">Pick a time on the right. Here&rsquo;s exactly what happens once you do.</p>
       </div>
-      <div id="calendly-onboarding" data-cal-url="https://calendly.com/leibel-sternbach/30-day-roth-accelerator-onboarding?hide_gdpr_banner=1&amp;background_color=0e0e0f&amp;text_color=ffffff&amp;primary_color=c9a84c" style="width:100%;max-width:1040px;margin:0 auto;min-width:320px;height:520px;border-radius:12px;overflow:hidden;background:#141416;"></div>
-      <p style="text-align:center;margin:10px auto 0;font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.6);">Prefer to talk first? <a href="tel:4109144894" style="color:var(--gold-400);font-weight:700;text-decoration:none;">410-914-4894</a> &middot; <a href="https://yields4u.com" target="_blank" rel="noopener" style="color:var(--gold-400);font-weight:700;text-decoration:none;">Yields4u.com</a></p>
+      <div style="display:grid;grid-template-columns:0.82fr 1.18fr;gap:40px;max-width:1240px;margin:6px auto 0;align-items:start;">
+        <div>
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:16px;">What Happens Next</div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;gap:14px;align-items:flex-start;">
+              <span style="flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--gold-400);color:var(--ink-900);font-family:var(--font-serif);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;">1</span>
+              <div style="border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:13px;flex:1;">
+                <div style="font-family:var(--font-sans);font-size:9.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-400);margin-bottom:2px;">Today</div>
+                <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:#fff;line-height:1.25;">We open your accounts at Schwab.</div>
+                <div style="font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.6);line-height:1.4;margin-top:3px;">Empty accounts, in your name. Nothing moves.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start;">
+              <span style="flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--gold-400);color:var(--ink-900);font-family:var(--font-serif);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;">2</span>
+              <div style="border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:13px;flex:1;">
+                <div style="font-family:var(--font-sans);font-size:9.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-400);margin-bottom:2px;">Our next call</div>
+                <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:#fff;line-height:1.25;">We meet &amp; transfer what you chose.</div>
+                <div style="font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.6);line-height:1.4;margin-top:3px;">Only the accounts you pick move over &mdash; on your say-so.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start;">
+              <span style="flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--gold-400);color:var(--ink-900);font-family:var(--font-serif);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;">3</span>
+              <div style="border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:13px;flex:1;">
+                <div style="font-family:var(--font-sans);font-size:9.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-400);margin-bottom:2px;">Then</div>
+                <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:#fff;line-height:1.25;">Tax savings begins.</div>
+                <div style="font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.6);line-height:1.4;margin-top:3px;">We review your plan together, then implement &mdash; converting on the dips.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start;">
+              <span style="flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--gold-400);color:var(--ink-900);font-family:var(--font-serif);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;">4</span>
+              <div style="flex:1;">
+                <div style="font-family:var(--font-sans);font-size:9.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-400);margin-bottom:2px;">Year-end &amp; on</div>
+                <div style="font-family:var(--font-serif);font-size:17px;font-weight:700;color:#fff;line-height:1.25;">End-of-year tax planning.</div>
+                <div style="font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.6);line-height:1.4;margin-top:3px;">Every Nov&ndash;Dec we make end-of-year moves and update your plan.</div>
+              </div>
+            </div>
+          </div>
+          <p style="margin:18px 0 0;font-family:var(--font-sans);font-size:12.5px;color:rgba(255,255,255,0.6);">Prefer to talk first? <a href="tel:4109144894" style="color:var(--gold-400);font-weight:700;text-decoration:none;">410-914-4894</a> &middot; <a href="https://yields4u.com" target="_blank" rel="noopener" style="color:var(--gold-400);font-weight:700;text-decoration:none;">Yields4u.com</a></p>
+        </div>
+        <div id="calendly-onboarding" data-cal-url="https://calendly.com/leibel-sternbach/30-day-roth-accelerator-onboarding?hide_gdpr_banner=1&amp;background_color=0e0e0f&amp;text_color=ffffff&amp;primary_color=c9a84c" style="width:100%;min-width:320px;height:560px;border-radius:12px;overflow:hidden;background:#141416;"></div>
+      </div>
       <template class="pres-cue">
         <div class="cue-label">The Ask &mdash; book the onboarding call live (full closing spine is on the Accelerator, slide 45)</div>
         <div class="cue-ask"><strong>ASK:</strong> &ldquo;So here&rsquo;s my question, [Name]: you came in to protect [your people / what you built]. The door is open today &mdash; or it&rsquo;s open a little less next year. Let&rsquo;s open it &mdash; pick the time that works and we&rsquo;ll get your onboarding call on the calendar right now.&rdquo;</div>
