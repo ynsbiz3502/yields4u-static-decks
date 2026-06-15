@@ -3353,14 +3353,14 @@ function buildSlides(inputs, sim, savings, heir, widow) {
             <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);line-height:1.5;margin-top:8px;">Schwab emails you; you open your accounts and sign. <strong style="color:var(--ink-900);">Empty accounts, in your name, not ours.</strong> Nothing moves.</div>
           </div>
           <div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Step 2</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:var(--fg-subtle);">Our next call</span></div>
-            <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-top:9px;">We review everything${inputs.filingStatus === 'MFJ' ? ', together with your spouse' : ''}.</div>
-            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);line-height:1.5;margin-top:8px;">Top to bottom &mdash; every number, every account, the whole plan. You see all of it before a single dollar moves.</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-600);">Step 2</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:var(--fg-subtle);">Only then</span></div>
+            <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);line-height:1.2;margin-top:9px;">We move only what you choose.</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);line-height:1.5;margin-top:8px;">If it still fits, we transfer only the accounts you choose &mdash; and we begin. Then we convert on the dips, with a year-end true-up.</div>
           </div>
           <div style="background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-400);">Step 3</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);">Only then</span></div>
-            <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:#fff;line-height:1.2;margin-top:9px;">We move only what you choose.</div>
-            <div style="font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.82);line-height:1.5;margin-top:8px;">If it still fits, we transfer only the accounts you choose &mdash; and we begin. Then we convert on the dips, with a year-end true-up.</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-family:var(--font-sans);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-400);">Step 3</span><span style="font-family:var(--font-sans);font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);">Our next call</span></div>
+            <div style="font-family:var(--font-serif);font-size:19px;font-weight:700;color:#fff;line-height:1.2;margin-top:9px;">We review everything${inputs.filingStatus === 'MFJ' ? ', together with your spouse' : ''}.</div>
+            <div style="font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.82);line-height:1.5;margin-top:8px;">Top to bottom &mdash; every number, every account, the whole plan. You see all of it before a single dollar moves.</div>
           </div>
         </div>
         <!-- Ongoing pill -->
@@ -3702,11 +3702,9 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     </section>
   `);
 
-  // ── How we'd work together — narrowed so the recommended tier (White Glove) leads;
-  //    Conversion Only is shown as the lighter option, not a coequal fork. Tier cards
-  //    reuse .tier-card[data-tier] so they share selection state with the fee slide and
-  //    the persona routing (Protector → WG, Steward → CO/Accelerator). ──
-  slides.push(`
+  // ── removed per request: "How we'd work together" (two-ways) — left inert; the fee
+  //    slide already carries the tier choice and persona routing. ──
+  void(`
     <section class="slide" data-slide="two-ways">
       <div class="title-block center">
         <div class="kicker">How We Work</div>
