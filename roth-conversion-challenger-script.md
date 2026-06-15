@@ -289,39 +289,21 @@ inevitable, not pushed.
 - **Purpose:** Credibility — the full résumé behind the strategy.
 - **Talk track:** "Enrolled Agent — so I'm allowed to give the tax advice most can't. Author, portfolio manager, ETF sponsor, educating retirees since 2007. This is all I do."
 
-### Slide 38 — Meet the team · `data-slide="4"`
-- **Kicker:** The People Behind The Plan **Title:** Meet The Yields For You Team **Subtitle:** Portfolio managers, advisors, and traders — all focused on retiree tax planning.
-- **On screen:** NYSE bell photo (Feb 25, 2025 — YFYA & RSMV listing). Leibel Sternbach (Founder), Moe Breitowitz (Trader), Chaya First (Financial Advisor).
-- **Purpose:** Show it's a team, not a one-man shop — sets up the continuity/relationship slide.
-- **Talk track:** "You're not hiring a one-man shop — portfolio managers, advisors, traders, all focused on retiree tax planning."
-
 ---
 
 ## WHAT IT'S LIKE TO WORK WITH US
 
-### Slide 39 — A 12-year plan is a relationship · `data-slide="relationship"`
-- **Kicker:** Beyond The Numbers **Title:** One conversion is a transaction. A 12-year plan is a relationship. **Subtitle:** Over 12 years, your plan will change — and so will what matters most to you…
-- **On screen:** "At a national firm": You → salesperson → service team → Advisor #1 → #2 → … (account #4,000). "With Yields For You": You ⇄ the same named team. "Small isn't the risk. It's how you get someone in your corner instead of a number in a queue."
-- **Purpose:** Reframe "small firm" risk into a relationship advantage — sets up the philosophy + the value-stack.
-- **Talk track:** "One conversion is a transaction. A *[12]*-year plan is a relationship. A rotating team that's never seen your history — that's the risk."
-
-### Slide 40 — Our Planning Philosophy *(the wheel)* · `data-slide="planning-wheel"`
+### Slide 40 — Our Planning Philosophy *(the wheel + the team)* · `data-slide="planning-wheel"` *(absorbs the former "Meet the team" #38 and "12-year relationship" #39 slides)*
 - **Kicker:** Our Planning Philosophy **Title:** We don't just manage money. We help you live your dreams. **Subtitle:** Real planning isn't one thing — it's five, working together…
-- **On screen:** The 5-area planning wheel (`img/planning-wheel.png`) around a **Live Your Dreams** center: **1 Investments** (grow & protect) · **2 Tax Minimization** (keep more of what you earn) · **3 Income** (sustainable, predictable) · **4 Life Planning** (care, dignity, control) · **5 Financial Continuity** (a legacy, not a burden). Capstone: "Five areas. One plan. Built entirely around you."
-- **Purpose:** Introduce the *philosophy / scope* of what we plan (the 5 areas) before the value-stack and the price — high-level frame first.
-- **Talk track:** "Here's everything we actually plan around. Five areas, one plan, all built around the life you want."
+- **On screen:** The 5-area planning wheel (`img/planning-wheel.png`, enlarged 2026-06-14) around a **Live Your Dreams** center: **1 Investments** (grow & protect) · **2 Tax Minimization** (keep more of what you earn) · **3 Income** (sustainable, predictable) · **4 Life Planning** (care, dignity, control) · **5 Financial Continuity** (a legacy, not a burden). Below the wheel, a dark **"The Same Named Team — All *[12]* Years"** card carries the continuity beat ("A *[12]*-year plan is a relationship, not a transaction — the same faces run all five, in your corner instead of a number in a queue") with the team faces (Leibel Sternbach · Moe Breitowitz · Chaya First). Capstone: "Five areas. One plan. Built entirely around you."
+- **Purpose:** Introduce the *philosophy / scope* of what we plan (the 5 areas) and the *people* who run it — high-level frame before the offer. The former standalone "Meet the team" and "12-year relationship" slides are folded into this slide's team-continuity card.
+- **Talk track:** "Here's everything we actually plan around — five areas, one plan, all built around the life you want — run by the same named team for the long haul. One conversion is a transaction; a *[12]*-year plan is a relationship."
 
 ### Slide 40b — About Yields For You · `data-slide="mission"`
 - **Kicker:** Our Mission **Title:** About *Yields For You.* **Hero line:** Help *ONE MILLION people* retire with financial security.
 - **On screen:** Two-column layout. Left — "How We Accomplish This": FREE Education (Blog, Podcast, TikTok, etc.) · FREE & PAID Classes · ETF Sponsorships (YFYA & RSMV) · Advisor Support · Limited one-on-one clients. Right — the NYSE closing-bell GIF (`nyse-bell.gif`).
 - **Purpose:** Mission frame before the offer — situates the 1:1 engagement at the top of a much larger free-education funnel, so the prospect understands they've reached the most exclusive tier. The "limited one-on-one clients" line reinforces the boutique, capacity-limited positioning (the standalone scarcity slide was removed 2026-06-14).
 - **Talk track:** "Our mission is to help one million people retire with financial security. Most of that is free — the blog, the podcast, the classes, the ETFs. The one-on-one work is the smallest, most limited tier. That's the one you're in."
-
-### Slide 41 — Four prices, or four different jobs? · `data-slide="value-stack"`
-- **Kicker:** Before You Compare The Price **Title:** It looks like four prices. *It's really four different jobs — and three of them stop halfway.* **Subtitle:** A price only tells you what it costs, not what you get. So here's the whole job a tax-free retirement actually takes — read down the list, then look at who's still in the column when you reach the bottom.
-- **On screen:** Four-column comparison — **On your own** (you run it all) · **A large brokerage** (holds the money, not the plan) · **A 1% AUM advisor** (plans, then hands off) · **Yields For You** (the whole job, highlighted dark). Six rows (the jobs): **Read your whole 1040** (not just the accounts one firm can see) · **Convert on the dip, not the calendar** (same tax, more shares — when someone's actually watching) · **Tax-return coordination** (one team on it — not "ask your CPA") · **Plan the whole life around it** (estate · survivor · LTC · Social Security) · **One firm, one fee, one roof** (one bill — nobody pointing at the other guy) · **The same people, year after year** (you're not re-explaining your life to a new face). Only the Yields For You column fills every row (● built to do it / ◐ partly / ○ not built for it). Capstone: "Everyone here does part of it. *We're built to do the whole thing — under one roof.*" (Illustrative; reflects typical service models across these categories, not any specific firm.)
-- **Purpose:** The Challenger value reframe right before price — turn "four prices" into "four jobs" so the fee is judged on the *whole job*, not the sticker. Defuses the "why not just use a cheaper option" objection before it's asked. See `[[roth-challenger-framework]]`.
-- **Talk track:** "Before we talk price — this looks like four prices, but it's really four different jobs, and three of them stop halfway. Read down the list: who's still in the column when you reach the bottom? Everyone here does part of it. We're built to do the whole thing, under one roof."
 
 ### Slide 42 — Full Circle: the persona payoff · `data-slide="full-circle"` *(variant by Slide 2 pick; spouse beat MFJ-only)*
 - **Kicker:** Full Circle **Title (Steward variant — default):** You came in as *The Steward.* **(Protector variant):** You came in as *The Protector.*
