@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Roth Conversion (V3) — Yields For You</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- Calendly inline embed assets (onboarding slide) -->
+<link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css">
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+<script>
+// Init the onboarding-slide Calendly inline widget once it exists. The slide HTML is
+// injected dynamically (so inline <script> can't run), and re-created on each render —
+// poll keeps it working across regenerations and the async widget.js load.
+(function(){function t(){var e=document.getElementById('calendly-onboarding');if(e&&!e.getAttribute('data-cal-inited')&&window.Calendly&&window.Calendly.initInlineWidget){window.Calendly.initInlineWidget({url:e.getAttribute('data-cal-url'),parentElement:e});e.setAttribute('data-cal-inited','1');}}setInterval(t,500);})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&amp;family=Source+Sans+3:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -4024,34 +4033,22 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 20 — CLOSING PROCESS (flush → release → assume close)
   slides.push(`
     <section class="slide" data-slide="25" style="background:var(--ink-900);border-color:var(--ink-700);">
-      <div class="title-block center" style="width:100%;margin-bottom:18px;">
-        <div class="kicker" style="color:var(--gold-400);">Your Move</div>
-        <h2 class="title" style="color:#fff;">So &mdash; do we <em style="color:var(--gold-400);font-style:italic;">open the door?</em></h2>
-        <p class="subtitle" style="color:rgba(255,255,255,0.72);">Not a transfer. Not a dollar moved. Just the door &mdash; open today, or open a little less next year.</p>
+      <div class="title-block center" style="width:100%;margin-bottom:12px;">
+        <div class="kicker" style="color:var(--gold-400);">The Door Is Open</div>
+        <h2 class="title" style="color:#fff;">Let&rsquo;s book your <em style="color:var(--gold-400);font-style:italic;">onboarding call.</em></h2>
+        <p class="subtitle" style="color:rgba(255,255,255,0.72);">Pick a time below. Nothing moves until we meet &mdash; this just opens the door.</p>
       </div>
-      <div style="width:100%;max-width:920px;margin:10px auto 0;text-align:center;">
-        <p style="font-family:var(--font-serif);font-size:23px;color:#fff;line-height:1.5;margin:0 0 10px;">You hold every card at every step. <em style="color:var(--gold-400);font-style:italic;">Today opens the door &mdash; it doesn&rsquo;t walk you through it.</em></p>
-        <p style="font-family:var(--font-serif);font-style:italic;font-size:15px;color:rgba(255,255,255,0.6);margin:0;">Change your mind before our next call? One call to Schwab, five minutes, and your money never left your name.</p>
-      </div>
-      <div class="cta-contact" style="width:100%;margin-top:20px;padding:14px 22px;">
-        <div class="cta-contact-text">
-          <h3 style="font-size:20px;">Who picks the dates &mdash; you, or Congress?</h3>
-          <p style="font-size:13px;">Your accounts live at Schwab, in your name. One phone call removes us in five minutes.</p>
-        </div>
-        <div class="cta-contact-actions">
-          <a href="tel:4109144894" class="primary">410-914-4894</a>
-          <a href="https://yields4u.com" target="_blank" rel="noopener" class="secondary">Yields4u.com</a>
-        </div>
-      </div>
+      <div id="calendly-onboarding" data-cal-url="https://calendly.com/leibel-sternbach/30-day-roth-accelerator-onboarding?hide_gdpr_banner=1&amp;background_color=0e0e0f&amp;text_color=ffffff&amp;primary_color=c9a84c" style="width:100%;max-width:1040px;margin:0 auto;min-width:320px;height:520px;border-radius:12px;overflow:hidden;background:#141416;"></div>
+      <p style="text-align:center;margin:10px auto 0;font-family:var(--font-sans);font-size:13px;color:rgba(255,255,255,0.6);">Prefer to talk first? <a href="tel:4109144894" style="color:var(--gold-400);font-weight:700;text-decoration:none;">410-914-4894</a> &middot; <a href="https://yields4u.com" target="_blank" rel="noopener" style="color:var(--gold-400);font-weight:700;text-decoration:none;">Yields4u.com</a></p>
       <template class="pres-cue">
-        <div class="cue-label">The Ask &mdash; deliver Beat 5, then STOP (the full closing spine is on the Accelerator, slide 45)</div>
-        <div class="cue-ask"><strong>ASK:</strong> &ldquo;So here&rsquo;s my question, [Name]: you came in to protect [your people / what you built]. The door is open today &mdash; or it&rsquo;s open a little less next year. Do we open it, and get [your spouse and kids] into the right column while the window&rsquo;s still yours?&rdquo;</div>
-        <div class="cue-stop">&#9726; STOP. Say nothing. Let them answer. Do not fill the silence.</div>
+        <div class="cue-label">The Ask &mdash; book the onboarding call live (full closing spine is on the Accelerator, slide 45)</div>
+        <div class="cue-ask"><strong>ASK:</strong> &ldquo;So here&rsquo;s my question, [Name]: you came in to protect [your people / what you built]. The door is open today &mdash; or it&rsquo;s open a little less next year. Let&rsquo;s open it &mdash; pick the time that works and we&rsquo;ll get your onboarding call on the calendar right now.&rdquo;</div>
+        <div class="cue-stop">&#9726; Share your screen / hand them the keyboard and book it on the spot. Don&rsquo;t leave it to &ldquo;later.&rdquo;</div>
         <div class="cue-branches">
-          <div class="cue-branch"><strong>Clear yes:</strong> &ldquo;Good. Watch for the Schwab email in the next few minutes &mdash; open and sign &mdash; and let&rsquo;s get our next call on the calendar right now.&rdquo; &rarr; book call 2 on the spot.</div>
-          <div class="cue-branch"><strong>&ldquo;Talk to my spouse&rdquo; (MFJ):</strong> &ldquo;That&rsquo;s exactly who belongs on our next call &mdash; let&rsquo;s get [them] there. And let&rsquo;s open the empty accounts today so you&rsquo;re not starting from zero. Nothing moves until you&rsquo;re both in the room.&rdquo; &rarr; open accounts + book joint call 2.</div>
-          <div class="cue-branch"><strong>&ldquo;I need to think about it&rdquo;:</strong> &ldquo;About what, specifically &mdash; the strategy, us, or the cost? The strategy you already said yes to. The cost is nothing today. So the only thing left is the empty account. What&rsquo;s there to decide?&rdquo;</div>
-          <div class="cue-branch"><strong>&ldquo;Send me the deck&rdquo;:</strong> &ldquo;I can. But the deck doesn&rsquo;t open the account, and the low-bracket room doesn&rsquo;t wait for the deck. Let&rsquo;s open the door now &mdash; nothing moves until our next call, and you&rsquo;ll have everything in front of you then.&rdquo;</div>
+          <div class="cue-branch"><strong>Clear yes:</strong> Pick the slot together now. &ldquo;Watch for the Schwab email right after &mdash; open and sign, and we&rsquo;re set for our next call.&rdquo;</div>
+          <div class="cue-branch"><strong>&ldquo;Talk to my spouse&rdquo; (MFJ):</strong> &ldquo;That&rsquo;s exactly who belongs on this call &mdash; let&rsquo;s book a time you can both make. Nothing moves until you&rsquo;re both in the room.&rdquo;</div>
+          <div class="cue-branch"><strong>&ldquo;I need to think about it&rdquo;:</strong> &ldquo;About what, specifically &mdash; the strategy, us, or the cost? The strategy you already said yes to. The cost is nothing today. So let&rsquo;s just hold a time &mdash; you can always move it.&rdquo;</div>
+          <div class="cue-branch"><strong>&ldquo;Send me the deck&rdquo;:</strong> &ldquo;I can. But the deck doesn&rsquo;t hold a time, and the low-bracket room doesn&rsquo;t wait. Let&rsquo;s grab the slot now &mdash; you&rsquo;ll have everything in front of you on the call.&rdquo;</div>
         </div>
       </template>
       <div class="slide-footer" style="border-top-color:rgba(255,255,255,0.14);"><span style="color:rgba(255,255,255,0.38);">Yields4u.com</span><span style="color:rgba(255,255,255,0.38);">Build The Life Of Your Dreams</span></div>
