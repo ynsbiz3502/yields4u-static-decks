@@ -1637,6 +1637,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const filingDisplay = inputs.filingStatus === 'MFJ' ? 'Married Filing Jointly' : 'Single Filer';
   slides.push(`
     <section class="slide" data-slide="1">
+      <template class="pres-cue">
+        <div class="cue-label">Warmer &mdash; Confirm the picture</div>
+        <div class="cue-ask">Read the four numbers back in your own words &mdash; balance, age, growth, filing, income needed. Then say the part the slide no longer spells out: &ldquo;Everything you&rsquo;re about to see is built from these &mdash; change any one and the math changes, and I&rsquo;ll show you that live.&rdquo;</div>
+        <div class="cue-stop">&#9726; Get an explicit &ldquo;yes, that&rsquo;s right&rdquo; before you move on &mdash; you&rsquo;re earning the right to everything after.</div>
+      </template>
       <div class="title-block center">
         <div class="kicker">Before We Begin</div>
         <h2 class="title">Here&rsquo;s what we have${name}.</h2>
@@ -1680,6 +1685,12 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // matching version) and pre-selects the matching tier on the "Your Choice" slide.
   slides.push(`
     <section class="slide" data-slide="persona-fork">
+      <template class="pres-cue">
+        <div class="cue-label">Tailor &mdash; Open the persona loop</div>
+        <div class="cue-ask">The cards are short on purpose &mdash; you carry the warmth: &ldquo;Almost everyone who calls me is really one of two people, and it&rsquo;s never about the money &mdash; it&rsquo;s what the money is for. The Protector has to know their spouse is never left to face this alone. The Steward won&rsquo;t let the IRS take 40% before the kids see a dime.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;">ASK: &ldquo;Which one is more you?&rdquo; Their pick pre-selects the tier and the Full Circle close &mdash; lean into their language the rest of the deck.</div>
+        <div class="cue-stop">&#9726; STOP. Let them self-identify out loud.</div>
+      </template>
       <div class="title-block center">
         <div class="kicker">Which One Are You?</div>
         <h2 class="title">Almost everyone who calls me is really <em>one of two people.</em></h2>
@@ -1712,6 +1723,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 2 — The Challenger reframe: three questions as horizontal agenda rows
   slides.push(`
     <section class="slide" data-slide="2">
+      <template class="pres-cue">
+        <div class="cue-label">Reframe &mdash; Whether &rarr; How / When / the one number</div>
+        <div class="cue-ask">&ldquo;Deciding whether to convert is the easy part. The hard part is three questions almost nobody gets answered: how fast, when, and the single number on your 1040 that makes or breaks it. By the end you&rsquo;ll have an action plan for all three.&rdquo;</div>
+      </template>
       <div class="title-block center">
         <div class="kicker">Agenda</div>
         <h2 class="title">Deciding to convert <em>is the easy part.</em></h2>
@@ -1833,6 +1848,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 5 — About Leibel Sternbach (matches pptx layout with portrait + media logos)
   slides.push(`
     <section class="slide leibel-slide" data-slide="5">
+      <template class="pres-cue">
+        <div class="cue-label">Proof &mdash; the r&eacute;sum&eacute; behind the wedge</div>
+        <div class="cue-ask">&ldquo;Enrolled Agent &mdash; so I&rsquo;m allowed to give the tax advice most advisors can&rsquo;t. Author, portfolio manager, ETF sponsor, educating retirees since 2007. This is all I do.&rdquo;</div>
+      </template>
       <div class="leibel-layout">
         <div class="leibel-left">
           <div class="leibel-kicker">Your Advisor</div>
@@ -1877,6 +1896,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // we don't want to give away what's coming, just set up the question.
   slides.push(`
     <section class="slide" data-slide="2-divider">
+      <template class="pres-cue">
+        <div class="cue-label">Set up the Rational Drowning</div>
+        <div class="cue-ask">&ldquo;We can&rsquo;t pick a plan until we know what we&rsquo;re up against. Before any strategy, let&rsquo;s put a hard number on the threat.&rdquo;</div>
+      </template>
       <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
         <div class="hook-hero" style="padding:0;">
           <div class="kicker" style="text-align:center">What&rsquo;s At Stake</div>
@@ -1912,6 +1935,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const dragStr = fmtMoney(lostToDrag);
   slides.push(`
     <section class="slide" data-slide="6">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; the RMD is the whole problem</div>
+        <div class="cue-ask">&ldquo;This entire strategy exists because of three letters: R-M-D. At RMD age the IRS forces money out whether you need it or not, the percentage rises every year, and every dollar is taxed as ordinary income.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;">Walk the path on screen &mdash; balance today &rarr; at RMD age &rarr; at 95: &ldquo;Without RMDs it would have reached the bigger number &mdash; the difference gets dragged out and taxed along the way.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Why Roth Conversions?</div>
         <h2 class="title">At ${rmdAge}, your IRA stops being <em>all yours.</em></h2>
@@ -1949,6 +1977,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 7 — Threat #1: The IRA Tax Time Bomb (You)
   slides.push(`
     <section class="slide" data-slide="7">
+      <template class="pres-cue">
+        <div class="cue-label">Rational Drowning &mdash; Threat 1 (you)</div>
+        <div class="cue-ask">&ldquo;By your 80s the IRS is forcing out the big number on screen &mdash; far more than you need to live on. It starts as about 1 dollar in 24 at RMD age and climbs to roughly 1 in 9 by 95, on a bigger and bigger balance.&rdquo;</div>
+        <div class="cue-ask" style="margin-top:8px;">Land the lifetime figure: &ldquo;Do nothing, and that&rsquo;s your projected lifetime tax bill &mdash; just from this one account.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Threat 1 of 3 &mdash; Your IRA</div>
         <h2 class="title">So how big is the <em>bite?</em></h2>
@@ -1976,6 +2009,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const ssStr = fmtMoney(inputs.socialSecurity || 0);
   slides.push(`
     <section class="slide" data-slide="8">
+      <template class="pres-cue">
+        <div class="cue-label">Disarm the obvious objection</div>
+        <div class="cue-ask">&ldquo;Yes &mdash; you&rsquo;d draw from savings either way; you need your income number, and Social Security covers part of it. The problem was never that money comes out. It&rsquo;s that at RMD age the IRS starts deciding HOW MUCH comes out &mdash; and their formula has never seen your budget.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Devil&rsquo;s Advocate</div>
         <h2 class="title">&ldquo;Wouldn&rsquo;t we take that money out anyway?&rdquo;</h2>
@@ -2002,6 +2039,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // answer; deliberately shows no figures, just the question.
   slides.push(`
     <section class="slide" data-slide="8-divider">
+      <template class="pres-cue">
+        <div class="cue-label">Build trust &mdash; concede the test</div>
+        <div class="cue-ask">&ldquo;Here&rsquo;s the only question that matters: does any of this actually raise your tax bill? If RMDs don&rsquo;t raise it, conversions aren&rsquo;t worth the trouble. Let&rsquo;s check honestly.&rdquo;</div>
+      </template>
       <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
         <div class="hook-hero" style="padding:0;">
           <div class="kicker" style="text-align:center">The Only Question That Matters</div>
@@ -2025,6 +2066,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
     : '0%';
   slides.push(`
     <section class="slide" data-slide="9">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; your own bracket climb</div>
+        <div class="cue-ask">&ldquo;This chart is YOUR income, by bracket, in today&rsquo;s dollars. As RMDs stack on Social Security, you climb into higher brackets later than you sit in today. That&rsquo;s threat one &mdash; and it&rsquo;s only to you. There are two more.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Threat 1 &mdash; Your Future Brackets</div>
         <h2 class="title">Will your taxes be higher later than today?</h2>
@@ -2241,6 +2286,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // threats build to the kids, leading straight into the "It's About Them" capstone below.
   slides.push(`
     <section class="slide" data-slide="10">
+      <template class="pres-cue">
+        <div class="cue-label">Rational Drowning &mdash; Threat 3 (your kids)</div>
+        <div class="cue-ask">&ldquo;Under the SECURE Act, when you die your kids get just 10 years to empty the IRA &mdash; every dollar stacked on top of the paycheck they already earn. Of the projected balance on screen, most of the loss goes to the IRS; what they keep is after a 37% cut, and most of it disappears in the first few years while they&rsquo;re still working.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Threat ${inputs.filingStatus === 'MFJ' ? '3' : '2'} of 3 &mdash; Your Kids</div>
         <h2 class="title">When you die, your kids get <em>just 10 years</em> to empty your IRA.</h2>
@@ -2269,6 +2318,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // Act 1 capstone — "It's About Them" (relocated here to close the "who are you optimizing for" arc)
   slides.push(`
     <section class="slide" data-slide="22">
+      <template class="pres-cue">
+        <div class="cue-label">Emotional Impact &mdash; it was never about you</div>
+        <div class="cue-ask">&ldquo;You came in asking about your own taxes. The bigger number &mdash; usually 2&times; &mdash; is what your heirs and spouse pay if nothing changes. Do nothing: the heir loss plus the widow cliff. Plan now: tax-free to the kids and zero widow penalty. A Roth has no RMDs, no tax on what you take out, no tax bomb for your heirs.&rdquo;</div>
+        <div class="cue-stop">&#9726; Let it sit. This is the emotional turn &mdash; don&rsquo;t rush to the solution.</div>
+      </template>
       <div class="title-block">
         <div class="kicker">The Real Reason To Convert</div>
         <h2 class="title">This Isn&rsquo;t About You. It&rsquo;s About Them.</h2>
@@ -2315,6 +2369,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const rscEffPct = sim.lifetimeTaxableInc > 0 ? Math.round(rscBase / sim.lifetimeTaxableInc * 100) : 0;
   const legRiskSlide = `
     <section class="slide" data-slide="13">
+      <template class="pres-cue">
+        <div class="cue-label">Take Control &mdash; stress-test their plan</div>
+        <div class="cue-ask">&ldquo;Toggle the scenarios &mdash; watch what even a moderate 20% increase does to your lifetime bill. Today&rsquo;s 37% is near the lowest here and abroad. Wait, and you&rsquo;re betting rates stay right where they are.&rdquo;</div>
+        <div class="cue-stop">&#9726; Let the bigger number land before you move on.</div>
+      </template>
       <div class="title-block">
         <div class="kicker">The Legislative Risk</div>
         <h2 class="title"><em style="color:var(--gold-600);">When</em> Congress raises rates, how does it hit you?</h2>
@@ -2369,6 +2428,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const peakBracketPct = Math.max(...sim.yearly.map(y => _bracketToday(y.taxableInc)));
   const revealSlide = `
     <section class="slide" data-slide="14">
+      <template class="pres-cue">
+        <div class="cue-label">Recap &rarr; the real question</div>
+        <div class="cue-ask">&ldquo;Four numbers, all from your IRA: forced out beyond need, your bracket climb, lifetime tax doing nothing, and your kids&rsquo; tax bill. Should we convert? Pretty clear. The real question almost nobody asks: whose bill are we fixing &mdash; yours, your spouse&rsquo;s, or your kids&rsquo;?&rdquo;</div>
+      </template>
       <div class="hook-hero">
         <div class="kicker" style="text-align:center">Let&rsquo;s Recap</div>
         <h1 class="hero-title">
@@ -2414,6 +2477,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // threats/"It's About Them" capstone into the opportunity section that follows.
   slides.push(`
     <section class="slide" data-slide="solution-intro">
+      <template class="pres-cue">
+        <div class="cue-label">A New Way &mdash; pivot to method</div>
+        <div class="cue-ask">&ldquo;Anyone can move money to a Roth &mdash; that&rsquo;s a button. Paying the LEAST tax while you do it is the strategy. It comes down to three hidden levers.&rdquo;</div>
+      </template>
       <div style="min-height:470px;display:flex;flex-direction:column;justify-content:center;">
         <div class="hook-hero" style="padding:0;">
           <div class="kicker" style="text-align:center">The Solution</div>
@@ -2433,6 +2500,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // detail slide that follows pays off one of these open loops.
   slides.push(`
     <section class="slide" data-slide="three-levers">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; name the three levers</div>
+        <div class="cue-ask">&ldquo;Three things move what you actually pay: the market, your own tax return, and the tax code itself. Most people pull none of them. Here&rsquo;s how we pull all three.&rdquo;</div>
+      </template>
       <div class="title-block center">
         <div class="kicker">The Solution</div>
         <h2 class="title" style="font-weight:700;">The Three Hidden Levers</h2>
@@ -2464,6 +2535,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // deck's existing 5%/10%/20% cadence (from the "Markets Dip" slide) for consistency.
   slides.push(`
     <section class="slide" data-slide="buffett-dips">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; Lever 1: a dip is a discount</div>
+        <div class="cue-ask">&ldquo;Every market drop is someone else panicking. For a conversion, that fear is a discount &mdash; and the market hands you one constantly: a 5% dip about every 3.5 months, a 10% correction every 18, a 20% bear every few years.&rdquo;</div>
+      </template>
       <div class="title-block center">
         <div class="kicker">Lever 1 &mdash; The Market</div>
       </div>
@@ -2497,6 +2572,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 12 — Losses Exist in Every Market
   slides.push(`
     <section class="slide" data-slide="16">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; the opportunity is always there</div>
+        <div class="cue-ask">&ldquo;Even in a +25% year, about 1 in 3 stocks finish down. There&rsquo;s always something on sale to convert &mdash; that&rsquo;s the raw material, and the fuel for your conversion.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">The Raw Material</div>
         <h2 class="title">Even in good years, <em>30%</em> of stocks finish down.</h2>
@@ -2533,6 +2612,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   }
   slides.push(`
     <section class="slide" data-slide="18">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; under the index</div>
+        <div class="cue-ask">&ldquo;We don&rsquo;t harvest the S&amp;P 500 &mdash; we harvest the 500 stocks inside it. Even on a green day, dozens are red. That&rsquo;s our surface area.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Under The Index</div>
         <h2 class="title">The Index Hides Where The <em>Deals Are.</em></h2>
@@ -2559,6 +2642,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 13 — Coke vs Pepsi
   slides.push(`
     <section class="slide" data-slide="17">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; the core mechanic</div>
+        <div class="cue-ask">&ldquo;Same conversion dollars, two days. A normal day buys 250 shares; a 20% dip buys 312 &mdash; 25% more &mdash; for the SAME tax, because you&rsquo;re taxed on the dollars, not the shares. Every extra share recovers tax-free in the Roth, forever.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">The Mechanic</div>
         <h2 class="title">More Shares, Same Tax</h2>
@@ -2590,6 +2677,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 17 — Strategic Dip Conversions
   slides.push(`
     <section class="slide" data-slide="19">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; it&rsquo;s a discipline, not luck</div>
+        <div class="cue-ask">&ldquo;Markets always move &mdash; 1 in 3 stocks finish down, every year has about a 14% dip, a 20% dip means 25% more shares, and we watch daily and act. The discipline is the product: we turn a scary red day into permanent tax savings.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Why Timing Is Everything</div>
         <h2 class="title">Strategic Roth Conversions</h2>
@@ -2625,6 +2716,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // Lever 2 reframe: bracket context before the 1040 proof
   slides.push(`
     <section class="slide" data-slide="lever2-intro">
+      <template class="pres-cue">
+        <div class="cue-label">Reframe &mdash; Lever 2: the bracket</div>
+        <div class="cue-ask">&ldquo;You can nail the timing and the price and still overpay &mdash; because the conversion doesn&rsquo;t land in a vacuum. It stacks on everything already on your 1040: interest, dividends, cap gains, RMDs, Social Security. It&rsquo;s not how much you convert &mdash; it&rsquo;s the bracket you convert into.&rdquo;</div>
+      </template>
       <div class="title-block center">
         <div class="kicker">Lever 2 &mdash; Your Tax Return</div>
         <h2 class="title">Perfect timing. Perfect price.<br><em>None of it matters in the wrong bracket.</em></h2>
@@ -2723,6 +2818,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   }
   slides.push(`
     <section class="slide" data-slide="1040">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; full price vs half off</div>
+        <div class="cue-ask">&ldquo;Same conversion, two returns. The packed return pushes it into the 24% bracket; the planned year fits it in 12% &mdash; half the tax, saved in a single planned year. The only difference is what was already on the 1040 underneath it.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">The Lever Everyone Forgets</div>
         <h2 class="title">Full Price <em>or Half Off.</em></h2>
@@ -2758,6 +2857,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Lever 3 history: a century of marginal rates, lowest + highest bracket ──
   slides.push(`
     <section class="slide" data-slide="hist-rates">
+      <template class="pres-cue">
+        <div class="cue-label">Reframe &mdash; When, not if</div>
+        <div class="cue-ask">&ldquo;I didn&rsquo;t say IF rates go up &mdash; I said WHEN. Over a century the top rate hit 94%, and was 70% as recently as 1980. Today&rsquo;s 37% sits near the bottom. There&rsquo;s far more room to climb than to fall.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Lever 3 &mdash; The Tax Code</div>
         <h2 class="title"><em>When</em> will tax rates go up?</h2>
@@ -2789,6 +2892,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Lever 3 narrative A: the debt math — income vs. what's owed ─────
   slides.push(`
     <section class="slide" data-slide="debt-gdp">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; the macro case</div>
+        <div class="cue-ask">&ldquo;Treat the country like a household: it earns about $31 trillion and owes about $39 &mdash; roughly 125% of everything the economy makes in a year. Math like that has only two exits.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Lever 3 &mdash; The Tax Code</div>
         <h2 class="title">America earns $31 trillion.<br><em>It owes $39 trillion.</em></h2>
@@ -2817,6 +2924,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Lever 3 narrative A2: the only two ways out of the math ─────────
   slides.push(`
     <section class="slide" data-slide="two-exits">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; only one realistic exit</div>
+        <div class="cue-ask">&ldquo;Two levers: cut spending or raise taxes. Only one is realistic &mdash; and you just saw a century of where rates can go. Or both.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Lever 3 &mdash; The Tax Code</div>
         <h2 class="title">Balancing the budget: <em>there&rsquo;s really only one way.</em></h2>
@@ -2851,6 +2962,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Lever 3 narrative B: where federal spending actually goes ───────
   slides.push(`
     <section class="slide" data-slide="budget-pie">
+      <template class="pres-cue">
+        <div class="cue-label">Rational Drowning &mdash; spending can&rsquo;t be cut</div>
+        <div class="cue-ask">&ldquo;Nearly three-quarters of the budget is benefits and interest &mdash; already promised, can&rsquo;t touch without default. Everything you picture as &lsquo;the government&rsquo; &mdash; military, veterans, every agency &mdash; is about a quarter. Cut ALL of it and you&rsquo;d barely cover one year&rsquo;s deficit. Your benefits ARE the budget.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Lever 3 &mdash; The Tax Code</div>
         <h2 class="title">Nothing Left to Cut&hellip; <em>Except Benefits.</em></h2>
@@ -2885,6 +3000,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Lever 3 narrative C: the only lever left ────────────────────────
   slides.push(`
     <section class="slide" data-slide="one-choice">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; the squeeze already started</div>
+        <div class="cue-ask">&ldquo;They&rsquo;ve been cutting benefits quietly for years &mdash; IRMAA in 2007, deemed filing in 2016, the 10-year rule in 2020, and the Social Security trust fund running dry around 2032 with roughly 20% automatic cuts. The benefit cuts already happened. Taxes are the lever they haven&rsquo;t fully pulled &mdash; yet.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Lever 3 &mdash; The Tax Code</div>
         <h2 class="title"><em>And it&rsquo;s been happening for years.</em></h2>
@@ -2926,6 +3045,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Section divider: from the levers to the practice ───────────────
   slides.push(`
     <section class="slide" data-slide="the-turn">
+      <template class="pres-cue">
+        <div class="cue-label">The Turn &mdash; fear &rarr; control</div>
+        <div class="cue-ask">&ldquo;You can&rsquo;t control Congress, the debt, or the quiet cuts. But you control four things that matter more: WHEN you pay, HOW MUCH at a time, WHICH account it sits in, and WHO inherits the bill &mdash; right up until RMD age, when the word &lsquo;Required&rsquo; tells you who&rsquo;s in charge.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">The Turn</div>
         <h2 class="title">You can&rsquo;t control tax rates. <em>You control when you pay them.</em></h2>
@@ -2962,6 +3085,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── The Prize — moved up to follow the turn: commit to the strategy before the vendor ──
   slides.push(`
     <section class="slide" data-slide="21">
+      <template class="pres-cue">
+        <div class="cue-label">Emotional Impact &mdash; claim the prize</div>
+        <div class="cue-ask">&ldquo;This is the prize. Your IRA grows to several million; in a Traditional account your heirs hand the IRS the heir number on screen &mdash; in a Roth they inherit it tax-free. You also save in your own lifetime and erase the widow&rsquo;s penalty. And these are today&rsquo;s historically low rates &mdash; at +20% your heirs avoid even more. It&rsquo;s the biggest it will ever be; at RMD age, RMDs force the worst of it.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">The Prize</div>
         <h2 class="title">Your heirs inherit a Roth &mdash; <em>not a ${heirLost} tax bill.</em></h2>
@@ -3000,6 +3127,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── The Choice — moved up to follow the prize ──
   slides.push(`
     <section class="slide" data-slide="23">
+      <template class="pres-cue">
+        <div class="cue-label">Take Control &mdash; collapse &lsquo;later&rsquo; into &lsquo;nothing&rsquo;</div>
+        <div class="cue-ask">&ldquo;Left column is their schedule, right is yours. Lifetime tax, the rate your heirs pay, the conversion window &mdash; they all flip. Here&rsquo;s the move: doing nothing and deciding later are the SAME column. You pick which one &mdash; but only until RMD age. After that, the IRS picks for you.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">The Choice</div>
         <h2 class="title">Their timing <em>vs. yours</em></h2>
@@ -3070,6 +3201,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Wedge: one 1040, one set of hands — why every account must be under our roof ──
   const _captainsSlide = `
     <section class="slide" data-slide="all-assets">
+      <template class="pres-cue">
+        <div class="cue-label">Take Control &mdash; one set of hands</div>
+        <div class="cue-ask">&ldquo;A ship with two captains runs aground. Your advisor and your CPA each see a full chart &mdash; which is exactly why neither knows half is missing. A sale, a distribution, a rebalance &mdash; invisible across the gap. They don&rsquo;t collide in the water; they collide on your 1040: one unseen trade and the bracket you filled to the dollar overshoots. One captain, one chart &mdash; that&rsquo;s in-house. That&rsquo;s us.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Taking Control &mdash; Why One Set Of Hands</div>
         <h2 class="title">A ship with two captains doesn&rsquo;t sail twice as fast. <em>It runs aground.</em></h2>
@@ -3150,6 +3285,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Wedge 1: most firms can't give tax advice — we built a firm that can ──
   slides.push(`
     <section class="slide" data-slide="wedge-permission">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; the permission gap</div>
+        <div class="cue-ask">&ldquo;Most firms &mdash; even the big names &mdash; won&rsquo;t let advisors give tax advice. Not because they aren&rsquo;t smart; compliance says no. So your advisor says &lsquo;ask your CPA,&rsquo; your CPA says &lsquo;ask your advisor,&rsquo; and the strategy dies in the gap. We&rsquo;re Enrolled Agents, licensed by the IRS, and we built our own firm so no one could stop us.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Why Nobody Handed You The Controls</div>
         <h2 class="title">Your advisor isn&rsquo;t <em>allowed</em> to tell you this.</h2>
@@ -3180,6 +3319,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Wedge 2: the platform — capability nobody else has ─────────────
   slides.push(`
     <section class="slide" data-slide="wedge-platform">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; the tooling moat</div>
+        <div class="cue-ask">&ldquo;Leibel built a national fintech platform &mdash; hundreds of advisors, billions in assets. Even THAT doesn&rsquo;t run this. So we built a separate engine just for the dip-watching Roth process &mdash; the Roth Accelerator Engine. Everyone can describe this strategy; almost no one is built to run it.&rdquo;</div>
+      </template>
       <div class="title-block">
         <div class="kicker">Our Technology</div>
         <h2 class="title">We built the software. <em>Nobody else has it.</em></h2>
@@ -3270,6 +3413,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Planning philosophy wheel: the 5 areas we plan around — introduces the process before the 90-day detail ──
   slides.push(`
     <section class="slide" data-slide="planning-wheel">
+      <template class="pres-cue">
+        <div class="cue-label">Teach &mdash; the whole job + the same team</div>
+        <div class="cue-ask">&ldquo;Real planning is five areas working together &mdash; investments, tax, income, life planning, continuity. And one conversion is a transaction; a multi-year plan is a relationship. The same named team runs all five &mdash; in your corner, not a number in line.&rdquo;</div>
+      </template>
       <div class="title-block center">
         <div class="kicker">Our Planning Philosophy</div>
         <h2 class="title">We don&rsquo;t just manage money. <em>We help you live your dreams.</em></h2>
@@ -3296,6 +3443,10 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // ── Mission slide: who we serve and how — positioned after the planning wheel ──
   slides.push(`
     <section class="slide" data-slide="mission">
+      <template class="pres-cue">
+        <div class="cue-label">Frame &mdash; you&rsquo;ve reached the smallest tier</div>
+        <div class="cue-ask">&ldquo;Our mission is to help a million people retire with security &mdash; most of it free: the blog, the podcast, the classes, the ETFs. The one-on-one work is the smallest, most limited tier. That&rsquo;s the one you&rsquo;re in.&rdquo;</div>
+      </template>
       <div class="title-block center" style="margin-bottom:36px;">
         <div class="kicker" style="margin-bottom:18px;">Our Mission</div>
         <h2 class="title" style="font-size:54px;line-height:1.08;margin-bottom:24px;">About <em>Yields For You.</em></h2>
@@ -3468,6 +3619,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   const fcCouple = inputs.filingStatus === 'MFJ' && widowAnnual > 0;
   slides.push(`
     <section class="slide" data-slide="full-circle">
+      <template class="pres-cue">
+        <div class="cue-label">Emotional Impact &mdash; the persona payoff</div>
+        <div class="cue-ask">&ldquo;Pay off their Slide-2 pick. Steward: the very move that beats the IRS for your kids also erases the widow&rsquo;s penalty for your spouse. Protector: the plan that shields your spouse also routes the heir money to your kids. The Steward and the Protector were never two people &mdash; two reasons to make the same decision.&rdquo;</div>
+        <div class="cue-stop">&#9726; Let it sit, then turn to price.</div>
+      </template>
       <div class="title-block center">
         <div class="kicker">Full Circle</div>
       </div>
