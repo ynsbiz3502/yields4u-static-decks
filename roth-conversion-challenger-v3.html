@@ -1359,6 +1359,27 @@ function computeTaxIndexedShifted(income, status, inflFactor, ratePtShift) {
   return Math.max(0, tax);
 }
 
+// ---- IRMAA: Medicare Part B + Part D income-related surcharge (illustrative, 2025 schedule) ----
+// A real retirement cost the model previously ignored. Once on Medicare (age 65+), MAGI above
+// the tiers below adds an annual premium surcharge PER beneficiary. Doing-nothing RMDs push MAGI
+// into these tiers for life; converting front-loads MAGI for the runway years, then drops below
+// them — so IRMAA is both a do-nothing cost and a convert-path saving. MAGI basis = the model's
+// taxableInc (IRA draw + 85% of SS + other) ~ AGI. Thresholds and surcharge $ are indexed to
+// inflation (inflFactor), matching the federal-bracket treatment.
+const IRMAA_START_AGE = 65;
+const IRMAA_TIERS_MFJ    = [212000, 266000, 334000, 400000, 750000];
+const IRMAA_TIERS_SINGLE = [106000, 133000, 167000, 200000, 500000];
+const IRMAA_SURCHARGE    = [1050, 2640, 4230, 5830, 6360]; // per beneficiary / yr (Part B + Part D), tiers 1..5
+function irmaaAnnual(magi, status, inflFactor, age) {
+  if (!age || age < IRMAA_START_AGE) return 0;
+  const f = inflFactor || 1;
+  const tiers = status === 'MFJ' ? IRMAA_TIERS_MFJ : IRMAA_TIERS_SINGLE;
+  let perPerson = 0;
+  for (let i = 0; i < tiers.length; i++) { if (magi > tiers[i] * f) perPerson = IRMAA_SURCHARGE[i] * f; }
+  const beneficiaries = status === 'MFJ' ? 2 : 1; // both spouses on Medicare under MFJ
+  return perPerson * beneficiaries;
+}
+
 // SECURE 2.0 RMD start age, derived from birth year (current year - age):
 // born 1951-1959 → 73; born 1960 or later → 75. Earlier cohorts began at 72
 // and are already past their start age either way, so 73 is safe for them.
@@ -1384,6 +1405,7 @@ function simulate(inputs) {
   // would see, not the deflated chart numbers.
   let lifetimeTaxableInc = 0;
   let lifetimeFederalTax = 0;
+  let lifetimeIRMAA = 0;
   const baselineTax = computeTax(otherIncome, filingStatus);
   const brackets = filingStatus === 'MFJ' ? BRACKETS_MFJ : BRACKETS_SINGLE;
   const stdDed = STD_DED[filingStatus];
@@ -1436,6 +1458,7 @@ function simulate(inputs) {
     // Accumulate lifetime totals (nominal $) for the summary cards.
     lifetimeTaxableInc += taxableInc;
     lifetimeFederalTax += computeTaxIndexed(taxableInc, filingStatus, inflFactor);
+    lifetimeIRMAA += irmaaAnnual(taxableInc, filingStatus, inflFactor, age);
 
     if (age >= rmdStart) {
       const pct = (rmd / bal) * 100;
@@ -1450,18 +1473,19 @@ function simulate(inputs) {
   }
   return {
     rows, yearly, lifetimeRMD, lifetimeTax, peakRMD,
-    lifetimeTaxableInc, lifetimeFederalTax,
+    lifetimeTaxableInc, lifetimeFederalTax, lifetimeIRMAA,
     finalBalance: bal,
   };
 }
 
-// Convert-to-Roth path, simulated year by year. During the pre-RMD runway years the
-// Traditional IRA is evenly drained into a Roth (filling the lower brackets); once it's
-// fully converted the spending gap is met tax-free from the Roth, so only Social Security
-// stays taxable. Mirrors simulate()'s inflation / 85%-of-SS / RMD conventions so the two
-// paths are directly comparable. ratePtShift (e.g. 0.20 = every bracket +20pts, 12%→32%)
-// lets us price the convert path under higher future rates, just like the do-nothing path.
-function simulateConvert(inputs, ratePtShift) {
+// Convert-to-Roth path for ONE conversion pace, simulated year by year. `magiCapReal` is the
+// MAGI ceiling (today's $) the plan converts up to each year; Infinity reproduces the original
+// "even-deplete the IRA across the pre-RMD runway" schedule. The plan always funds the spending
+// gap and any RMD first, then converts the remaining room (up to the cap) to Roth — so a finite
+// cap holds income under a chosen IRMAA tier. Once the Traditional is empty the gap is met from
+// the Roth tax-free (only Social Security stays taxable). Mirrors simulate()'s inflation /
+// 85%-of-SS / RMD conventions. ratePtShift prices the path under higher future rates.
+function _convertPath(inputs, ratePtShift, magiCapReal) {
   const shift = ratePtShift || 0;
   const { balance, currentAge, growthRate, filingStatus } = inputs;
   const needs = inputs.totalIncomeNeeds || 0;
@@ -1469,34 +1493,62 @@ function simulateConvert(inputs, ratePtShift) {
   const other = inputs.otherIncome || 0;
   const inflationRate = (inputs.inflationRate != null) ? inputs.inflationRate : 0.04;
   const rmdStart = rmdStartAge(currentAge), endAge = 95;
-  let trad = balance, roth = 0, lifetimeTax = 0;
+  const evenDeplete = !(magiCapReal > 0 && magiCapReal !== Infinity);
+  let trad = balance, roth = 0, lifetimeTax = 0, lifetimeIRMAA = 0, doneAge = null;
   for (let age = currentAge; age <= endAge; age++) {
     const inflFactor = Math.pow(1 + inflationRate, age - currentAge);
     const ssYear = ss * inflFactor;
     const gap = Math.max(0, needs * inflFactor - ssYear);
     let taxableInc;
-    if (age < rmdStart && trad > 0) {
-      // Even-deplete the remaining Traditional balance across the runway years left.
-      const yearsLeft = rmdStart - age;
-      const convert = Math.min(Math.max(gap, trad / yearsLeft), trad);
+    if (trad > 0) {
+      const rmd = age >= rmdStart ? (trad / (ULT[age] || 8.9)) : 0;
+      let convert;
+      if (evenDeplete) {
+        // Original schedule: even-deplete across the pre-RMD runway; residual years draw the RMD.
+        if (age < rmdStart) { const yearsLeft = rmdStart - age; convert = Math.min(Math.max(gap, trad / yearsLeft), trad); }
+        else { convert = Math.min(Math.max(rmd, gap), trad); }
+      } else {
+        // IRMAA-aware: convert up to the MAGI ceiling (after SS + other), never below RMD/gap.
+        const room = Math.max(0, magiCapReal * inflFactor - 0.85 * ssYear - other);
+        convert = Math.min(Math.max(rmd, gap, room), trad);
+      }
       taxableInc = convert + 0.85 * ssYear + other;
       const toRoth = Math.max(0, convert - gap); // gap is spent; the rest funds the Roth
-      trad = (trad - convert) * (1 + growthRate);
+      trad = Math.max(0, trad - convert) * (1 + growthRate);
       roth = (roth + toRoth) * (1 + growthRate);
-    } else if (trad > 0) {
-      // Any residual Traditional still takes RMDs / funds the gap (taxable).
-      const rmd = age >= rmdStart ? (trad / (ULT[age] || 8.9)) : 0;
-      const draw = Math.max(rmd, gap);
-      taxableInc = draw + 0.85 * ssYear + other;
-      trad = Math.max(0, trad - draw) * (1 + growthRate);
+      if (trad <= 0 && doneAge === null) doneAge = age;
     } else {
       // Fully converted: the gap is met from the Roth, tax-free. Only SS is taxable.
       taxableInc = 0.85 * ssYear + other;
       roth = Math.max(0, roth - gap) * (1 + growthRate);
     }
     lifetimeTax += computeTaxIndexedShifted(taxableInc, filingStatus, inflFactor, shift);
+    lifetimeIRMAA += irmaaAnnual(taxableInc, filingStatus, inflFactor, age);
   }
-  return { lifetimeTax, finalRoth: roth, finalTrad: trad };
+  return { lifetimeTax, lifetimeIRMAA, finalRoth: roth, finalTrad: trad, magiCap: magiCapReal, doneAge };
+}
+
+// Candidate conversion paces: the original even-deplete schedule (Infinity) + a grid of MAGI
+// ceilings spanning the IRMAA tiers (both filing statuses). The optimizer below picks the pace
+// with the lowest lifetime cost = most savings. Cheap: each candidate is one ~33-year pass.
+const CONVERT_CAP_CANDIDATES = (() => {
+  const caps = new Set([Infinity]);
+  for (let c = 140000; c <= 820000; c += 20000) caps.add(c);
+  [106000, 133000, 167000, 200000, 212000, 266000, 334000, 400000, 500000, 750000].forEach(c => caps.add(c));
+  return [...caps];
+})();
+
+// Optimal convert path: search the candidate paces and return the one that MINIMISES lifetime
+// cost (federal tax + Medicare IRMAA) at this rate shift — i.e. the schedule that saves the most.
+// Single caller: lifetimeSavingsAtShift. Same return shape as the old simulateConvert (+ magiCap/doneAge).
+function simulateConvert(inputs, ratePtShift) {
+  let best = null, bestTotal = Infinity;
+  for (const cap of CONVERT_CAP_CANDIDATES) {
+    const r = _convertPath(inputs, ratePtShift, cap);
+    const total = r.lifetimeTax + (r.lifetimeIRMAA || 0);
+    if (total < bestTotal) { best = r; bestTotal = total; }
+  }
+  return best;
 }
 
 // Lifetime federal tax SAVED by converting vs. doing nothing, under a bracket-point shift.
@@ -1509,8 +1561,13 @@ function lifetimeSavingsAtShift(inputs, sim, ratePtShift) {
   const status = inputs.filingStatus;
   const doNothing = (sim.yearly || []).reduce(
     (s, y) => s + computeTaxIndexedShifted(y.taxableInc, status, y.inflFactor || 1, shift), 0);
-  const convert = simulateConvert(inputs, shift).lifetimeTax;
-  return Math.max(0, doNothing - convert);
+  // IRMAA (Medicare surcharge) is a real do-nothing cost and a real convert-path saving, so
+  // include it on BOTH legs — the headline savings then reflects the net Medicare impact too.
+  const doNothingIRMAA = (sim.yearly || []).reduce(
+    (s, y) => s + irmaaAnnual(y.taxableInc, status, y.inflFactor || 1, y.age), 0);
+  const cv = simulateConvert(inputs, shift);
+  const convert = cv.lifetimeTax + (cv.lifetimeIRMAA || 0);
+  return Math.max(0, (doNothing + doNothingIRMAA) - convert);
 }
 
 function computeHeirImpact(inputs) {
@@ -1600,7 +1657,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // (sim.lifetimeFederalTax), the same figure the legislative-risk slide (29) and slide 9
   // use. sim.lifetimeTax is a legacy RMD-incremental total computed on NON-indexed brackets,
   // which overstates the bill (frozen-bracket creep) and disagreed with those slides.
-  const lifeTax = fmtMoney(sim.lifetimeFederalTax);
+  const lifeTax = fmtMoney(sim.lifetimeFederalTax + (sim.lifetimeIRMAA || 0)); // federal income tax + Medicare (IRMAA) surcharges
   const saveStr = fmtMoney(savings);
   const heirBefore = fmtMoney(heir.before);
   const heirAfter = fmtMoney(heir.after);
@@ -3127,7 +3184,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1120px;margin:20px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
         <span style="font-family:var(--font-serif);font-size:19px;color:white;line-height:1.5;">At +20% rates your heirs avoid closer to <em style="color:var(--gold-400);font-style:italic;">${heirPlus20Str}.</em> It&rsquo;s the biggest it&rsquo;ll ever be &mdash; at ${rmdAge}, RMDs force the worst of it.</span>
       </div>
-      <div style="max-width:1120px;margin:10px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Illustrative: assumes the full IRA is converted to Roth over your pre-RMD years; heir figure estimates the 10-year-rule drain at peak rates. Actual results vary with markets and future tax law.</div>
+      <div style="max-width:1120px;margin:10px auto 0;font-family:var(--font-sans);font-size:10px;color:var(--fg-subtle);text-align:center;line-height:1.25;">Illustrative: the conversion shown is the pace our model finds optimal &mdash; it tests a range of conversion schedules and uses the one that maximizes lifetime savings net of BOTH federal tax and Medicare (IRMAA) surcharges, which may extend beyond your pre-RMD years. Heir figure estimates the 10-year-rule drain at peak rates. Actual results vary with markets and future tax law.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">21</div>
     </section>
@@ -3154,7 +3211,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div class="compare-cell val bad">${lifeTax} (projected)</div>
         <div class="compare-cell val good" style="flex-direction:column;align-items:flex-start;gap:8px;">
           <div style="display:flex;align-items:center;flex-wrap:wrap;gap:9px;">
-            <span>~${fmtMoney(Math.max(0, sim.lifetimeFederalTax - savings))} net</span>
+            <span>~${fmtMoney(Math.max(0, (sim.lifetimeFederalTax + (sim.lifetimeIRMAA || 0)) - savings))} net</span>
             <span style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.03em;color:var(--gold-400);background:var(--ink-900);border-radius:999px;padding:3px 11px;white-space:nowrap;">saves ${saveStr}</span>
           </div>
           <div data-base-savings="${Math.round(savings)}" style="font-family:var(--font-sans);font-size:11.5px;font-weight:700;color:var(--gold-700);line-height:1.3;"><span data-sav-label>if rates rise 20%</span>, you save <span data-sav-figure>${savingsPlus20Str}</span></div>
@@ -3175,7 +3232,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div style="max-width:1300px;margin:18px auto 0;background:var(--ink-900);border-radius:12px;padding:16px 32px;text-align:center;">
         <span style="font-family:var(--font-serif);font-size:20px;color:white;line-height:1.5;">Doing nothing and deciding later are the <em style="color:var(--gold-400);font-style:italic;">same column.</em> You pick which one &mdash; but only until ${rmdAge}. After that, the IRS picks for you.</span>
       </div>
-      <div class="compare-note">How these are figured: each row compares doing nothing &mdash; paying tax on Required Minimum Distributions at projected rates &mdash; against converting the IRA to Roth over your pre-RMD years, filling the lower brackets. Brackets and the standard deduction are indexed to inflation each year. Heir figures estimate the 10-year-rule drain at heirs&rsquo; peak rates. All figures use today&rsquo;s tax law and are illustrative; because today&rsquo;s rates are near historic lows, higher future rates would <em>increase</em> the savings shown. Actual results vary with your circumstances, markets, and future law.</div>
+      <div class="compare-note">How these are figured: each row compares doing nothing &mdash; paying tax on Required Minimum Distributions at projected rates &mdash; against converting the IRA to Roth over your pre-RMD years, filling the lower brackets. Brackets and the standard deduction are indexed to inflation each year. The lifetime tax bill also includes Medicare (IRMAA) Part&nbsp;B &amp; Part&nbsp;D income-related surcharges from age&nbsp;65 (illustrative 2025 schedule, inflation-indexed). The conversion plan shown is the one our model finds optimal: it searches a range of conversion paces and uses the schedule that maximizes lifetime savings net of federal tax AND IRMAA, balancing bracket-fill against the IRMAA tiers rather than converting as fast as possible. Heir figures estimate the 10-year-rule drain at heirs&rsquo; peak rates. All figures use today&rsquo;s tax law and are illustrative; because today&rsquo;s rates are near historic lows, higher future rates would <em>increase</em> the savings shown. Actual results vary with your circumstances, markets, and future law.</div>
       <div class="slide-footer"><span>Yields4u.com</span><span>Build The Life Of Your Dreams</span></div>
       <div class="slide-number">23</div>
     </section>
@@ -5169,8 +5226,8 @@ function renderCharts(inputs, sim, savings) {
   // ---- Proof / savings chart (slide 14) ----
   const proofEl = document.getElementById('chart-proof');
   if (proofEl) {
-    const doNothingTax = sim.lifetimeFederalTax;          // indexed, consistent with slides 7/9/29/32
-    const withUsTax = Math.max(0, sim.lifetimeFederalTax - savings); // convert-path lifetime tax
+    const doNothingTax = sim.lifetimeFederalTax + (sim.lifetimeIRMAA || 0); // federal tax + Medicare (IRMAA) surcharges
+    const withUsTax = Math.max(0, doNothingTax - savings); // convert-path lifetime tax (incl. IRMAA)
     chartInstances.proof = new Chart(proofEl, {
       type: 'bar',
       data: {
@@ -5188,7 +5245,7 @@ function renderCharts(inputs, sim, savings) {
         indexAxis: 'y', responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          title: { display: true, text: `Projected Lifetime Tax — ${fmtMoney(inputs.balance, true)} IRA`,
+          title: { display: true, text: `Projected Lifetime Tax (incl. IRMAA) — ${fmtMoney(inputs.balance, true)} IRA`,
             color: '#0E0E0F', font: { size: 15, weight: '700', family: "'Playfair Display', Georgia, serif" }, padding: { bottom: 12 } },
           tooltip: { callbacks: { label: ctx => fmtMoneyFull(ctx.parsed.x) } }
         },
