@@ -1594,9 +1594,9 @@ function lifetimeSavingsAtShift(inputs, sim, ratePtShift) {
 function computeHeirImpact(inputs) {
   // 10-year rule. Heir inherits IRA, spreads withdrawals 10 years at peak-earning brackets.
   // Assume heir marginal blended ~35% effective (peak earning, MFJ, big lump on top of W-2).
-  // Project the IRA balance to the life-expectancy planning age (85 for typical clients;
-  // slides forward for older clients so the horizon stays ahead of current age).
-  const targetAge = lifeExpAge(inputs);
+  // Project the IRA balance to the assumed age at death (the Advanced "Age of death"
+  // setting — default 95, or current age + 10 once past 90); the heir inherits at that point.
+  const targetAge = deathAge(inputs);
   const years = Math.max(1, targetAge - (inputs.currentAge || 63));
   const currentYear = new Date().getFullYear();
   const yearOfPassing = currentYear + years;
@@ -2422,7 +2422,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
         <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:36px 32px;">
           <div style="font-family:var(--font-sans);font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:14px;">If you do nothing</div>
           <div style="font-family:var(--font-serif);font-weight:700;font-size:60px;color:var(--ink-900);line-height:1;">${heirLost}</div>
-          <div style="font-family:var(--font-sans);font-size:18px;color:var(--fg-muted);margin-top:10px;">Lost to federal tax under the SECURE Act 10-year rule on your projected ${heirBefore} traditional IRA at age 85.</div>
+          <div style="font-family:var(--font-sans);font-size:18px;color:var(--fg-muted);margin-top:10px;">Lost to federal tax under the SECURE Act 10-year rule on your projected ${heirBefore} traditional IRA at age ${heirAge}.</div>
           <div style="height:1px;background:var(--border);margin:22px 0;"></div>
           <div style="font-family:var(--font-sans);font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:8px;">+ Widow&rsquo;s tax cliff</div>
           <div style="font-family:var(--font-serif);font-weight:600;font-size:34px;color:var(--ink-900);">${widowCumStr}</div>
@@ -3189,7 +3189,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
           <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-400);margin-bottom:8px;">Heirs never pay</div>
           <div style="font-family:var(--font-serif);font-weight:700;font-size:82px;color:var(--gold-400);line-height:0.95;letter-spacing:-0.03em;">${heirLost}</div>
         </div>
-        <div style="font-family:var(--font-serif);font-size:18px;color:rgba(255,255,255,0.9);line-height:1.55;border-left:1px solid rgba(255,255,255,0.18);padding-left:34px;">Your IRA grows to about ${heirBefore} by your eighties. In a Traditional account, your heirs drain it over 10 years at their peak rates and hand the IRS ${heirLost}. In a Roth, they inherit it <em style="color:var(--gold-400);font-style:italic;">tax-free.</em></div>
+        <div style="font-family:var(--font-serif);font-size:18px;color:rgba(255,255,255,0.9);line-height:1.55;border-left:1px solid rgba(255,255,255,0.18);padding-left:34px;">Your IRA grows to about ${heirBefore} by age ${heirAge}. In a Traditional account, your heirs drain it over 10 years at their peak rates and hand the IRS ${heirLost}. In a Roth, they inherit it <em style="color:var(--gold-400);font-style:italic;">tax-free.</em></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1120px;margin:18px auto 0;">
         <div style="background:#FBF9F4;border:1px solid var(--border);border-left:4px solid var(--gold-500);border-radius:10px;padding:20px 26px;">
