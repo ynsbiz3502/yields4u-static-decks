@@ -1112,7 +1112,7 @@ body.console-mode { overflow: hidden; }
       <div class="form-grid">
         <div class="form-row">
           <label for="currentAge">Current age <span style="color: var(--red);">*</span></label>
-          <input type="number" id="currentAge" value="63" min="50" max="80" required>
+          <input type="number" id="currentAge" value="63" min="50" max="100" required>
         </div>
         <div class="form-row">
           <label for="filingStatus">Filing status</label>
@@ -1148,6 +1148,11 @@ body.console-mode { overflow: hidden; }
           <label for="inflationRate" style="font-size:13px;color:var(--ink-700);font-weight:500;margin:0;flex:0 0 auto;">Inflation rate</label>
           <input type="number" id="inflationRate" value="4" min="0" max="15" step="0.1" style="width:84px;font-size:14px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;">
           <span style="font-size:13px;color:var(--fg-subtle);">% per year &middot; used to grow income needs &amp; Social Security</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px 14px;background:#FAFAF9;border:1px solid var(--border);border-radius:8px;">
+          <label for="ageOfDeath" style="font-size:13px;color:var(--ink-700);font-weight:500;margin:0;flex:0 0 auto;">Age of death</label>
+          <input type="number" id="ageOfDeath" value="95" min="60" max="110" step="1" data-auto="1" style="width:84px;font-size:14px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-family:inherit;">
+          <span style="font-size:13px;color:var(--fg-subtle);">planning horizon &middot; auto-extends to current age + 10 once past 90</span>
         </div>
         <div style="margin-top:10px;padding:12px 14px;background:#FAFAF9;border:1px solid var(--border);border-radius:8px;">
           <label for="showOnboardingFee" style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--ink-700);font-weight:600;margin:0;">
@@ -1388,13 +1393,29 @@ function rmdStartAge(currentAge) {
   return birthYear >= 1960 ? 75 : 73;
 }
 
+// Assumed age at death — the end of the lifetime projection horizon. Driven by the
+// Advanced "Age of death" field (default 95). Once a client is past 90 the default
+// becomes current age + 10 so the horizon always stays ahead of them. Always > current age.
+function deathAge(inputs) {
+  const ca = inputs.currentAge || 63;
+  const d = inputs.ageOfDeath;
+  if (Number.isFinite(d) && d > ca) return d;
+  return ca > 90 ? ca + 10 : 95;
+}
+// Estate / widow "life-expectancy planning target" — historically a fixed age 85. Held
+// at 85 for typical clients; for older clients it slides to just past current age (never
+// beyond death) so the referenced projection year still exists in the simulation.
+function lifeExpAge(inputs) {
+  return Math.min(deathAge(inputs), Math.max(85, (inputs.currentAge || 63) + 1));
+}
+
 function simulate(inputs) {
   const { balance, currentAge, growthRate, otherIncome, filingStatus } = inputs;
   const annualWithdrawal = inputs.annualWithdrawal || 0;
   const totalIncomeNeeds = inputs.totalIncomeNeeds || 0;
   const socialSecurity = inputs.socialSecurity || 0;
   const inflationRate = (inputs.inflationRate != null) ? inputs.inflationRate : 0.04;
-  const rmdStart = rmdStartAge(currentAge), endAge = 95;
+  const rmdStart = rmdStartAge(currentAge), endAge = deathAge(inputs);
 
   let bal = balance;
   const yearly = [];          // full per-year breakdown (currentAge .. endAge)
@@ -1492,7 +1513,7 @@ function _convertPath(inputs, ratePtShift, magiCapReal) {
   const ss = inputs.socialSecurity || 0;
   const other = inputs.otherIncome || 0;
   const inflationRate = (inputs.inflationRate != null) ? inputs.inflationRate : 0.04;
-  const rmdStart = rmdStartAge(currentAge), endAge = 95;
+  const rmdStart = rmdStartAge(currentAge), endAge = deathAge(inputs);
   const evenDeplete = !(magiCapReal > 0 && magiCapReal !== Infinity);
   let trad = balance, roth = 0, lifetimeTax = 0, lifetimeIRMAA = 0, doneAge = null;
   for (let age = currentAge; age <= endAge; age++) {
@@ -1573,8 +1594,9 @@ function lifetimeSavingsAtShift(inputs, sim, ratePtShift) {
 function computeHeirImpact(inputs) {
   // 10-year rule. Heir inherits IRA, spreads withdrawals 10 years at peak-earning brackets.
   // Assume heir marginal blended ~35% effective (peak earning, MFJ, big lump on top of W-2).
-  // Project the IRA balance to age 85 (standard life-expectancy planning target).
-  const targetAge = 85;
+  // Project the IRA balance to the life-expectancy planning age (85 for typical clients;
+  // slides forward for older clients so the horizon stays ahead of current age).
+  const targetAge = lifeExpAge(inputs);
   const years = Math.max(1, targetAge - (inputs.currentAge || 63));
   const currentYear = new Date().getFullYear();
   const yearOfPassing = currentYear + years;
@@ -1599,10 +1621,11 @@ function computeWidowPenalty(inputs, sim) {
   // Uses the same today's-dollar taxable income basis as slide 9's bracket bars:
   // sim.yearly[age=85].taxableInc / inflFactor.
   if (inputs.filingStatus !== 'MFJ') return { annual: 0, cumulative: 0, income: 0 };
-  const y85 = (sim.yearly || []).find(r => r.age === 85);
+  const _ref = lifeExpAge(inputs);
+  const y85 = (sim.yearly || []).find(r => r.age === _ref);
   const totalInc = y85
     ? (y85.taxableInc / (y85.inflFactor || 1))
-    : ((sim.rows.find(r => r.age === 85)?.rmd) || 50000);
+    : ((sim.rows.find(r => r.age === _ref)?.rmd) || 50000);
   const mfjTax = computeTax(totalInc, 'MFJ');
   const singTax = computeTax(totalInc, 'Single');
   const annual = Math.max(0, singTax - mfjTax);
@@ -2183,10 +2206,11 @@ function buildSlides(inputs, sim, savings, heir, widow) {
   // SLIDE 11 — Threat #3: The Widow Penalty (Your Spouse). MFJ-only.
   // Compute bracket-level numbers for the chart and stat cards.
   // Same today's-dollar basis as slide 9's bracket bars: taxableInc / inflFactor at age 85.
-  const _w85 = (sim.yearly || []).find(r => r.age === 85);
+  const _wRef = lifeExpAge(inputs);
+  const _w85 = (sim.yearly || []).find(r => r.age === _wRef);
   const widowInc = _w85
     ? (_w85.taxableInc / (_w85.inflFactor || 1))
-    : ((sim.rows.find(r => r.age === 85)?.rmd) || 50000);
+    : ((sim.rows.find(r => r.age === _wRef)?.rmd) || 50000);
   const mfjTax    = computeTax(widowInc, 'MFJ');
   const singleTax = computeTax(widowInc, 'Single');
   const mfjRate    = widowInc > 0 ? Math.round((mfjTax    / widowInc) * 100) + '%' : '—';
@@ -4179,7 +4203,7 @@ function renderCharts(inputs, sim, savings) {
   const compoundEl = document.getElementById('chart-compound');
   if (compoundEl) {
     const startAge = inputs.currentAge;
-    const endAge = 95;
+    const endAge = deathAge(inputs);
     // Build age→RMD map outside the loop to avoid a closure inside it
     const rmdByAge = {};
     for (let i = 0; i < sim.rows.length; i++) {
@@ -4828,7 +4852,7 @@ function renderCharts(inputs, sim, savings) {
   // ---- Widow bracket comparison (slide 11) ----
   const widowBrEl = document.getElementById('chart-widow-brackets');
   if (widowBrEl) {
-    const wMidRMD = ((sim.rows || []).find(r => r.age === 85) || {}).rmd || 100000;
+    const wMidRMD = ((sim.rows || []).find(r => r.age === lifeExpAge(inputs)) || {}).rmd || 100000;
     const wInc = (inputs.otherIncome || 0) * 0.75 + wMidRMD;
 
     function bracketLayers(inc, status) {
@@ -5408,6 +5432,7 @@ function onGenerate(e) {
     firstName: document.getElementById('firstName').value.trim(),
     balance: parseMoney(document.getElementById('balance').value),
     currentAge: parseInt(document.getElementById('currentAge').value, 10) || 63,
+    ageOfDeath: (function(){ const v = parseInt((document.getElementById('ageOfDeath') || {}).value, 10); return Number.isFinite(v) ? v : null; })(),
     filingStatus: document.getElementById('filingStatus').value,
     otherIncome: parseMoney(urlParams.get('otherIncome') || '0'),
     totalIncomeNeeds: parseMoney(document.getElementById('totalIncomeNeeds')?.value || '0'),
@@ -5597,6 +5622,13 @@ function persistInputsToUrl(inputs) {
     if (inputs.inflationRate != null && inflPct !== 4) {
       params.set('inflationRate', String(inflPct));
     }
+    // Persist a custom age of death only when it differs from the natural default
+    // (95, or current age + 10 once past 90) — keeps shared URLs short otherwise.
+    {
+      const da = deathAge(inputs);
+      const naturalDeath = (inputs.currentAge > 90 ? inputs.currentAge + 10 : 95);
+      if (da !== naturalDeath) params.set('ageOfDeath', String(da));
+    }
     // Onboarding-fee presentation toggle (off by default → omitted, keeps URLs short).
     if (inputs.showOnboardingFee) {
       params.set('onboardingFee', '1');
@@ -5666,6 +5698,12 @@ function applyUrlParamsToForm() {
     const i = document.getElementById('inflationRate');
     const n = parseFloat(infl);
     if (i && !isNaN(n)) i.value = String(n);
+  }
+  const aod = params.get('ageOfDeath');
+  if (aod !== null && aod !== '') {
+    const a = document.getElementById('ageOfDeath');
+    const n = parseInt(aod, 10);
+    if (a && !isNaN(n)) { a.value = String(n); a.dataset.auto = '0'; }
   }
   const onbFee = params.get('onboardingFee');
   if (onbFee === '1' || onbFee === 'true') {
@@ -5738,6 +5776,22 @@ document.addEventListener('DOMContentLoaded', () => {
       growthVal.textContent = parseFloat(growth.value).toFixed(1) + '%';
     });
   }
+
+  // Age of death: while on its auto default, follow current age (95, or age + 10 once
+  // past 90). A manual edit pins it (data-auto="0"); clearing the field returns to auto.
+  const ageEl = document.getElementById('currentAge');
+  const deathEl = document.getElementById('ageOfDeath');
+  const syncDeathDefault = () => {
+    if (!deathEl || deathEl.dataset.auto === '0') return;
+    const ca = parseInt(ageEl && ageEl.value, 10) || 63;
+    deathEl.value = String(ca > 90 ? ca + 10 : 95);
+  };
+  if (ageEl) ageEl.addEventListener('input', syncDeathDefault);
+  if (deathEl) deathEl.addEventListener('input', () => {
+    deathEl.dataset.auto = deathEl.value.trim() === '' ? '1' : '0';
+    if (deathEl.dataset.auto === '1') syncDeathDefault();
+  });
+  syncDeathDefault(); // reflect any URL-provided current age on load
 
   // Money input formatters (on blur)
   ['balance', 'totalIncomeNeeds', 'socialSecurity'].forEach(id => {
