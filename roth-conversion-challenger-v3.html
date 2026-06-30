@@ -5696,7 +5696,18 @@ function applyUrlParamsToForm() {
   setText('currentAge', 'currentAge');
   setText('filingStatus', 'filingStatus');
   setMoney('totalIncomeNeeds', 'totalIncomeNeeds');
-  setMoney('socialSecurity', 'socialSecurity');
+  // Social Security: intake stores ss_current_amount MONTHLY, but this field is annual.
+  // Auto-detect a monthly-magnitude value (< $12k; combined household monthly SS maxes ~$10k)
+  // and annualize it (×12) so the field and the projection both use the annual figure.
+  (() => {
+    const v = params.get('socialSecurity');
+    if (v !== null && v !== '') {
+      let n = parseMoney(v);
+      if (n > 0 && n < 12000) n = n * 12;
+      const el = document.getElementById('socialSecurity');
+      if (el) el.value = n > 0 ? '$' + n.toLocaleString('en-US') : v;
+    }
+  })();
   // otherIncome and annualWithdrawal no longer have form fields; their URL
   // params are still honored inside onGenerate() for backward compatibility.
   const growth = params.get('growthRate');
