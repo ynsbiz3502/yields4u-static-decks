@@ -12,7 +12,7 @@
 // Init the onboarding-slide Calendly inline widget once it exists. The slide HTML is
 // injected dynamically (so inline <script> can't run), and re-created on each render —
 // poll keeps it working across regenerations and the async widget.js load.
-(function(){function u(){try{var p=new URLSearchParams(window.location.search).get('onboarding_url');if(p){return p;}}catch(_){}return null;}function t(){var e=document.getElementById('calendly-onboarding');if(e&&!e.getAttribute('data-cal-inited')&&window.Calendly&&window.Calendly.initInlineWidget){var o=u();if(o){var s=o.indexOf('?')>=0?'&':'?';e.setAttribute('data-url',o+s+'hide_event_type_details=1&hide_gdpr_banner=1');}window.Calendly.initInlineWidget({url:e.getAttribute('data-url'),parentElement:e});e.setAttribute('data-cal-inited','1');}}setInterval(t,500);})();
+(function(){var o=(function(){try{return new URLSearchParams(window.location.search).get('onboarding_url');}catch(_){return null;}})();function t(){var e=document.getElementById('calendly-onboarding');if(e&&!e.getAttribute('data-cal-inited')&&window.Calendly&&window.Calendly.initInlineWidget){if(o){var s=o.indexOf('?')>=0?'&':'?';e.setAttribute('data-url',o+s+'hide_event_type_details=1&hide_gdpr_banner=1');}window.Calendly.initInlineWidget({url:e.getAttribute('data-url'),parentElement:e});e.setAttribute('data-cal-inited','1');}}setInterval(t,500);})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
