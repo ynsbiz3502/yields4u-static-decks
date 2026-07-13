@@ -3509,6 +3509,7 @@ function applyUrlParamsToForm() {
   setMoney('balance', 'balance');
   setText('currentAge', 'currentAge');
   setText('filingStatus', 'filingStatus');
+  setText('riskTolerance', 'riskTolerance');
   setMoney('totalIncomeNeeds', 'totalIncomeNeeds');
   // Social Security: intake stores ss_current_amount MONTHLY, but this field is annual.
   // Auto-detect a monthly-magnitude value (< $12k; combined household monthly SS maxes ~$10k)
@@ -3615,11 +3616,11 @@ document.addEventListener('DOMContentLoaded', () => {
       growthVal.textContent = parseFloat(growth.value).toFixed(1) + '%';
     });
   }
-  // Risk tolerance presets the assumed-return slider (Conservative 5 / Moderate 7 /
-  // Aggressive 9); the advisor can still drag the slider to fine-tune.
+  // Risk tolerance presets the assumed-return slider (Conservative 6 / Moderate 7 /
+  // Aggressive 10); the advisor can still drag the slider to fine-tune.
   const riskEl = document.getElementById('riskTolerance');
   if (riskEl && growth) {
-    const RISK_RETURN = { conservative: 5, moderate: 7, aggressive: 9 };
+    const RISK_RETURN = { conservative: 6, moderate: 7, aggressive: 10 };
     riskEl.addEventListener('change', () => {
       growth.value = String(RISK_RETURN[riskEl.value] != null ? RISK_RETURN[riskEl.value] : 7);
       if (growthVal) growthVal.textContent = parseFloat(growth.value).toFixed(1) + '%';
