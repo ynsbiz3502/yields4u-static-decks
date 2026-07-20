@@ -1286,7 +1286,7 @@ const LEIBEL_PORTRAIT = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBD
  *  Data + logic
  * =============================================================== */
 
-// IRS Uniform Lifetime Table (RMD divisors) — ages 73-95
+/* === ROTH-ENGINE:BEGIN — generated from engine/roth-engine.mjs by build.mjs; do not edit between markers === */
 const ULT = {
   73:26.5, 74:25.5, 75:24.6, 76:23.7, 77:22.9, 78:22.0,
   79:21.1, 80:20.2, 81:19.4, 82:18.5, 83:17.7, 84:16.8,
@@ -1314,16 +1314,6 @@ const BRACKETS_SINGLE = [
   [Infinity, 0.37]
 ];
 const STD_DED = { MFJ: 30000, Single: 15000 };
-
-// % negative stocks in S&P 500 (illustrative historical pattern)
-const NEG_STOCKS_DATA = [
-  {year:'2008', spx:-37, neg:94}, {year:'2009', spx:26, neg:20},
-  {year:'2011', spx: 2,  neg:58}, {year:'2015', spx: 1, neg:52},
-  {year:'2018', spx:-4,  neg:68}, {year:'2019', spx:29, neg:18},
-  {year:'2020', spx:16,  neg:30}, {year:'2021', spx:27, neg:22},
-  {year:'2022', spx:-19, neg:72}, {year:'2023', spx:24, neg:30},
-  {year:'2024', spx:23,  neg:32}, {year:'2025', spx:14, neg:36},
-];
 
 function computeTax(income, status) {
   const taxable = Math.max(0, income - STD_DED[status]);
@@ -1629,6 +1619,17 @@ function computeHeirImpact(inputs, sim) {
     years
   };
 }
+/* === ROTH-ENGINE:END === */
+
+// % negative stocks in S&P 500 (illustrative historical pattern)
+const NEG_STOCKS_DATA = [
+  {year:'2008', spx:-37, neg:94}, {year:'2009', spx:26, neg:20},
+  {year:'2011', spx: 2,  neg:58}, {year:'2015', spx: 1, neg:52},
+  {year:'2018', spx:-4,  neg:68}, {year:'2019', spx:29, neg:18},
+  {year:'2020', spx:16,  neg:30}, {year:'2021', spx:27, neg:22},
+  {year:'2022', spx:-19, neg:72}, {year:'2023', spx:24, neg:30},
+  {year:'2024', spx:23,  neg:32}, {year:'2025', spx:14, neg:36},
+];
 
 function computeWidowPenalty(inputs, sim) {
   // Widow penalty: extra tax when surviving spouse files Single (compressed brackets).

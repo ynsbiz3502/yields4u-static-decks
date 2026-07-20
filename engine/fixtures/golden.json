@@ -1,0 +1,2219 @@
+{
+ "generatedAt": "2026-07-20T18:33:29.745Z",
+ "source": "roth-conversion-challenger-v3.html lines 1290-1316 + 1328-1631 (pre-extraction), evaluated in Node, cross-checked against the live GitHub Pages engine",
+ "note": "heir.yearOfPassing and rmdStartAge depend on the current calendar year; regenerate golden if re-running in a later year.",
+ "cases": [
+  {
+   "id": "C01",
+   "savings0": 702570.348710282,
+   "savingsP20": 1572628.8349816473,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2050,
+    "years": 24
+   },
+   "sim": {
+    "lifetimeRMD": 713703.1933687041,
+    "lifetimeTax": 1469191.6560620526,
+    "peakRMD": 84624,
+    "lifetimeTaxableInc": 8495765.290585846,
+    "lifetimeFederalTax": 1170583.1901362105,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 25,
+    "yearlyHash": "fe62405f",
+    "rowsHash": "b73b5773"
+   },
+   "cv0": {
+    "lifetimeTax": 468012.8414259285,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "212000",
+    "doneAge": 83
+   }
+  },
+  {
+   "id": "C02",
+   "savings0": 0,
+   "savingsP20": 0,
+   "heir": {
+    "before": 911452.9691843124,
+    "after": 574215.3705861168,
+    "lost": 337237.5985981956,
+    "rothInherit": 911452.9691843124,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2056,
+    "years": 30
+   },
+   "sim": {
+    "lifetimeRMD": 1287601.1664996927,
+    "lifetimeTax": 116580.74732986491,
+    "peakRMD": 102410.44597576543,
+    "lifetimeTaxableInc": 2112237.0561196427,
+    "lifetimeFederalTax": 33238.69982981615,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 883614.2284473834,
+    "rowsLen": 21,
+    "yearlyLen": 31,
+    "yearlyHash": "93eb1b71",
+    "rowsHash": "d04c0e96"
+   },
+   "cv0": {
+    "lifetimeTax": 57328.806921523195,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 1216499.5812750736,
+    "finalTrad": 0,
+    "magiCap": "106000",
+    "doneAge": 71
+   }
+  },
+  {
+   "id": "C03",
+   "savings0": 0,
+   "savingsP20": 0,
+   "heir": {
+    "before": 1332598.63690699,
+    "after": 839537.1412514037,
+    "lost": 493061.4956555863,
+    "rothInherit": 1332598.63690699,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2042,
+    "years": 16
+   },
+   "sim": {
+    "lifetimeRMD": 2051339.8240001905,
+    "lifetimeTax": 277021.1169207855,
+    "peakRMD": 149978.2378923633,
+    "lifetimeTaxableInc": 2529472.472391934,
+    "lifetimeFederalTax": 206921.93867745824,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 1226273.184170841,
+    "rowsLen": 17,
+    "yearlyLen": 17,
+    "yearlyHash": "a3d339a3",
+    "rowsHash": "c833502b"
+   },
+   "cv0": {
+    "lifetimeTax": 206921.93867745824,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 1226273.184170841,
+    "magiCap": "Infinity",
+    "doneAge": null
+   }
+  },
+  {
+   "id": "C04",
+   "savings0": 975232.809882794,
+   "savingsP20": 2412819.789373185,
+   "heir": {
+    "before": 8607132.015721884,
+    "after": 5422493.169904787,
+    "lost": 3184638.845817097,
+    "rothInherit": 8607132.015721884,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2054,
+    "years": 28
+   },
+   "sim": {
+    "lifetimeRMD": 11397702.325842386,
+    "lifetimeTax": 2666657.448393411,
+    "peakRMD": 967093.4849125711,
+    "lifetimeTaxableInc": 12920888.943879753,
+    "lifetimeFederalTax": 1985154.2524939198,
+    "lifetimeIRMAA": 132168.41479066075,
+    "finalBalance": 8404042.383890243,
+    "rowsLen": 23,
+    "yearlyLen": 29,
+    "yearlyHash": "91d15654",
+    "rowsHash": "18d8dd93"
+   },
+   "cv0": {
+    "lifetimeTax": 1076380.5652571463,
+    "lifetimeIRMAA": 65709.29214464,
+    "finalRoth": 14669293.004421195,
+    "finalTrad": 0,
+    "magiCap": "750000",
+    "doneAge": 72
+   }
+  },
+  {
+   "id": "C05",
+   "savings0": 11491799.527251663,
+   "savingsP20": 20243997.306095857,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2061,
+    "years": 35
+   },
+   "sim": {
+    "lifetimeRMD": 0,
+    "lifetimeTax": 10953801.71902793,
+    "peakRMD": 0,
+    "lifetimeTaxableInc": 46558988.30970625,
+    "lifetimeFederalTax": 10754699.50881597,
+    "lifetimeIRMAA": 841642.0184356917,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 36,
+    "yearlyHash": "1d1475e4",
+    "rowsHash": "67caa8b8"
+   },
+   "cv0": {
+    "lifetimeTax": 104542,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 60
+   }
+  },
+  {
+   "id": "C06",
+   "savings0": 2844568.9636912034,
+   "savingsP20": 5179514.657191977,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2056,
+    "years": 30
+   },
+   "sim": {
+    "lifetimeRMD": 0,
+    "lifetimeTax": 3233254.04865343,
+    "peakRMD": 0,
+    "lifetimeTaxableInc": 14238800.462571846,
+    "lifetimeFederalTax": 2910826.11289651,
+    "lifetimeIRMAA": 345884.1945699744,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 31,
+    "yearlyHash": "eda1e8f6",
+    "rowsHash": "ff3d9695"
+   },
+   "cv0": {
+    "lifetimeTax": 373471.09682948876,
+    "lifetimeIRMAA": 38670.246945792,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "260000",
+    "doneAge": 71
+   }
+  },
+  {
+   "id": "C07",
+   "savings0": 307906.8054690978,
+   "savingsP20": 844648.4565098215,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2050,
+    "years": 24
+   },
+   "sim": {
+    "lifetimeRMD": 183193.8839447554,
+    "lifetimeTax": 659005.6836796472,
+    "peakRMD": 33363.609433962265,
+    "lifetimeTaxableInc": 4969398.006368413,
+    "lifetimeFederalTax": 426537.3926773541,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 25,
+    "yearlyHash": "422dd5bd",
+    "rowsHash": "b359931d"
+   },
+   "cv0": {
+    "lifetimeTax": 118630.58720825627,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "106000",
+    "doneAge": 80
+   }
+  },
+  {
+   "id": "C08",
+   "savings0": 107174.47026288143,
+   "savingsP20": 331453.84368083696,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2054,
+    "years": 28
+   },
+   "sim": {
+    "lifetimeRMD": 1063656.0493681373,
+    "lifetimeTax": 472039.41914513323,
+    "peakRMD": 67185.45634037003,
+    "lifetimeTaxableInc": 4422949.737376194,
+    "lifetimeFederalTax": 314810.41924518463,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 29,
+    "yearlyHash": "4ed06f3c",
+    "rowsHash": "b823c88b"
+   },
+   "cv0": {
+    "lifetimeTax": 207635.9489823032,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "133000",
+    "doneAge": 80
+   }
+  },
+  {
+   "id": "C09",
+   "savings0": 259982.7639876947,
+   "savingsP20": 728530.7636248474,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2052,
+    "years": 26
+   },
+   "sim": {
+    "lifetimeRMD": 518273.7058116094,
+    "lifetimeTax": 751495.1986104015,
+    "peakRMD": 54493.327964062366,
+    "lifetimeTaxableInc": 5638099.253737511,
+    "lifetimeFederalTax": 484609.56832575856,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 27,
+    "yearlyHash": "41113a72",
+    "rowsHash": "7c14a445"
+   },
+   "cv0": {
+    "lifetimeTax": 224626.80433806387,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "106000",
+    "doneAge": 85
+   }
+  },
+  {
+   "id": "C10",
+   "savings0": 637866.4574197038,
+   "savingsP20": 1552769.915089372,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2050,
+    "years": 24
+   },
+   "sim": {
+    "lifetimeRMD": 34835.28666003876,
+    "lifetimeTax": 989117.2532099552,
+    "peakRMD": 16972.743773584905,
+    "lifetimeTaxableInc": 6469900.081955707,
+    "lifetimeFederalTax": 724892.8442375798,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 25,
+    "yearlyHash": "31ab439c",
+    "rowsHash": "50d194e"
+   },
+   "cv0": {
+    "lifetimeTax": 87026.386817876,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "140000",
+    "doneAge": 75
+   }
+  },
+  {
+   "id": "C11",
+   "savings0": 317126.55238295195,
+   "savingsP20": 879764.7871211888,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2052,
+    "years": 26
+   },
+   "sim": {
+    "lifetimeRMD": 851538.3205274255,
+    "lifetimeTax": 986765.106161943,
+    "peakRMD": 74440.79316704055,
+    "lifetimeTaxableInc": 6751876.345450407,
+    "lifetimeFederalTax": 695716.3520249317,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 27,
+    "yearlyHash": "11b0c65f",
+    "rowsHash": "9af145d7"
+   },
+   "cv0": {
+    "lifetimeTax": 378589.79964197974,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "140000",
+    "doneAge": 86
+   }
+  },
+  {
+   "id": "C12",
+   "savings0": 0,
+   "savingsP20": 113751.50269877864,
+   "heir": {
+    "before": 889182.9996275647,
+    "after": 560185.2897653658,
+    "lost": 328997.7098621989,
+    "rothInherit": 889182.9996275647,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2046,
+    "years": 20
+   },
+   "sim": {
+    "lifetimeRMD": 1523613.9279125927,
+    "lifetimeTax": 331461.340090985,
+    "peakRMD": 100657.78880361686,
+    "lifetimeTaxableInc": 2293150.8392944676,
+    "lifetimeFederalTax": 236399.45903034808,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 808902.7704852804,
+    "rowsLen": 21,
+    "yearlyLen": 21,
+    "yearlyHash": "9b634c72",
+    "rowsHash": "c96dc2a4"
+   },
+   "cv0": {
+    "lifetimeTax": 236399.45903034808,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 808902.7704852804,
+    "magiCap": "Infinity",
+    "doneAge": null
+   }
+  },
+  {
+   "id": "C13",
+   "savings0": 60453.69227427998,
+   "savingsP20": 204836.6107813795,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2058,
+    "years": 32
+   },
+   "sim": {
+    "lifetimeRMD": 859408.3762471579,
+    "lifetimeTax": 336459.4911202785,
+    "peakRMD": 59952.50560511768,
+    "lifetimeTaxableInc": 3972571.6450794274,
+    "lifetimeFederalTax": 206772.35412638422,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 33,
+    "yearlyHash": "e8cc7527",
+    "rowsHash": "5fd7441c"
+   },
+   "cv0": {
+    "lifetimeTax": 146318.66185210424,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "106000",
+    "doneAge": 76
+   }
+  },
+  {
+   "id": "C14",
+   "savings0": 104377.52842816676,
+   "savingsP20": 286349.08178801974,
+   "heir": {
+    "before": 4395182.123970581,
+    "after": 2768964.738101466,
+    "lost": 1626217.3858691151,
+    "rothInherit": 4395182.123970581,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2051,
+    "years": 25
+   },
+   "sim": {
+    "lifetimeRMD": 7293113.8539130185,
+    "lifetimeTax": 1279357.2367471196,
+    "peakRMD": 493840.6880865821,
+    "lifetimeTaxableInc": 7517869.053913018,
+    "lifetimeFederalTax": 927887.8031164813,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 4174435.336395879,
+    "rowsLen": 23,
+    "yearlyLen": 26,
+    "yearlyHash": "1247063d",
+    "rowsHash": "1bfca905"
+   },
+   "cv0": {
+    "lifetimeTax": 823510.2746883145,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 9569053.869317032,
+    "finalTrad": 3543836.756442364,
+    "magiCap": "160000",
+    "doneAge": null
+   }
+  },
+  {
+   "id": "C15",
+   "savings0": 367354.6706143179,
+   "savingsP20": 1020499.3373914711,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2056,
+    "years": 30
+   },
+   "sim": {
+    "lifetimeRMD": 0,
+    "lifetimeTax": 624024.1683754186,
+    "peakRMD": 0,
+    "lifetimeTaxableInc": 5536757.559871063,
+    "lifetimeFederalTax": 422529.28432658827,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 31,
+    "yearlyHash": "85928e64",
+    "rowsHash": "e984003a"
+   },
+   "cv0": {
+    "lifetimeTax": 55174.613712270424,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 71
+   }
+  },
+  {
+   "id": "C16",
+   "savings0": 26436.115115617067,
+   "savingsP20": 75144.43208902515,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2044,
+    "years": 18
+   },
+   "sim": {
+    "lifetimeRMD": 622672.0854044443,
+    "lifetimeTax": 164488.17177403442,
+    "peakRMD": 45133.339029735944,
+    "lifetimeTaxableInc": 1982769.490592436,
+    "lifetimeFederalTax": 125116.7366079372,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 19,
+    "yearlyLen": 19,
+    "yearlyHash": "25dff7ff",
+    "rowsHash": "c52cd38d"
+   },
+   "cv0": {
+    "lifetimeTax": 98680.62149232013,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 93
+   }
+  },
+  {
+   "id": "C17",
+   "savings0": 1685181.1916492195,
+   "savingsP20": 3335609.466116585,
+   "heir": {
+    "before": 7902786.163600126,
+    "after": 4978755.2830680795,
+    "lost": 2924030.880532047,
+    "rothInherit": 7902786.163600126,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2062,
+    "years": 36
+   },
+   "sim": {
+    "lifetimeRMD": 10125247.347252073,
+    "lifetimeTax": 2836890.71620442,
+    "peakRMD": 887953.5015281041,
+    "lifetimeTaxableInc": 11219828.129506594,
+    "lifetimeFederalTax": 1883254.164872464,
+    "lifetimeIRMAA": 219755.89026607448,
+    "finalBalance": 7716315.928279226,
+    "rowsLen": 21,
+    "yearlyLen": 37,
+    "yearlyHash": "c5111fdd",
+    "rowsHash": "b2fb4dc6"
+   },
+   "cv0": {
+    "lifetimeTax": 414488.42128048977,
+    "lifetimeIRMAA": 3340.442208829441,
+    "finalRoth": 25376437.56054045,
+    "finalTrad": 0,
+    "magiCap": "266000",
+    "doneAge": 65
+   }
+  },
+  {
+   "id": "C18",
+   "savings0": 699279.2030607096,
+   "savingsP20": 1751572.0705253705,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2057,
+    "years": 31
+   },
+   "sim": {
+    "lifetimeRMD": 94105.1995834481,
+    "lifetimeTax": 1337800.9105213908,
+    "peakRMD": 34986.908960449,
+    "lifetimeTaxableInc": 9405220.3006717,
+    "lifetimeFederalTax": 1017519.4335953358,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 32,
+    "yearlyHash": "5e521441",
+    "rowsHash": "4608e94f"
+   },
+   "cv0": {
+    "lifetimeTax": 318240.23053462623,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "140000",
+    "doneAge": 78
+   }
+  },
+  {
+   "id": "C19",
+   "savings0": 249618.84595223307,
+   "savingsP20": 1060089.707670467,
+   "heir": {
+    "before": 5496823.831144946,
+    "after": 3462999.013621316,
+    "lost": 2033824.8175236299,
+    "rothInherit": 5496823.831144946,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2057,
+    "years": 31
+   },
+   "sim": {
+    "lifetimeRMD": 8715410.082341716,
+    "lifetimeTax": 1774724.7615040499,
+    "peakRMD": 617620.6551848253,
+    "lifetimeTaxableInc": 10141472.47747447,
+    "lifetimeFederalTax": 1221902.744494014,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 5220747.398277329,
+    "rowsLen": 21,
+    "yearlyLen": 32,
+    "yearlyHash": "95558ef3",
+    "rowsHash": "320a4ce5"
+   },
+   "cv0": {
+    "lifetimeTax": 898227.645690847,
+    "lifetimeIRMAA": 74056.25285093389,
+    "finalRoth": 13286842.588335432,
+    "finalTrad": 0,
+    "magiCap": "334000",
+    "doneAge": 76
+   }
+  },
+  {
+   "id": "C20",
+   "savings0": 156397.03971218236,
+   "savingsP20": 524751.6776436442,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2062,
+    "years": 36
+   },
+   "sim": {
+    "lifetimeRMD": 212660.14832792332,
+    "lifetimeTax": 500147.0176351229,
+    "peakRMD": 31546.83664952033,
+    "lifetimeTaxableInc": 4117793.2187359394,
+    "lifetimeFederalTax": 327585.1569547966,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 37,
+    "yearlyHash": "6a4f0cac",
+    "rowsHash": "b15005e4"
+   },
+   "cv0": {
+    "lifetimeTax": 171188.11724261421,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 74
+   }
+  },
+  {
+   "id": "C21",
+   "savings0": 189428.88203589097,
+   "savingsP20": 539787.3559385263,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2056,
+    "years": 30
+   },
+   "sim": {
+    "lifetimeRMD": 203636.895441248,
+    "lifetimeTax": 482584.4630613038,
+    "peakRMD": 35330.10199812412,
+    "lifetimeTaxableInc": 4745792.194175197,
+    "lifetimeFederalTax": 327613.4404430843,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 31,
+    "yearlyHash": "ecd25c97",
+    "rowsHash": "ebeef9ca"
+   },
+   "cv0": {
+    "lifetimeTax": 138184.5584071933,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "106000",
+    "doneAge": 77
+   }
+  },
+  {
+   "id": "C22",
+   "savings0": 443049.53336530644,
+   "savingsP20": 985120.9706177963,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2045,
+    "years": 19
+   },
+   "sim": {
+    "lifetimeRMD": 788235.5999623316,
+    "lifetimeTax": 1026804.182349965,
+    "peakRMD": 88612.65822784811,
+    "lifetimeTaxableInc": 6062221.23646859,
+    "lifetimeFederalTax": 834250.738149177,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 20,
+    "yearlyLen": 20,
+    "yearlyHash": "26107256",
+    "rowsHash": "da66f4e0"
+   },
+   "cv0": {
+    "lifetimeTax": 391201.2047838706,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 87
+   }
+  },
+  {
+   "id": "C23",
+   "savings0": 98560.12875283265,
+   "savingsP20": 315042.908680815,
+   "heir": {
+    "before": 4924782.690283692,
+    "after": 3102613.094878726,
+    "lost": 1822169.5954049663,
+    "rothInherit": 4924782.690283692,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2044,
+    "years": 18
+   },
+   "sim": {
+    "lifetimeRMD": 6068434.3914674185,
+    "lifetimeTax": 1111249.5530113932,
+    "peakRMD": 553346.3696947969,
+    "lifetimeTaxableInc": 6167220.680424854,
+    "lifetimeFederalTax": 899246.1558118741,
+    "lifetimeIRMAA": 54478.21204372507,
+    "finalBalance": 4808579.952647786,
+    "rowsLen": 19,
+    "yearlyLen": 19,
+    "yearlyHash": "5803fa14",
+    "rowsHash": "64993ed5"
+   },
+   "cv0": {
+    "lifetimeTax": 839104.1914022118,
+    "lifetimeIRMAA": 16060.047700554738,
+    "finalRoth": 6877126.676204446,
+    "finalTrad": 3876752.713482316,
+    "magiCap": "212000",
+    "doneAge": null
+   }
+  },
+  {
+   "id": "C24",
+   "savings0": 3302.0610739993863,
+   "savingsP20": 6303.93477763515,
+   "heir": {
+    "before": 3625813.728924695,
+    "after": 2284262.649222558,
+    "lost": 1341551.079702137,
+    "rothInherit": 3625813.728924695,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2044,
+    "years": 18
+   },
+   "sim": {
+    "lifetimeRMD": 5444379.99870051,
+    "lifetimeTax": 927856.3408197901,
+    "peakRMD": 407394.8010027747,
+    "lifetimeTaxableInc": 5550222.451154904,
+    "lifetimeFederalTax": 756947.0797599321,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 3443708.2528764545,
+    "rowsLen": 19,
+    "yearlyLen": 19,
+    "yearlyHash": "290578c2",
+    "rowsHash": "b0f8c8b2"
+   },
+   "cv0": {
+    "lifetimeTax": 753645.0186859327,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 4345268.149787988,
+    "finalTrad": 3232498.0360335493,
+    "magiCap": "200000",
+    "doneAge": null
+   }
+  },
+  {
+   "id": "C25",
+   "savings0": 0,
+   "savingsP20": 0,
+   "heir": {
+    "before": 1089566.3765760497,
+    "after": 686426.8172429113,
+    "lost": 403139.5593331384,
+    "rothInherit": 1089566.3765760497,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2047,
+    "years": 21
+   },
+   "sim": {
+    "lifetimeRMD": 1769114.9479255597,
+    "lifetimeTax": 241578.74445543138,
+    "peakRMD": 122423.18837933142,
+    "lifetimeTaxableInc": 1905935.5872271163,
+    "lifetimeFederalTax": 158897.7840551831,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 1034843.2113704887,
+    "rowsLen": 22,
+    "yearlyLen": 22,
+    "yearlyHash": "51c34528",
+    "rowsHash": "f5559b41"
+   },
+   "cv0": {
+    "lifetimeTax": 158897.7840551831,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 1361128.1520325618,
+    "finalTrad": 1034843.2113704887,
+    "magiCap": "Infinity",
+    "doneAge": null
+   }
+  },
+  {
+   "id": "C26",
+   "savings0": 509103.2897417094,
+   "savingsP20": 1363011.6559276683,
+   "heir": {
+    "before": 5646564.818401897,
+    "after": 3557335.835593195,
+    "lost": 2089228.982808702,
+    "rothInherit": 5646564.818401897,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2058,
+    "years": 32
+   },
+   "sim": {
+    "lifetimeRMD": 7234520.112912369,
+    "lifetimeTax": 1362672.1885724487,
+    "peakRMD": 634445.4852136963,
+    "lifetimeTaxableInc": 8045913.607978738,
+    "lifetimeFederalTax": 810049.2937275434,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 5513331.266507022,
+    "rowsLen": 21,
+    "yearlyLen": 33,
+    "yearlyHash": "528d25cb",
+    "rowsHash": "d5a5d8da"
+   },
+   "cv0": {
+    "lifetimeTax": 300946.003985834,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 15921229.128293013,
+    "finalTrad": 0,
+    "magiCap": "133000",
+    "doneAge": 80
+   }
+  },
+  {
+   "id": "C27",
+   "savings0": 47309.942733850505,
+   "savingsP20": 130372.22199968997,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2035,
+    "years": 9
+   },
+   "sim": {
+    "lifetimeRMD": 184451.93089968286,
+    "lifetimeTax": 121736.42985185224,
+    "peakRMD": 41447.36842105263,
+    "lifetimeTaxableInc": 1292157.2791084193,
+    "lifetimeFederalTax": 106109.9747527081,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 10,
+    "yearlyLen": 10,
+    "yearlyHash": "2d518c00",
+    "rowsHash": "b4d73905"
+   },
+   "cv0": {
+    "lifetimeTax": 58800.0320188576,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 92
+   }
+  },
+  {
+   "id": "C28",
+   "savings0": 150720.68503296335,
+   "savingsP20": 521644.9272158453,
+   "heir": {
+    "before": 1567637.6829820278,
+    "after": 987611.7402786775,
+    "lost": 580025.9427033502,
+    "rothInherit": 1567637.6829820278,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2057,
+    "years": 31
+   },
+   "sim": {
+    "lifetimeRMD": 2814041.0644606133,
+    "lifetimeTax": 596046.2931371975,
+    "peakRMD": 180680.23699882883,
+    "lifetimeTaxableInc": 5470076.126870661,
+    "lifetimeFederalTax": 400775.2474522225,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 1400702.0766818563,
+    "rowsLen": 21,
+    "yearlyLen": 32,
+    "yearlyHash": "a3640c2c",
+    "rowsHash": "d99066bd"
+   },
+   "cv0": {
+    "lifetimeTax": 250054.56241925916,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 1922271.5835899855,
+    "finalTrad": 0,
+    "magiCap": "133000",
+    "doneAge": 79
+   }
+  },
+  {
+   "id": "C29",
+   "savings0": 307314.74655262206,
+   "savingsP20": 872708.4380761868,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2059,
+    "years": 33
+   },
+   "sim": {
+    "lifetimeRMD": 0,
+    "lifetimeTax": 492862.1477884703,
+    "peakRMD": 0,
+    "lifetimeTaxableInc": 5029769.413059125,
+    "lifetimeFederalTax": 318761.6365526221,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 34,
+    "yearlyHash": "24552a6e",
+    "rowsHash": "896f4a9f"
+   },
+   "cv0": {
+    "lifetimeTax": 11446.890000000001,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 64
+   }
+  },
+  {
+   "id": "C30",
+   "savings0": 603572.1039212461,
+   "savingsP20": 1522731.4173651647,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2054,
+    "years": 28
+   },
+   "sim": {
+    "lifetimeRMD": 986177.2533392796,
+    "lifetimeTax": 1539169.1353469002,
+    "peakRMD": 95277.69380762508,
+    "lifetimeTaxableInc": 9533931.533773005,
+    "lifetimeFederalTax": 1209114.3836276121,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 29,
+    "yearlyHash": "4825b810",
+    "rowsHash": "41b51b54"
+   },
+   "cv0": {
+    "lifetimeTax": 605542.279706366,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "212000",
+    "doneAge": 82
+   }
+  },
+  {
+   "id": "C31",
+   "savings0": 0,
+   "savingsP20": 0,
+   "heir": {
+    "before": 1566690.5589874021,
+    "after": 987015.0521620633,
+    "lost": 579675.5068253388,
+    "rothInherit": 1566690.5589874021,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2048,
+    "years": 22
+   },
+   "sim": {
+    "lifetimeRMD": 2827381.796736526,
+    "lifetimeTax": 295194.32404305035,
+    "peakRMD": 176032.64707723618,
+    "lifetimeTaxableInc": 2933207.494730208,
+    "lifetimeFederalTax": 202693.7676305175,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 1474097.386624776,
+    "rowsLen": 23,
+    "yearlyLen": 23,
+    "yearlyHash": "8e27a2ba",
+    "rowsHash": "4aa742f9"
+   },
+   "cv0": {
+    "lifetimeTax": 202693.7676305175,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 3136619.0476530003,
+    "finalTrad": 1474097.386624776,
+    "magiCap": "Infinity",
+    "doneAge": null
+   }
+  },
+  {
+   "id": "C32",
+   "savings0": 2035269.2879362565,
+   "savingsP20": 4197091.369730846,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2054,
+    "years": 28
+   },
+   "sim": {
+    "lifetimeRMD": 593834.9999287423,
+    "lifetimeTax": 3250257.66556424,
+    "peakRMD": 96640.74496637711,
+    "lifetimeTaxableInc": 15863667.5779038,
+    "lifetimeFederalTax": 2668187.2655562325,
+    "lifetimeIRMAA": 279661.9916573415,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 29,
+    "yearlyHash": "413487ae",
+    "rowsHash": "6c0e87ff"
+   },
+   "cv0": {
+    "lifetimeTax": 832582.3054468918,
+    "lifetimeIRMAA": 79997.6638304256,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "540000",
+    "doneAge": 73
+   }
+  },
+  {
+   "id": "C33",
+   "savings0": 79985.34201450285,
+   "savingsP20": 452891.49881622696,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2054,
+    "years": 28
+   },
+   "sim": {
+    "lifetimeRMD": 2229691.988547189,
+    "lifetimeTax": 844978.9433255937,
+    "peakRMD": 124245.64432861167,
+    "lifetimeTaxableInc": 6326558.066952871,
+    "lifetimeFederalTax": 543243.418794386,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 29,
+    "yearlyHash": "1263d34c",
+    "rowsHash": "6e6e6d36"
+   },
+   "cv0": {
+    "lifetimeTax": 463258.0767798831,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "133000",
+    "doneAge": 90
+   }
+  },
+  {
+   "id": "C34",
+   "savings0": 85712.48461115698,
+   "savingsP20": 398156.64416821813,
+   "heir": {
+    "before": 1179867.5827198576,
+    "after": 743316.5771135102,
+    "lost": 436551.0056063473,
+    "rothInherit": 1179867.5827198576,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2053,
+    "years": 27
+   },
+   "sim": {
+    "lifetimeRMD": 2082568.433869439,
+    "lifetimeTax": 519974.63039674447,
+    "peakRMD": 132924.97165644084,
+    "lifetimeTaxableInc": 3572152.526658717,
+    "lifetimeFederalTax": 366845.40499835584,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 1080288.0350582958,
+    "rowsLen": 23,
+    "yearlyLen": 28,
+    "yearlyHash": "2c75e349",
+    "rowsHash": "7a993da3"
+   },
+   "cv0": {
+    "lifetimeTax": 253075.43418124685,
+    "lifetimeIRMAA": 28057.486205952002,
+    "finalRoth": 1233493.2829773924,
+    "finalTrad": 0,
+    "magiCap": "200000",
+    "doneAge": 74
+   }
+  },
+  {
+   "id": "C35",
+   "savings0": 690755.0404934357,
+   "savingsP20": 1726733.974878588,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2057,
+    "years": 31
+   },
+   "sim": {
+    "lifetimeRMD": 112844.31377244816,
+    "lifetimeTax": 1337800.9105213908,
+    "peakRMD": 38238.306285139784,
+    "lifetimeTaxableInc": 9405220.3006717,
+    "lifetimeFederalTax": 1017519.4335953358,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 32,
+    "yearlyHash": "c1340f64",
+    "rowsHash": "171853b4"
+   },
+   "cv0": {
+    "lifetimeTax": 326764.3931019002,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "140000",
+    "doneAge": 79
+   }
+  },
+  {
+   "id": "C36",
+   "savings0": 329548.38558782055,
+   "savingsP20": 903600.9398860623,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2048,
+    "years": 22
+   },
+   "sim": {
+    "lifetimeRMD": 57984.62337673387,
+    "lifetimeTax": 580855.7021343497,
+    "peakRMD": 18970.22641509434,
+    "lifetimeTaxableInc": 4377476.335719787,
+    "lifetimeFederalTax": 376006.028549267,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 23,
+    "yearlyHash": "756680c",
+    "rowsHash": "4c0235e7"
+   },
+   "cv0": {
+    "lifetimeTax": 46457.64296144641,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 77
+   }
+  },
+  {
+   "id": "C37",
+   "savings0": 48256.2747765861,
+   "savingsP20": 205750.1656579827,
+   "heir": {
+    "before": 1465857.4603701727,
+    "after": 923490.2000332088,
+    "lost": 542367.2603369639,
+    "rothInherit": 1465857.4603701727,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2057,
+    "years": 31
+   },
+   "sim": {
+    "lifetimeRMD": 2854563.8928267104,
+    "lifetimeTax": 487675.73727933073,
+    "peakRMD": 171787.27486033438,
+    "lifetimeTaxableInc": 4852519.956708258,
+    "lifetimeFederalTax": 326668.507032734,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 1301602.9435760435,
+    "rowsLen": 21,
+    "yearlyLen": 32,
+    "yearlyHash": "928e2f5c",
+    "rowsHash": "6438df55"
+   },
+   "cv0": {
+    "lifetimeTax": 278412.2322561479,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 1397316.0629145524,
+    "finalTrad": 0,
+    "magiCap": "133000",
+    "doneAge": 80
+   }
+  },
+  {
+   "id": "C38",
+   "savings0": 7313829.074348526,
+   "savingsP20": 12868798.75814589,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2055,
+    "years": 29
+   },
+   "sim": {
+    "lifetimeRMD": 0,
+    "lifetimeTax": 8267122.162559489,
+    "peakRMD": 0,
+    "lifetimeTaxableInc": 33629089.524690315,
+    "lifetimeFederalTax": 7765408.311084826,
+    "lifetimeIRMAA": 653950.3741730276,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 30,
+    "yearlyHash": "e748f693",
+    "rowsHash": "d2db8cc"
+   },
+   "cv0": {
+    "lifetimeTax": 1021508.2326000849,
+    "lifetimeIRMAA": 84021.37830924288,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "620000",
+    "doneAge": 72
+   }
+  },
+  {
+   "id": "C39",
+   "savings0": 827500.2032354656,
+   "savingsP20": 1889223.2396942875,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2052,
+    "years": 26
+   },
+   "sim": {
+    "lifetimeRMD": 334971.1407065543,
+    "lifetimeTax": 1508025.855368816,
+    "peakRMD": 60456.61154133399,
+    "lifetimeTaxableInc": 9040169.165456614,
+    "lifetimeFederalTax": 1199140.7724262972,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 23,
+    "yearlyLen": 27,
+    "yearlyHash": "916d1ad7",
+    "rowsHash": "c9f468d0"
+   },
+   "cv0": {
+    "lifetimeTax": 371640.5691908316,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "200000",
+    "doneAge": 80
+   }
+  },
+  {
+   "id": "C40",
+   "savings0": 2490047.9606632073,
+   "savingsP20": 5352268.625570146,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2064,
+    "years": 38
+   },
+   "sim": {
+    "lifetimeRMD": 0,
+    "lifetimeTax": 3415929.2298118807,
+    "peakRMD": 0,
+    "lifetimeTaxableInc": 19528376.337363392,
+    "lifetimeFederalTax": 2779900.5352835627,
+    "lifetimeIRMAA": 170509.33924475618,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 39,
+    "yearlyHash": "a39971b0",
+    "rowsHash": "a29bf517"
+   },
+   "cv0": {
+    "lifetimeTax": 454498.9640531754,
+    "lifetimeIRMAA": 5862.949811936194,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "240000",
+    "doneAge": 67
+   }
+  },
+  {
+   "id": "C41",
+   "savings0": 921773.2709774155,
+   "savingsP20": 2328724.168164062,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2061,
+    "years": 35
+   },
+   "sim": {
+    "lifetimeRMD": 0,
+    "lifetimeTax": 1586294.10854931,
+    "peakRMD": 0,
+    "lifetimeTaxableInc": 11174157.1943295,
+    "lifetimeFederalTax": 1156835.6628685014,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 36,
+    "yearlyHash": "4f39c7ff",
+    "rowsHash": "cc5d7cfc"
+   },
+   "cv0": {
+    "lifetimeTax": 235062.39189108586,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 72
+   }
+  },
+  {
+   "id": "C42",
+   "savings0": 284563.80289470556,
+   "savingsP20": 802039.7751003837,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2058,
+    "years": 32
+   },
+   "sim": {
+    "lifetimeRMD": 21586.365007082575,
+    "lifetimeTax": 597389.7075706737,
+    "peakRMD": 12248.703872478394,
+    "lifetimeTaxableInc": 5561600.303111198,
+    "lifetimeFederalTax": 397455.7930901968,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 33,
+    "yearlyHash": "984bbe81",
+    "rowsHash": "aeda0d85"
+   },
+   "cv0": {
+    "lifetimeTax": 112891.9901954912,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "106000",
+    "doneAge": 73
+   }
+  },
+  {
+   "id": "C43",
+   "savings0": 125326.72936658491,
+   "savingsP20": 413680.76260018593,
+   "heir": {
+    "before": 2457753.762367009,
+    "after": 1548384.8702912158,
+    "lost": 909368.8920757934,
+    "rothInherit": 2457753.762367009,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2050,
+    "years": 24
+   },
+   "sim": {
+    "lifetimeRMD": 3249094.5941248774,
+    "lifetimeTax": 571911.2926995663,
+    "peakRMD": 276152.10813112464,
+    "lifetimeTaxableInc": 3360333.127191039,
+    "lifetimeFederalTax": 405371.3535349149,
+    "lifetimeIRMAA": 7767.835424539939,
+    "finalBalance": 2399761.8196594734,
+    "rowsLen": 23,
+    "yearlyLen": 25,
+    "yearlyHash": "b7339d1c",
+    "rowsHash": "f5c9a8b3"
+   },
+   "cv0": {
+    "lifetimeTax": 259754.9733869179,
+    "lifetimeIRMAA": 28057.486205952002,
+    "finalRoth": 7649942.165508982,
+    "finalTrad": 0,
+    "magiCap": "200000",
+    "doneAge": 77
+   }
+  },
+  {
+   "id": "S01",
+   "savings0": 204772.35412638422,
+   "savingsP20": 598029.518634327,
+   "heir": {
+    "before": 0,
+    "after": 0,
+    "lost": 0,
+    "rothInherit": 0,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2058,
+    "years": 32
+   },
+   "sim": {
+    "lifetimeRMD": 0,
+    "lifetimeTax": 336459.4911202785,
+    "peakRMD": 0,
+    "lifetimeTaxableInc": 3972571.6450794274,
+    "lifetimeFederalTax": 206772.35412638422,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 0,
+    "rowsLen": 21,
+    "yearlyLen": 33,
+    "yearlyHash": "72940781",
+    "rowsHash": "cc438b32"
+   },
+   "cv0": {
+    "lifetimeTax": 2000,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 0,
+    "finalTrad": 0,
+    "magiCap": "Infinity",
+    "doneAge": 63
+   }
+  },
+  {
+   "id": "S02",
+   "savings0": 2237789.2154690763,
+   "savingsP20": 4980985.140737508,
+   "heir": {
+    "before": 12162447.510706373,
+    "after": 7662341.931745015,
+    "lost": 4500105.5789613575,
+    "rothInherit": 12162447.510706373,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2066,
+    "years": 40
+   },
+   "sim": {
+    "lifetimeRMD": 19283993.97851597,
+    "lifetimeTax": 5334382.16357892,
+    "peakRMD": 1366567.1360344237,
+    "lifetimeTaxableInc": 22857363.40761623,
+    "lifetimeFederalTax": 3429872.080272592,
+    "lifetimeIRMAA": 305653.2329188991,
+    "finalBalance": 11551592.000898987,
+    "rowsLen": 21,
+    "yearlyLen": 41,
+    "yearlyHash": "9a190b5d",
+    "rowsHash": "678f"
+   },
+   "cv0": {
+    "lifetimeTax": 1489920.407898046,
+    "lifetimeIRMAA": 7815.689824368858,
+    "finalRoth": 32906625.338396747,
+    "finalTrad": 0,
+    "magiCap": "540000",
+    "doneAge": 65
+   }
+  },
+  {
+   "id": "S03",
+   "savings0": 0,
+   "savingsP20": 205099.76124088618,
+   "heir": {
+    "before": 1924031.0851637872,
+    "after": 1212139.583653186,
+    "lost": 711891.5015106013,
+    "rothInherit": 1924031.0851637872,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2056,
+    "years": 30
+   },
+   "sim": {
+    "lifetimeRMD": 3052344.3318676297,
+    "lifetimeTax": 534179.9451097194,
+    "peakRMD": 216183.26799593115,
+    "lifetimeTaxableInc": 3868441.034292723,
+    "lifetimeFederalTax": 361803.7488247869,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 1827397.164369606,
+    "rowsLen": 21,
+    "yearlyLen": 31,
+    "yearlyHash": "484ccb24",
+    "rowsHash": "768dfb"
+   },
+   "cv0": {
+    "lifetimeTax": 383548.52484011103,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 2550762.1315222317,
+    "finalTrad": 0,
+    "magiCap": "106000",
+    "doneAge": 83
+   }
+  },
+  {
+   "id": "S04",
+   "savings0": 0,
+   "savingsP20": 0,
+   "heir": {
+    "before": 2156582.528905189,
+    "after": 1358646.9932102691,
+    "lost": 797935.53569492,
+    "rothInherit": 2156582.528905189,
+    "heirRate": 0.37,
+    "targetAge": 80,
+    "yearOfPassing": 2041,
+    "years": 15
+   },
+   "sim": {
+    "lifetimeRMD": 552891.0618350919,
+    "lifetimeTax": 46154.00424236944,
+    "peakRMD": 106761.51133194006,
+    "lifetimeTaxableInc": 1305231.2972603738,
+    "lifetimeFederalTax": 67649.14220050075,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 2193308.4888033764,
+    "rowsLen": 6,
+    "yearlyLen": 16,
+    "yearlyHash": "49812ed3",
+    "rowsHash": "e954a583"
+   },
+   "cv0": {
+    "lifetimeTax": 188629.42267050315,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 1782126.0124369352,
+    "finalTrad": 413650.73953985743,
+    "magiCap": "106000",
+    "doneAge": null
+   }
+  },
+  {
+   "id": "S05",
+   "savings0": 0,
+   "savingsP20": 0,
+   "heir": {
+    "before": 374973.51957113046,
+    "after": 236233.31732981218,
+    "lost": 138740.20224131827,
+    "rothInherit": 374973.51957113046,
+    "heirRate": 0.37,
+    "targetAge": 102,
+    "yearOfPassing": 2036,
+    "years": 10
+   },
+   "sim": {
+    "lifetimeRMD": 720593.8649616236,
+    "lifetimeTax": 59829.09092572543,
+    "peakRMD": 78313.24779061784,
+    "lifetimeTaxableInc": 872300.7577143786,
+    "lifetimeFederalTax": 49692.23623581114,
+    "lifetimeIRMAA": 0,
+    "finalBalance": 307251.0415796252,
+    "rowsLen": 11,
+    "yearlyLen": 11,
+    "yearlyHash": "c10b58c",
+    "rowsHash": "36d79d96"
+   },
+   "cv0": {
+    "lifetimeTax": 49692.23623581114,
+    "lifetimeIRMAA": 0,
+    "finalRoth": 117809.18518170723,
+    "finalTrad": 307251.0415796252,
+    "magiCap": "Infinity",
+    "doneAge": null
+   }
+  },
+  {
+   "id": "S06",
+   "savings0": 1999489.888303562,
+   "savingsP20": 4028210.1838009655,
+   "heir": {
+    "before": 10910848.181035794,
+    "after": 6873834.35405255,
+    "lost": 4037013.8269832437,
+    "rothInherit": 10910848.181035794,
+    "heirRate": 0.37,
+    "targetAge": 95,
+    "yearOfPassing": 2058,
+    "years": 32
+   },
+   "sim": {
+    "lifetimeRMD": 13979251.660654288,
+    "lifetimeTax": 3520047.502337262,
+    "peakRMD": 1225937.9978691903,
+    "lifetimeTaxableInc": 13979251.660654288,
+    "lifetimeFederalTax": 2267115.255398571,
+    "lifetimeIRMAA": 211482.24717000796,
+    "finalBalance": 10653401.201483266,
+    "rowsLen": 21,
+    "yearlyLen": 33,
+    "yearlyHash": "a6dff3d4",
+    "rowsHash": "4e50fae0"
+   },
+   "cv0": {
+    "lifetimeTax": 461167.7441128888,
+    "lifetimeIRMAA": 17939.870152127944,
+    "finalRoth": 46450308.83977573,
+    "finalTrad": 0,
+    "magiCap": "266000",
+    "doneAge": 72
+   }
+  }
+ ],
+ "fullYearly": {
+  "C31": [
+   {
+    "age": 73,
+    "rmd": 68679.24528301887,
+    "rmdForced": 36079.24528301887,
+    "ssIncome": 3400,
+    "needsIncome": 36000,
+    "savingsDraw": 32600,
+    "irargrossDraw": 68679.24528301887,
+    "taxableInc": 71569.24528301887,
+    "bracketPct": 0.12,
+    "inflFactor": 1,
+    "balance": 1820000
+   },
+   {
+    "age": 74,
+    "rmd": 72800.00000000001,
+    "rmdForced": 38896.000000000015,
+    "ssIncome": 3536,
+    "needsIncome": 37440,
+    "savingsDraw": 33904,
+    "irargrossDraw": 72800.00000000001,
+    "taxableInc": 75805.60000000002,
+    "bracketPct": 0.12,
+    "inflFactor": 1.04,
+    "balance": 1856400.0000000002
+   },
+   {
+    "age": 75,
+    "rmd": 76854.30894308943,
+    "rmdForced": 41594.14894308943,
+    "ssIncome": 3677.4400000000005,
+    "needsIncome": 38937.600000000006,
+    "savingsDraw": 35260.16,
+    "irargrossDraw": 76854.30894308943,
+    "taxableInc": 79980.13294308944,
+    "bracketPct": 0.12,
+    "inflFactor": 1.0816000000000001,
+    "balance": 1890616.0000000002
+   },
+   {
+    "age": 76,
+    "rmd": 81121.83090803062,
+    "rmdForced": 44451.26450803062,
+    "ssIncome": 3824.5376,
+    "needsIncome": 40495.10400000001,
+    "savingsDraw": 36670.5664,
+    "irargrossDraw": 81121.83090803062,
+    "taxableInc": 84372.68786803063,
+    "bracketPct": 0.12,
+    "inflFactor": 1.124864,
+    "balance": 1922587.3925203257
+   },
+   {
+    "age": 77,
+    "rmd": 85238.14389995777,
+    "rmdForced": 47100.75484395776,
+    "ssIncome": 3977.519104000001,
+    "needsIncome": 42114.908160000006,
+    "savingsDraw": 38137.38905600001,
+    "irargrossDraw": 85238.14389995777,
+    "taxableInc": 88619.03513835777,
+    "bracketPct": 0.12,
+    "inflFactor": 1.1698585600000002,
+    "balance": 1951953.4953090327
+   },
+   {
+    "age": 78,
+    "rmd": 89941.73965880089,
+    "rmdForced": 50278.855040560884,
+    "ssIncome": 4136.619868160001,
+    "needsIncome": 43799.5044864,
+    "savingsDraw": 39662.88461824,
+    "irargrossDraw": 89941.73965880089,
+    "taxableInc": 93457.86654673688,
+    "bracketPct": 0.12,
+    "inflFactor": 1.2166529024000001,
+    "balance": 1978718.2724936195
+   },
+   {
+    "age": 79,
+    "rmd": 94886.40401918993,
+    "rmdForced": 53637.004016220315,
+    "ssIncome": 4302.084662886401,
+    "needsIncome": 45551.48466585601,
+    "savingsDraw": 41249.40000296961,
+    "irargrossDraw": 94886.40401918993,
+    "taxableInc": 98543.17598264337,
+    "bracketPct": 0.12,
+    "inflFactor": 1.2653190184960004,
+    "balance": 2002103.1248049077
+   },
+   {
+    "age": 80,
+    "rmd": 100081.66950657728,
+    "rmdForced": 57182.29350348889,
+    "ssIncome": 4474.1680494018565,
+    "needsIncome": 47373.54405249025,
+    "savingsDraw": 42899.37600308839,
+    "irargrossDraw": 100081.66950657728,
+    "taxableInc": 103884.71234856886,
+    "bracketPct": 0.12,
+    "inflFactor": 1.3159317792358403,
+    "balance": 2021649.724032861
+   },
+   {
+    "age": 81,
+    "rmd": 104992.89370092066,
+    "rmdForced": 60377.54265770873,
+    "ssIncome": 4653.134771377931,
+    "needsIncome": 49268.48581458986,
+    "savingsDraw": 44615.35104321193,
+    "irargrossDraw": 104992.89370092066,
+    "taxableInc": 108948.0582565919,
+    "bracketPct": 0.12,
+    "inflFactor": 1.3685690504052739,
+    "balance": 2036862.1377978607
+   },
+   {
+    "age": 82,
+    "rmd": 110690.88641852737,
+    "rmdForced": 64290.92133358696,
+    "ssIncome": 4839.2601622330485,
+    "needsIncome": 51239.22524717346,
+    "savingsDraw": 46399.96508494041,
+    "irargrossDraw": 110690.88641852737,
+    "taxableInc": 114804.25755642547,
+    "bracketPct": 0.12,
+    "inflFactor": 1.423311812421485,
+    "balance": 2047781.3987427563
+   },
+   {
+    "age": 83,
+    "rmd": 116006.5504555753,
+    "rmdForced": 67750.58676723727,
+    "ssIncome": 5032.830568722371,
+    "needsIncome": 53288.7942570604,
+    "savingsDraw": 48255.96368833803,
+    "irargrossDraw": 116006.5504555753,
+    "taxableInc": 120284.45643898932,
+    "bracketPct": 0.12,
+    "inflFactor": 1.4802442849183444,
+    "balance": 2053315.9430636826
+   },
+   {
+    "age": 84,
+    "rmd": 122234.99739074963,
+    "rmdForced": 72048.79515487808,
+    "ssIncome": 5234.143791471266,
+    "needsIncome": 55420.34602734281,
+    "savingsDraw": 50186.20223587155,
+    "irargrossDraw": 122234.99739074963,
+    "taxableInc": 126684.0196135002,
+    "bracketPct": 0.12,
+    "inflFactor": 1.5394540563150783,
+    "balance": 2053547.9561645938
+   },
+   {
+    "age": 85,
+    "rmd": 127949.48351876719,
+    "rmdForced": 75755.83319346077,
+    "ssIncome": 5443.509543130117,
+    "needsIncome": 57637.15986843654,
+    "savingsDraw": 52193.65032530642,
+    "irargrossDraw": 127949.48351876719,
+    "taxableInc": 132576.46663042778,
+    "bracketPct": 0.12,
+    "inflFactor": 1.6010322185676815,
+    "balance": 2047191.736300275
+   },
+   {
+    "age": 86,
+    "rmd": 133841.89394397358,
+    "rmdForced": 79560.4976056549,
+    "ssIncome": 5661.249924855322,
+    "needsIncome": 59942.646263174,
+    "savingsDraw": 54281.39633831868,
+    "irargrossDraw": 133841.89394397358,
+    "taxableInc": 138653.9563801006,
+    "bracketPct": 0.12,
+    "inflFactor": 1.6650735073103888,
+    "balance": 2034396.7879483984
+   },
+   {
+    "age": 87,
+    "rmd": 139901.9574753257,
+    "rmdForced": 83449.30528347427,
+    "ssIncome": 5887.699921849535,
+    "needsIncome": 62340.35211370096,
+    "savingsDraw": 56452.652191851426,
+    "irargrossDraw": 139901.9574753257,
+    "taxableInc": 144906.5024088978,
+    "bracketPct": 0.12,
+    "inflFactor": 1.7316764476028044,
+    "balance": 2014588.1876446903
+   },
+   {
+    "age": 88,
+    "rmd": 145048.71561894353,
+    "rmdForced": 86337.95733941806,
+    "ssIncome": 6123.207918723516,
+    "needsIncome": 64833.96619824899,
+    "savingsDraw": 58710.75827952548,
+    "irargrossDraw": 145048.71561894353,
+    "taxableInc": 150253.44234985852,
+    "bracketPct": 0.12,
+    "inflFactor": 1.8009435055069165,
+    "balance": 1987167.4039795264
+   },
+   {
+    "age": 89,
+    "rmd": 151367.89222187735,
+    "rmdForced": 90308.70361117084,
+    "ssIncome": 6368.136235472457,
+    "needsIncome": 67427.32484617896,
+    "savingsDraw": 61059.18861070651,
+    "irargrossDraw": 151367.89222187735,
+    "taxableInc": 156780.80802202894,
+    "bracketPct": 0.12,
+    "inflFactor": 1.8729812457271933,
+    "balance": 1952645.809662218
+   },
+   {
+    "age": 90,
+    "rmd": 156504.4747939968,
+    "rmdForced": 93002.91863886204,
+    "ssIncome": 6622.861684891355,
+    "needsIncome": 70124.41784002612,
+    "savingsDraw": 63501.556155134764,
+    "irargrossDraw": 156504.4747939968,
+    "taxableInc": 162133.90722615446,
+    "bracketPct": 0.12,
+    "inflFactor": 1.947900495556281,
+    "balance": 1909354.592486761
+   },
+   {
+    "age": 91,
+    "rmd": 161567.0543264635,
+    "rmdForced": 95525.43592512333,
+    "ssIncome": 6887.7761522870105,
+    "needsIncome": 72929.39455362718,
+    "savingsDraw": 66041.61840134017,
+    "irargrossDraw": 161567.0543264635,
+    "taxableInc": 167421.66405590746,
+    "bracketPct": 0.12,
+    "inflFactor": 2.0258165153785326,
+    "balance": 1858021.1247543301
+   },
+   {
+    "age": 92,
+    "rmd": 166503.82543088318,
+    "rmdForced": 97820.54229348942,
+    "ssIncome": 7163.287198378491,
+    "needsIncome": 75846.57033577225,
+    "savingsDraw": 68683.28313739377,
+    "irargrossDraw": 166503.82543088318,
+    "taxableInc": 172592.6195495049,
+    "bracketPct": 0.12,
+    "inflFactor": 2.106849175993674,
+    "balance": 1798241.3146535386
+   },
+   {
+    "age": 93,
+    "rmd": 171251.65728475398,
+    "rmdForced": 99821.04282186447,
+    "ssIncome": 7449.818686313631,
+    "needsIncome": 78880.43314920315,
+    "savingsDraw": 71430.61446288951,
+    "irargrossDraw": 171251.65728475398,
+    "taxableInc": 177584.00316812057,
+    "bracketPct": 0.12,
+    "inflFactor": 2.191123143033421,
+    "balance": 1729641.738576015
+   },
+   {
+    "age": 94,
+    "rmd": 173883.52485986703,
+    "rmdForced": 99595.68581846193,
+    "ssIncome": 7747.811433766176,
+    "needsIncome": 82035.65047517128,
+    "savingsDraw": 74287.8390414051,
+    "irargrossDraw": 173883.52485986703,
+    "taxableInc": 180469.16457856828,
+    "bracketPct": 0.12,
+    "inflFactor": 2.278768068754758,
+    "balance": 1651893.4861687368
+   },
+   {
+    "age": 95,
+    "rmd": 176032.64707723618,
+    "rmdForced": 98773.29447417488,
+    "ssIncome": 8057.723891116823,
+    "needsIncome": 85317.07649417812,
+    "savingsDraw": 77259.3526030613,
+    "irargrossDraw": 176032.64707723618,
+    "taxableInc": 182881.71238468547,
+    "bracketPct": 0.12,
+    "inflFactor": 2.369918791504948,
+    "balance": 1566690.5589874021
+   }
+  ],
+  "S05": [
+   {
+    "age": 92,
+    "rmd": 74074.07407407407,
+    "rmdForced": 16574.074074074073,
+    "ssIncome": 2500,
+    "needsIncome": 60000,
+    "savingsDraw": 57500,
+    "irargrossDraw": 74074.07407407407,
+    "taxableInc": 76199.07407407407,
+    "bracketPct": 0.12,
+    "inflFactor": 1,
+    "balance": 800000
+   },
+   {
+    "age": 93,
+    "rmd": 76186.2852951962,
+    "rmdForced": 16386.285295196198,
+    "ssIncome": 2600,
+    "needsIncome": 62400,
+    "savingsDraw": 59800,
+    "irargrossDraw": 76186.2852951962,
+    "taxableInc": 78396.2852951962,
+    "bracketPct": 0.12,
+    "inflFactor": 1.04,
+    "balance": 769481.4814814816
+   },
+   {
+    "age": 94,
+    "rmd": 77357.14820604869,
+    "rmdForced": 15165.148206048681,
+    "ssIncome": 2704.0000000000005,
+    "needsIncome": 64896.00000000001,
+    "savingsDraw": 62192.00000000001,
+    "irargrossDraw": 77357.14820604869,
+    "taxableInc": 79655.54820604868,
+    "bracketPct": 0.12,
+    "inflFactor": 1.0816000000000001,
+    "balance": 734892.9079574625
+   },
+   {
+    "age": 95,
+    "rmd": 78313.24779061784,
+    "rmdForced": 13633.567790617832,
+    "ssIncome": 2812.1600000000003,
+    "needsIncome": 67491.84000000001,
+    "savingsDraw": 64679.68000000001,
+    "irargrossDraw": 78313.24779061784,
+    "taxableInc": 80703.58379061783,
+    "bracketPct": 0.12,
+    "inflFactor": 1.124864,
+    "balance": 696987.9053364987
+   },
+   {
+    "age": 96,
+    "rmd": 73684.84685377908,
+    "rmdForced": 6417.979653779068,
+    "ssIncome": 2924.6464000000005,
+    "needsIncome": 70191.5136,
+    "savingsDraw": 67266.86720000001,
+    "irargrossDraw": 73684.84685377908,
+    "taxableInc": 76170.79629377907,
+    "bracketPct": 0.12,
+    "inflFactor": 1.1698585600000002,
+    "balance": 655795.1369986337
+   },
+   {
+    "age": 97,
+    "rmd": 69329.98961275797,
+    "rmdForced": 0,
+    "ssIncome": 3041.6322560000003,
+    "needsIncome": 72999.174144,
+    "savingsDraw": 69957.541888,
+    "irargrossDraw": 69957.541888,
+    "taxableInc": 72542.9293056,
+    "bracketPct": 0.12,
+    "inflFactor": 1.2166529024000001,
+    "balance": 617036.907553546
+   },
+   {
+    "age": 98,
+    "rmd": 65157.767146683014,
+    "rmdForced": 0,
+    "ssIncome": 3163.297546240001,
+    "needsIncome": 75919.14110976002,
+    "savingsDraw": 72755.84356352001,
+    "irargrossDraw": 72755.84356352001,
+    "taxableInc": 75444.64647782402,
+    "bracketPct": 0.12,
+    "inflFactor": 1.2653190184960004,
+    "balance": 579904.1276054789
+   },
+   {
+    "age": 99,
+    "rmd": 60401.93045892993,
+    "rmdForced": 0,
+    "ssIncome": 3289.8294480896006,
+    "needsIncome": 78955.90675415042,
+    "savingsDraw": 75666.07730606082,
+    "irargrossDraw": 75666.07730606082,
+    "taxableInc": 78462.43233693698,
+    "bracketPct": 0.12,
+    "inflFactor": 1.3159317792358403,
+    "balance": 537577.1810844764
+   },
+   {
+    "age": 100,
+    "rmd": 55014.1314612495,
+    "rmdForced": 0,
+    "ssIncome": 3421.4226260131845,
+    "needsIncome": 82114.14302431644,
+    "savingsDraw": 78692.72039830325,
+    "irargrossDraw": 78692.72039830325,
+    "taxableInc": 81600.92963041447,
+    "bracketPct": 0.12,
+    "inflFactor": 1.3685690504052739,
+    "balance": 489625.77000512055
+   },
+   {
+    "age": 101,
+    "rmd": 48942.58793069959,
+    "rmdForced": 0,
+    "ssIncome": 3558.2795310537126,
+    "needsIncome": 85398.7087452891,
+    "savingsDraw": 81840.42921423538,
+    "irargrossDraw": 81840.42921423538,
+    "taxableInc": 84864.96681563104,
+    "bracketPct": 0.12,
+    "inflFactor": 1.423311812421485,
+    "balance": 435589.0325832264
+   },
+   {
+    "age": 102,
+    "rmd": 42131.85613158769,
+    "rmdForced": 0,
+    "ssIncome": 3700.610712295861,
+    "needsIncome": 88814.65709510066,
+    "savingsDraw": 85114.0463828048,
+    "irargrossDraw": 85114.0463828048,
+    "taxableInc": 88259.56548825628,
+    "bracketPct": 0.12,
+    "inflFactor": 1.4802442849183444,
+    "balance": 374973.51957113046
+   }
+  ]
+ }
+}
