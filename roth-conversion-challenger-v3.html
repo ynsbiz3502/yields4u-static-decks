@@ -3196,7 +3196,7 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       <div class="title-block">
         <div class="kicker">The Prize</div>
         <h2 class="title">Your heirs inherit a Roth &mdash; <em>not a ${heirLost} tax bill.</em></h2>
-        <p class="subtitle">Use the ${runwayYears} low-tax years you have left, and the tax the IRS would take almost disappears.</p>
+        <p class="subtitle">${runwayYears > 0 ? `Use the ${runwayYears} low-tax years you have left` : 'Use every remaining year'}, and the tax the IRS would take almost disappears.</p>
       </div>
       <div style="max-width:1120px;margin:26px auto 0;background:var(--ink-900);border-radius:14px;padding:28px 36px;display:flex;align-items:center;gap:34px;">
         <div style="flex-shrink:0;">
@@ -3531,8 +3531,8 @@ function buildSlides(inputs, sim, savings, heir, widow) {
       </div>
       <div style="max-width:1120px;margin:16px auto 0;background:var(--ink-900);border-top:4px solid var(--gold-400);border-radius:12px;padding:18px 30px;display:flex;align-items:center;justify-content:center;gap:34px;flex-wrap:wrap;">
         <div style="text-align:left;max-width:440px;">
-          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:8px;">The Same Named Team &mdash; All ${runwayYears} Years</div>
-          <div style="font-family:var(--font-serif);font-size:18px;color:#fff;line-height:1.5;">A ${runwayYears}-year plan is a relationship, not a deal. The same faces run all five &mdash; <em style="color:var(--gold-400);font-style:italic;">in your corner, not a number in line.</em></div>
+          <div style="font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-400);margin-bottom:8px;">${runwayYears > 0 ? `The Same Named Team &mdash; All ${runwayYears} Years` : 'The Same Named Team &mdash; Every Year'}</div>
+          <div style="font-family:var(--font-serif);font-size:18px;color:#fff;line-height:1.5;">${runwayYears > 0 ? `A ${runwayYears}-year plan is a relationship, not a deal.` : 'A long-term plan is a relationship, not a deal.'} The same faces run all five &mdash; <em style="color:var(--gold-400);font-style:italic;">in your corner, not a number in line.</em></div>
         </div>
         <div style="display:flex;gap:22px;">
           ${team.map(t => `<div style="text-align:center;">${t.p ? `<img src="${t.p}" alt="${t.n}" style="width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-400);display:block;margin:0 auto;">` : `<div style="width:58px;height:58px;border-radius:50%;background:var(--gold-400);color:var(--ink-900);display:flex;align-items:center;justify-content:center;font-weight:800;font-family:var(--font-sans);font-size:16px;margin:0 auto;">${t.i}</div>`}<div style="font-family:var(--font-sans);font-size:12px;font-weight:700;color:#fff;margin-top:7px;">${t.n}</div><div style="font-family:var(--font-sans);font-size:9.5px;color:var(--gold-400);letter-spacing:0.04em;text-transform:uppercase;">${t.r}</div></div>`).join('')}
