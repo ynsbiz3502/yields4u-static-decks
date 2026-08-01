@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-01T13:59:20.678Z",
+  "updated_at": "2026-08-01T12:45:52.636Z",
   "source": "https://eodhd.com/api/fundamentals/GSPC.INDX + eod-bulk-last-day/US",
   "total_constituents": 503,
   "years": [
@@ -11,9 +11,9 @@
       "index_close_start": 4769.8301,
       "index_close_end": 5881.6299,
       "index_return_pct": 23.3,
-      "positive": 363,
+      "positive": 362,
       "negative": 134,
-      "missing": 6
+      "missing": 7
     },
     {
       "label": "2025",
@@ -30,13 +30,13 @@
     {
       "label": "2026",
       "ytd": true,
-      "as_of": "2026-06-30",
+      "as_of": "2026-07-31",
       "ref_start": "2025-12-31",
       "index_close_start": 6845.5,
-      "index_close_end": 7499.36,
-      "index_return_pct": 9.6,
-      "positive": 316,
-      "negative": 185,
+      "index_close_end": 7489.72,
+      "index_return_pct": 9.4,
+      "positive": 341,
+      "negative": 160,
       "missing": 2
     }
   ]
