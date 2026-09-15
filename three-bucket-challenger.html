@@ -1746,7 +1746,7 @@ function buildThreeBucket(inputs) {
   // 2 — Agenda
   push(`${tb('Today', 'What we&rsquo;ll cover', 'Six steps, one conversation.')}
     <div style="max-width:780px;margin:38px auto 0;font-family:var(--font-body);">
-      ${['Where you are today &mdash; your numbers, confirmed','What your financial future looks like','The gaps we need to close','Why the rules about money change in retirement','The solution &mdash; the three-bucket plan','Your action plan'].map((t,i)=>`<div style="display:flex;align-items:center;gap:18px;padding:13px 0;border-bottom:1px solid var(--border);"><span style="font-family:var(--font-serif);font-weight:700;font-size:22px;color:var(--gold-500);width:34px;flex:0 0 auto;">${i+1}</span><span style="font-size:18px;color:var(--ink-900);">${t}</span></div>`).join('')}
+      ${['Where you are today','What your financial future looks like','The gaps we need to close','Why the rules about money change in retirement','The solution','Your action plan'].map((t,i)=>`<div style="display:flex;align-items:center;gap:18px;padding:13px 0;border-bottom:1px solid var(--border);"><span style="font-family:var(--font-serif);font-weight:700;font-size:22px;color:var(--gold-500);width:34px;flex:0 0 auto;">${i+1}</span><span style="font-size:18px;color:var(--ink-900);">${t}</span></div>`).join('')}
     </div>`);
 
   // 3 — The one question
