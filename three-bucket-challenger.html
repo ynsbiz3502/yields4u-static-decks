@@ -1901,36 +1901,75 @@ function buildThreeBucket(inputs) {
       <p class="subtitle" style="max-width:720px;margin:18px auto 0;">Change that one thing and the whole picture changes. Here&rsquo;s the plan that does it.</p>
     </div>`);
 
-  // 16 — Best of both worlds
-  push(`${tb('The Solution', 'The best of both worlds.', 'Participate in the upside. Protect the downside.')}
-    ${grid([
-      card('Annuities give up', 'Growth', 'Safe &mdash; but your money is locked and your upside is capped.'),
-      card('The market gives up', 'Protection', 'Growth &mdash; but you ride every crash, especially while you&rsquo;re withdrawing.'),
-      card('Our plan keeps', 'Both', 'Market participation with real downside protection. Have your cake and eat it too.')
-    ], 3)}
-    <p style="text-align:center;font-family:var(--font-serif);font-size:21px;color:var(--ink-900);max-width:760px;margin:30px auto 0;">Three problems. <em style="color:var(--gold-600);">Three solutions.</em></p>`);
+  // 16 — The reframe (Challenger: wrapper vs. engine)
+  push(`<template class="pres-cue"><div class="cue-label">The reframe</div><div class="cue-ask">This is the whole turn. They&rsquo;ve been shown &ldquo;protection with upside&rdquo; wrapped in an annuity and told they can&rsquo;t grade it. Flip it: you were grading the wrapper &mdash; nobody showed you the engine. The engine is four moves; the annuity just copied it and bolted on a commission. Land the one question and let it sit.</div><div class="cue-stop">&#9726; Pause on &ldquo;what is this ripping off?&rdquo;</div></template>
+    ${tb('The Reframe', 'You&rsquo;ve been grading the wrapper. No one showed you the engine.')}
+    <div style="max-width:900px;margin:30px auto 0;">
+      <p style="font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.55;text-align:center;">Protection with upside is real engineering &mdash; four parts you can understand in ten minutes. The insurance company didn&rsquo;t invent it. They copied it, and bolted on a surrender schedule and a commission.</p>
+      <div style="background:var(--paper-100);border-left:3px solid var(--gold-400);border-radius:8px;padding:24px 28px;margin:26px auto 0;max-width:820px;">
+        <p style="margin:0;font-family:var(--font-serif);font-size:23px;color:var(--ink-900);line-height:1.5;text-align:center;">So there&rsquo;s only one question that matters: <em style="color:var(--gold-600);">what is this thing trying to rip off?</em></p>
+      </div>
+      <p style="font-family:var(--font-sans);font-size:15px;color:var(--fg-muted);text-align:center;margin:22px auto 0;max-width:760px;line-height:1.55;">Name the real, institutional thing a product copies &mdash; and what the copy cost you. Ask it of anything on your kitchen table and the fog lifts.</p>
+    </div>`);
 
-  // 17 — Solution 1: the three buckets
-  push(`${tb('Solution 1', 'The three buckets.', 'So you&rsquo;re never forced to sell when the market is down.')}
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1280px;margin:38px auto 0;">
-      ${bucket('Bucket 1', 'Spending', 'Now &ndash; 3 years', 'Safe &amp; steady &mdash; 5&ndash;6% after fees', 'Money you never worry about. It barely moves with the market.')}
-      ${bucket('Bucket 2', 'Stability', '3 &ndash; 5 years', 'Hedged &mdash; max drawdown 6&ndash;10%', 'Income and growth with a cushion, so one bad year can&rsquo;t force your hand.')}
-      ${bucket('Bucket 3', 'Growth', '5+ years', 'Dialed to your risk &mdash; ~10% long run', 'Long-term growth that has time to recover from any downturn.')}
+  // 17 — The four building blocks (Challenger teach)
+  push(`${tb('The Engine', 'Every one of these is four moves.', 'Own the market. Buy the floor. Sell part of it back. Sell the ceiling.')}
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1280px;margin:40px auto 0;">
+      ${[
+        ['1','Own the market','A position that moves like owning the S&amp;P 500. That&rsquo;s your upside.'],
+        ['2','Buy the floor','A contract that pays you back when the market falls. That&rsquo;s your protection.'],
+        ['3','Sell part of it back','Give back protection past a point &mdash; that turns a floor into a buffer, and buys a higher cap.'],
+        ['4','Sell the ceiling','Give away the gains above a level to pay for the floor. That&rsquo;s your cap.']
+      ].map(b=>`<div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:26px 22px;"><div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:12px;">Move ${b[0]}</div><div style="font-family:var(--font-serif);font-weight:700;font-size:24px;color:var(--ink-900);line-height:1.12;margin-bottom:10px;">${b[1]}</div><p style="font-family:var(--font-body);font-size:14px;color:var(--fg-muted);line-height:1.5;margin:0;">${b[2]}</p></div>`).join('')}
     </div>
-    <p style="text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--fg-muted);max-width:880px;margin:28px auto 0;">Each bucket is a shield for the next. When the market drops, you spend from Bucket 1 &mdash; never from your growth. That&rsquo;s how you stop compounding losses.</p>`);
+    <p style="text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);max-width:920px;margin:30px auto 0;">Every buffered fund, every market-linked CD, every structured note &mdash; and yes, every fixed-index annuity &mdash; is some combination of those four moves. <strong>Same engine. Different body.</strong></p>`);
 
-  // 18 — Solution 2: the hedges
-  push(`${tb('Solution 2', 'Market participation &mdash; without the roller coaster.', 'A new generation of hedged, defined-outcome investments.')}
+  // 18 — The mirror image (Challenger teach)
+  push(`${tb('The Warning', 'The mirror image: &ldquo;income&rdquo; vs. a floor.', 'They can look identical on a statement. Only one keeps your downside.')}
     ${grid([
-      card('Structured notes', 'Buffer + upside', 'Principal protection with indexed upside, up to a cap.'),
-      card('Buffered ETFs', 'Defined outcome', 'Equity upside with a built-in downside cushion, reset on a schedule.'),
-      card('Market-linked CDs', 'FDIC + market', 'Principal FDIC-insured; your return tracks the market, not a fixed rate.')
-    ], 3)}
-    <p style="text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--ink-900);max-width:900px;margin:28px auto 0;">The idea is the same: <strong>principal protection plus indexed upside.</strong> Caps, participation rates, even dual-direction returns &mdash; so you get off the Wall Street roller coaster.</p>
-    <p style="text-align:center;font-family:var(--font-sans);font-size:13px;color:var(--fg-subtle);max-width:820px;margin:12px auto 0;line-height:1.5;">Each has trade-offs &mdash; caps limit the upside, terms lock your money for a period, and notes carry the issuer&rsquo;s credit risk (they are not FDIC-insured). We shop them for you.</p>`);
+      `<div style="background:white;border:1px solid var(--border);border-top:4px solid var(--danger);border-radius:10px;padding:30px 26px;"><div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:12px;">Covered-call &ldquo;income&rdquo; fund</div><div style="font-family:var(--font-serif);font-size:25px;color:var(--ink-900);line-height:1.15;margin-bottom:10px;">Own it. Sell the ceiling. Pay the premium out as &ldquo;yield.&rdquo;</div><p style="font-size:15px;color:var(--fg-muted);line-height:1.55;margin:0;">There&rsquo;s no floor. You gave away the upside and <em>kept</em> the downside. When the market falls, the fund falls with it &mdash; and the &ldquo;paycheck&rdquo; shrinks.</p></div>`,
+      `<div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:30px 26px;"><div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:12px;">A buffer</div><div style="font-family:var(--font-serif);font-size:25px;color:var(--ink-900);line-height:1.15;margin-bottom:10px;">Own it. Sell the ceiling. Spend the premium on a floor.</div><p style="font-size:15px;color:var(--fg-muted);line-height:1.55;margin:0;">Same ceiling sold &mdash; but the premium buys protection instead of paying it out. You gave away some upside, and some downside.</p></div>`
+    ],2)}
+    <p style="text-align:center;font-family:var(--font-serif);font-size:21px;color:var(--ink-900);max-width:820px;margin:28px auto 0;">A big monthly check feels like safety. <strong>The number was never the safety. The floor is the safety.</strong></p>`);
 
-  // 19 — Solution 3: the Wheel
-  push(`${tb('Solution 3', 'Knowing when to refill &mdash; and harvest.', 'Our financial planning process, in order.')}
+  // 19 — The three buckets, fused with the sleeve
+  push(`${tb('The Plan', 'Your money, split by when you&rsquo;ll need it.', 'The middle bucket is where the engine lives.')}
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1280px;margin:38px auto 0;">
+      ${bucket('Bucket 1', 'Money for now', 'Now &ndash; 3 years', 'Cash-like income &mdash; steady', 'The next few years of spending, so a bad market never forces a sale.')}
+      ${bucket('Bucket 2', 'Money for next', 'Years 3 &ndash; 7', 'The defined-outcome sleeve', 'The buffers, notes and market-linked CDs. It has to be there on a date &mdash; but has time to grow with a floor under it.')}
+      ${bucket('Bucket 3', 'Money for later', '7+ years', 'Growth &mdash; no ceiling', 'Left alone to grow, because the first two buckets mean you&rsquo;re never forced to touch it.')}
+    </div>
+    <p style="text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--fg-muted);max-width:920px;margin:28px auto 0;">A buffer on its own is a product. A buffer <em>between</em> a cash bucket and a growth bucket is a plan. Each maturity in the middle refills the first &mdash; so the last bucket is never sold in a panic.</p>`);
+
+  // 20 — The four building rules (JOLT: limit + de-risk)
+  push(`${tb('The Discipline', 'Four rules for building the sleeve.', 'Reading one sheet is a skill. Building the sleeve is a discipline.')}
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1280px;margin:40px auto 0;">
+      ${[
+        ['Rule 1','Ladder across time','Buy five, not one &mdash; staggered dates and issuers &mdash; so no single afternoon decides your outcome.'],
+        ['Rule 2','Diversify the guarantee','Spread the backstop across FDIC, issuer credit, and the clearinghouse. Stay under the FDIC limit per bank.'],
+        ['Rule 3','Size it to your number','How far can the whole account fall before it changes your life? For most people, about 20%. Build backward from that.'],
+        ['Rule 4','Respect the fog','Early statements can show a loss while the options mature. Decide up front you won&rsquo;t sell protection into it.']
+      ].map(b=>`<div style="background:white;border:1px solid var(--border);border-top:4px solid var(--gold-400);border-radius:10px;padding:26px 22px;"><div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--fg-subtle);margin-bottom:12px;">${b[0]}</div><div style="font-family:var(--font-serif);font-weight:700;font-size:23px;color:var(--ink-900);line-height:1.12;margin-bottom:10px;">${b[1]}</div><p style="font-family:var(--font-body);font-size:14px;color:var(--fg-muted);line-height:1.5;margin:0;">${b[2]}</p></div>`).join('')}
+    </div>
+    <p style="text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--fg-muted);max-width:920px;margin:28px auto 0;">Laddering doesn&rsquo;t shrink any one loss. It shrinks the <em>chance</em> the loss you&rsquo;re afraid of ever shows up on the account as a whole.</p>`);
+
+  // 21 — The six questions (JOLT: limit the exploration)
+  push(`<template class="pres-cue"><div class="cue-label">The six questions</div><div class="cue-ask">This is the gift that closes indecision. Hand them the skill &mdash; six questions, four minutes, any product, annuity included. Now they don&rsquo;t need five more opinions. End on: you can&rsquo;t be sold anymore, you can only choose.</div></template>
+    ${tb('The Skill', 'Six questions. Four minutes. Any product.', 'Hold us to these &mdash; and anyone else who puts a product in front of you.')}
+    <div style="max-width:900px;margin:28px auto 0;font-family:var(--font-body);">
+      ${[
+        ['What is this ripping off?','Name the institutional strategy it copies &mdash; or &ldquo;nothing, this is the original.&rdquo;'],
+        ['Who holds the levers after I sign?','Can anyone change the cap or rate later? Show me the guaranteed minimum, in writing.'],
+        ['Show me the zero-growth version.','The flat-or-down case. If you can live with that page, the rest is upside.'],
+        ['What&rsquo;s the worst case &mdash; would I still hold it?','Issuer fails, over the FDIC limit, index past the buffer. Say it out loud and shrug.'],
+        ['What am I giving up?','Always three: the upside above the cap, the dividends, and access before the end date.'],
+        ['How is everyone paid?','The commission, the sales charge, the estimated value versus what you pay. In dollars.']
+      ].map((q,i)=>`<div style="display:flex;gap:16px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);"><span style="font-family:var(--font-serif);font-weight:700;font-size:22px;color:var(--gold-500);width:30px;flex:0 0 auto;line-height:1.1;">${i+1}</span><div style="line-height:1.4;"><span style="font-size:17px;color:var(--ink-900);font-weight:600;">${q[0]}</span> <span style="font-size:15px;color:var(--fg-muted);">${q[1]}</span></div></div>`).join('')}
+    </div>
+    <p style="text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--gold-600);max-width:760px;margin:22px auto 0;font-style:italic;">You can&rsquo;t be sold anymore. You can only choose.</p>`);
+
+  // 22 — Our process (The Wheel)
+  push(`${tb('Our process', 'Knowing when to refill &mdash; and harvest.', 'Our financial planning process, in order.')}
     <div style="max-width:820px;margin:34px auto 0;">
       ${[['Financial Security', 'Your absolutes &mdash; the income you need, no compromises.'],
          ['Tax Minimization', 'Keep more of it. Where RMDs and Roth conversions live.'],
@@ -1943,17 +1982,30 @@ function buildThreeBucket(inputs) {
         </div>`).join('')}
     </div>`);
 
-  // 20 — Refilling the buckets
-  push(`${tb('How it works', 'Refilling the buckets.', 'Harvest growth when the market is up. Never sell when it&rsquo;s down.')}
-    <div style="max-width:900px;margin:34px auto 0;">
-      <p style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.55;text-align:center;">When markets are up, we harvest gains from Bucket 3 to refill Bucket 1. When markets are down, we leave Bucket 3 alone &mdash; you spend from the safe bucket while the growth recovers.</p>
-      <p style="font-family:var(--font-serif);font-size:19px;color:var(--fg-muted);line-height:1.55;text-align:center;margin-top:16px;">We time the refills around your RMDs, your Roth conversions, and your tax bracket &mdash; the <em>least</em> amount of risk for the greatest amount of return.</p>
-    </div>`);
+  // 23 — How we run it (Challenger: the differentiator / the moat)
+  push(`${tb('How we run it', 'We run the wholesale version.', 'Not access to the category &mdash; access to the terms.')}
+    ${grid([
+      card('Banks compete', 'For your terms', 'We write the spec &mdash; index, buffer, term &mdash; and send it to several banks at once. They bid. You get the best sheet, not one broker&rsquo;s.'),
+      card('The tricks, off', 'Proprietary indexes', 'The handsome-named &ldquo;indexes&rdquo; built to be sold get switched off first. We link to the real market.'),
+      card('We manage it', 'Relentlessly', 'Every tranche on a calendar &mdash; roll when it&rsquo;s capped, refill the now-bucket at each maturity, watch the fog, track FDIC exposure.')
+    ], 3)}
+    <p style="text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--fg-muted);max-width:920px;margin:26px auto 0;">And we&rsquo;re paid an advisory fee you agreed to &mdash; no commissions on the notes or the CDs. When the market falls, we take the hit with you.</p>`);
+
+  // 24 — When the annuity wins (JOLT de-risk + fiduciary disarm)
+  push(`${tb('The Honest Part', 'When the annuity actually wins.', 'Someone who only ever sells you his thing isn&rsquo;t worth trusting.')}
+    ${grid([
+      card('Income for life', 'For life', 'Every CD, note and buffer ends. Only an insurer can pay you no matter how long you live. An income gap with no pension is the job it&rsquo;s built for.'),
+      card('Long-term care', 'The doubler', 'Sometimes the cheapest way to cover care for someone who can&rsquo;t qualify for a standalone policy.'),
+      card('The spendthrift heir', 'A trustee', 'Paid to a beneficiary in installments &mdash; the cheapest un-fireable trustee ever invented.')
+    ], 3)}
+    <p style="text-align:center;font-family:var(--font-serif);font-size:19px;color:var(--ink-900);max-width:900px;margin:28px auto 0;">Sold for one of those jobs, an annuity is a real candidate. Sold as &ldquo;growth with protection,&rdquo; you&rsquo;ve just seen cheaper ways to get it &mdash; with a formula instead of a lever.</p>`);
+
+  // (Refill/harvest logic folded into slide 19 "three buckets, fused" and slide 23 "how we run it".)
 
   // ===== ACT 4 — THE FIRM & THE CLOSE =====
   const riskCard = (name, desc) => `<div style="background:white;border:1px solid var(--border);border-top:3px solid var(--gold-400);border-radius:10px;padding:22px 16px;text-align:center;"><div style="font-family:var(--font-serif);font-size:18px;color:var(--ink-900);margin-bottom:8px;line-height:1.2;">${name}</div><div style="font-family:var(--font-sans);font-size:12.5px;color:var(--fg-muted);line-height:1.45;">${desc}</div></div>`;
 
-  // 21 — LIVE YOUR DREAMS + The Five Risks
+  // 25 — LIVE YOUR DREAMS + The Five Risks
   push(`<div class="title-block center">
       <div class="kicker">The Point of the Plan</div>
       <h2 class="title" style="font-family:var(--font-serif);letter-spacing:0.08em;font-size:50px;">LIVE YOUR DREAMS</h2>
@@ -1967,40 +2019,53 @@ function buildThreeBucket(inputs) {
       ${riskCard('Dying with dignity', 'Leaving a legacy &mdash; not a burden.')}
     </div>`);
 
-  // 22 — Why us
+  // 26 — Why us
   push(`${tb('Who we are', 'Why Yields For You.', 'Low risk, low volatility retirement solutions.')}
     <div style="max-width:880px;margin:30px auto 0;">
-      <p style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.6;text-align:center;">Led by Leibel Sternbach &mdash; bestselling author, National Social Security Advisor, and fiduciary. We don&rsquo;t sell products. We build the plan, manage the buckets, and time the refills around your taxes.</p>
+      <p style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.6;text-align:center;">Led by Leibel Sternbach &mdash; bestselling author, National Social Security Advisor, and fiduciary. We don&rsquo;t sell annuities &mdash; and we&rsquo;ll tell you the three times one actually wins. We build the plan, run the sleeve, and time the refills around your taxes.</p>
     </div>
     ${grid([
       card('Fiduciary', 'Always', 'Your interest first &mdash; in writing.'),
-      card('Independent', 'No products', 'We shop the whole market for your hedges.'),
+      card('Independent', 'No commissions', 'We make the banks compete for your terms &mdash; and take a fee, not a commission.'),
       card('Tax-first', 'By design', 'Every move coordinated with your bracket, RMDs, and Roth conversions.')
     ], 3)}`);
 
-  // 23 — Your action plan
-  push(`${tb('Next steps', 'Your action plan.', 'Three moves, one timeline.')}
-    ${grid([
-      card('This week', 'Confirm the plan', 'We finalize your numbers and your three-bucket allocation.'),
-      card('Next 30 days', 'Build the buckets', 'Open and fund the buckets; put the hedges in place.'),
-      card('Next 90 days', 'Set the rules', 'Lock in the harvest-and-refill triggers and the tax coordination.')
-    ], 3)}
-    <p style="text-align:center;font-family:var(--font-serif);font-size:21px;color:var(--ink-900);max-width:760px;margin:30px auto 0;">Ready when you are. Let&rsquo;s book the next call.</p>`);
+  // 27 — Your recommendation, sized to your number (JOLT: offer a recommendation + take risk off the table)
+  push(`<template class="pres-cue"><div class="cue-label">The recommendation &mdash; not a menu</div><div class="cue-ask">Don&rsquo;t hand them options and step back &mdash; that&rsquo;s what freezes an anxious buyer. Tell them what you&rsquo;d do, sized to their number, cons included. Then take the risk off the decision itself: the worst case is a page they can live with, and the first step is small and reversible.</div></template>
+    ${tb('What we&rsquo;d do', 'Here&rsquo;s the plan we&rsquo;d build for you.', 'Not a menu of products &mdash; a recommendation, sized to your number.')}
+    <div style="max-width:960px;margin:28px auto 0;">
+      <p style="font-family:var(--font-serif);font-size:21px;color:var(--ink-900);line-height:1.55;text-align:center;">First we write down your number &mdash; how far the whole account can fall before it changes your life. Then we build backward: enough floor in the middle bucket that your worst plausible year stays inside it, and the rest free to grow.</p>
+      ${grid([
+        card('The worst case', 'A page you can live with', 'We show you the zero-growth version first. If you can live with that page, everything above it is upside.'),
+        card('The first step', 'Small and reversible', 'We start with one tranche, not your whole account &mdash; and roll from there as the market hands us the entry.')
+      ], 2)}
+    </div>`);
 
-  // 24 — The tax close (hand off to the Roth conversion deck)
+  // 28 — Your next step (JOLT: one small, reversible step)
+  push(`${tb('Next step', 'One small step.', 'No charge, no pressure.')}
+    <div style="max-width:960px;margin:30px auto 0;">
+      ${grid([
+        card('Your retirement report', 'Eight-minute intake', 'A written look at where your money is, what your number is, and what a protected three-bucket plan would look like sized to it.'),
+        card('Already been pitched?', 'Text me the CUSIP', 'The nine-character code on any note or CD. We&rsquo;ll tell you what it is, what it&rsquo;s ripping off, and whether it was a good deal.')
+      ], 2)}
+      <p style="text-align:center;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);max-width:820px;margin:26px auto 0;">The happiest day in this business is telling someone not to change a thing. If what you have is fine, you&rsquo;ll hear that too.</p>
+    </div>`);
+
+  // 29 — The tax close (hand off to the Roth conversion deck)
   push(`${tb('One more lever', 'The biggest one we haven&rsquo;t pulled yet.', 'Tax Minimization.')}
     <div style="max-width:880px;margin:30px auto 0;">
       <p style="font-family:var(--font-serif);font-size:22px;color:var(--ink-900);line-height:1.6;text-align:center;">The buckets keep your income safe. The next conversation is keeping more of it &mdash; converting to Roth at today&rsquo;s historically low rates, before RMDs force your hand.</p>
       <p style="font-family:var(--font-serif);font-size:19px;color:var(--gold-600);line-height:1.55;text-align:center;margin-top:18px;font-style:italic;">That&rsquo;s the deck we&rsquo;ll walk through next.</p>
     </div>`);
 
-  // 25 — Disclosures (required by the deck authoring spec §6)
+  // 30 — Disclosures (required by the deck authoring spec §6)
   push(`<div class="title-block center" style="margin-bottom:6px;"><div class="kicker">Disclosures</div></div>
     <div style="max-width:980px;margin:6px auto 0;font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);line-height:1.6;text-align:left;">
       <p style="margin:0 0 9px;"><strong style="color:var(--ink-700);">Illustration only.</strong> This presentation is for educational and illustrative purposes and is not tax, legal, accounting, or investment advice. Yields For You is a Registered Investment Adviser.</p>
       <p style="margin:0 0 9px;"><strong style="color:var(--ink-700);">Modeling assumptions.</strong> Projections are built from the figures you provide and an assumed rate of return; the stress test brackets that return by &plusmn;2 percentage points. Actual results will differ with markets, inflation, taxes, withdrawals, and your choices.</p>
       <p style="margin:0 0 9px;"><strong style="color:var(--ink-700);">Not guaranteed.</strong> Returns, rates, and projected values are not guaranteed and will change. Diversification and a bucketed approach do not assure a profit or protect against loss.</p>
-      <p style="margin:0 0 9px;"><strong style="color:var(--ink-700);">Hedged and defined-outcome products.</strong> Structured notes, buffered ETFs, market-linked CDs, and registered index-linked annuities carry caps that limit upside and terms that limit liquidity. Structured notes are subject to the issuer&rsquo;s credit risk and are not FDIC-insured; held to maturity they may return only principal. Market-linked CDs are FDIC-insured to applicable limits. Review each product&rsquo;s offering documents before investing.</p>
+      <p style="margin:0 0 9px;"><strong style="color:var(--ink-700);">Hedged and defined-outcome products.</strong> Structured notes, buffered UITs and ETFs, market-linked CDs, and registered index-linked annuities carry caps or participation limits that limit upside, and terms that limit liquidity. Any buffer, floor, or principal protection described generally applies only if the product is held to its stated maturity or end date; sold earlier, the value may be well below principal. Structured notes carry the issuer&rsquo;s credit risk and are not FDIC-insured. Market-linked CDs are FDIC-insured to applicable limits; amounts above the limit, and interest not yet determined, are not insured. A product may be linked to a &ldquo;worst-of,&rdquo; excess-return, or proprietary index that can lag the headline market, and may generate taxable &ldquo;phantom&rdquo; income before any cash is received. Every product described &mdash; including any marketed as &ldquo;principal protected&rdquo; &mdash; carries the possibility of loss. Review each product&rsquo;s term sheet, disclosure statement, and prospectus before investing.</p>
+      <p style="margin:0 0 9px;"><strong style="color:var(--ink-700);">Examples are illustrative.</strong> The four-part mechanics, the &ldquo;income vs. floor&rdquo; comparison, and any product features shown are educational and simplified. Any specific caps, participation rates, or figures are examples only, set for a specific offering on a specific day, and are not offers or current terms. The &ldquo;when the annuity wins&rdquo; cases are general education, not a recommendation for or against any product.</p>
       <p style="margin:0 0 9px;"><strong style="color:var(--ink-700);">Taxes.</strong> Tax effects depend on your individual circumstances and current law, which may change. Consult your tax advisor.</p>
       <p style="margin:0 0 9px;"><strong style="color:var(--ink-700);">Scope.</strong> Examples and comparisons are illustrative and do not reflect any specific security, product, or competitor.</p>
       <p style="margin:0;"><strong style="color:var(--ink-700);">Advisor use.</strong> If presented to clients, the presenting advisor is responsible for ensuring the material complies with applicable advertising and communication rules &mdash; including SEC Marketing Rule 206(4)-1 and FINRA Rule 2210 &mdash; and for retaining required records.</p>
