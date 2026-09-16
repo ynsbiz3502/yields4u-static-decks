@@ -1769,6 +1769,42 @@ function buildThreeBucket(inputs) {
     </div>`);
   }
 
+  // 2c — Cashflow analysis (simple math); box color by surplus tier (green/goldenrod/maroon)
+  {
+    const usd2 = n => '$' + (Number(n) || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    const nwC = (inputs.balance || 0) + (inputs.nonQualified || 0);
+    const ssMo = (inputs.socialSecurity || 0) / 12, penMo = (inputs.otherIncome || 0) / 12;
+    const invMo = nwC * 0.04 / 12, expMo = (inputs.totalIncomeNeeds || 0) / 12;
+    const surplus = ssMo + penMo + invMo - expMo;
+    const cfRows = [['Social Security', '85% taxable', ssMo]];
+    if (penMo > 0) cfRows.push(['Pension', '', penMo]);
+    cfRows.push(['Income from investments ($' + (nwC / 1e6).toFixed(1) + 'M @ 4%)', '', invMo]);
+    cfRows.push(['Expenses', '', expMo]);
+    const cfRowsHtml = cfRows.map(r => `<tr style="border-top:1px solid var(--border);"><td style="padding:15px 22px;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${r[0]}</td><td style="padding:15px 22px;text-align:center;font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);">${r[1]}</td><td style="padding:15px 22px;text-align:right;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${usd2(r[2])}/mo</td></tr>`).join('');
+    const short = surplus < 0;
+    const ratio = expMo > 0 ? surplus / expMo : (surplus > 0 ? 1 : -1);
+    let box;
+    if (short) box = {c1:'#7B241C', c2:'#5E1A14', h:'There\u2019s a gap to close.', p:'Based on this quick math, your income sources fall short of your expenses \u2014 which is exactly what the plan is built to fix.'};
+    else if (ratio < 0.20) box = {c1:'#B8860B', c2:'#906A08', h:'It\u2019s close.', p:'Based on this quick math, you\u2019re right at the edge \u2014 the plan has to work hard, with little margin for error.'};
+    else box = {c1:'#1E8A55', c2:'#166B42', h:'You have enough to retire.', p:'Congratulations \u2014 based on this quick math, it looks like you have more than enough to retire.'};
+    push(`${tb('The Simple Math', 'Cashflow analysis.')}
+    <div style="max-width:1060px;margin:14px auto 0;text-align:left;">
+      <p style="font-family:var(--font-body);font-size:15px;color:var(--fg-muted);line-height:1.6;margin:0 0 16px;">In retirement the question isn&rsquo;t how much money you have &mdash; it&rsquo;s what kind of lifestyle you can afford. Here&rsquo;s the back-of-the-napkin math: do you have enough to retire, and how much room do you have?</p>
+      <table style="width:100%;border-collapse:collapse;background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <tr style="background:var(--paper-100);font-family:var(--font-sans);font-size:11.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-subtle);"><td style="padding:13px 22px;">Source</td><td style="padding:13px 22px;text-align:center;">Tax liability</td><td style="padding:13px 22px;text-align:right;">Income</td></tr>
+        ${cfRowsHtml}
+        <tr style="border-top:2px solid var(--gold-400);background:var(--paper-100);"><td colspan="2" style="padding:17px 22px;font-family:var(--font-serif);font-size:22px;font-weight:700;color:${short ? '#7B241C' : 'var(--ink-900)'};">${short ? 'Shortfall:' : 'Surplus:'}</td><td style="padding:17px 22px;text-align:right;font-family:var(--font-serif);font-size:22px;font-weight:700;color:${short ? '#7B241C' : 'var(--ink-900)'};">${usd2(Math.abs(surplus))}/mo</td></tr>
+      </table>
+      <div style="border-radius:10px;overflow:hidden;margin-top:20px;">
+        <div style="background:${box.c2};color:rgba(255,255,255,0.92);padding:10px 22px;font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">Key takeaway</div>
+        <div style="background:${box.c1};color:white;padding:22px;">
+          <div style="font-family:var(--font-serif);font-size:24px;margin-bottom:6px;">${box.h}</div>
+          <div style="font-family:var(--font-body);font-size:15px;color:rgba(255,255,255,0.95);line-height:1.5;">${box.p}</div>
+        </div>
+      </div>
+    </div>`);
+  }
+
   // 3 — The one question
   push(`<div class="title-block center" style="margin-top:12vh;">
       <div class="kicker">The Question</div>
