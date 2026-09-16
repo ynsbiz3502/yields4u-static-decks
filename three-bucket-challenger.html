@@ -1833,11 +1833,27 @@ function buildThreeBucket(inputs) {
     const ssMo = (inputs.socialSecurity || 0) / 12, penMo = (inputs.otherIncome || 0) / 12;
     const invMo = nwC * 0.04 / 12, expMo = (inputs.totalIncomeNeeds || 0) / 12;
     const surplus = ssMo + penMo + invMo - expMo;
-    const cfRows = [['Social Security', '85% taxable', ssMo]];
+    // Social Security row: show a claiming RANGE (claim now vs wait to 70) for
+    // anyone not yet taking benefits; otherwise the single claimed amount.
+    const _cAge = inputs.currentAge || 65;
+    const _ssPeople = [];
+    if ((inputs.ssYouFRA || 0) > 0) _ssPeople.push([inputs.ssYouFRA, inputs.ssYouClaim]);
+    if (inputs.filingStatus === 'MFJ' && (inputs.ssSpouseFRA || 0) > 0) _ssPeople.push([inputs.ssSpouseFRA, inputs.ssSpouseClaim]);
+    let _ssLo = 0, _ssHi = 0;
+    _ssPeople.forEach(p => {
+      const fra = p[0], claim = p[1] || 67;
+      if (_cAge >= claim) { const m = fra * ssClaimFactor(claim); _ssLo += m; _ssHi += m; }
+      else { _ssLo += fra * ssClaimFactor(Math.max(62, Math.min(70, _cAge))); _ssHi += fra * ssClaimFactor(70); }
+    });
+    const _ssRange = _ssPeople.length > 0 && (_ssHi - _ssLo) > 1;
+    const ssIncomeStr = _ssRange
+      ? (usd2(_ssLo) + ' to ' + usd2(_ssHi) + '/mo<div style="font-family:var(--font-sans);font-size:11px;font-weight:400;color:var(--fg-subtle);margin-top:2px;">claim now vs wait to 70</div>')
+      : (usd2(ssMo) + '/mo');
+    const cfRows = [['Social Security', '85% taxable', ssMo, ssIncomeStr]];
     if (penMo > 0) cfRows.push(['Pension', '', penMo]);
     cfRows.push(['Income from investments ($' + (nwC / 1e6).toFixed(1) + 'M @ 4%)', '', invMo]);
     cfRows.push(['Expenses', '', expMo]);
-    const cfRowsHtml = cfRows.map(r => `<tr style="border-top:1px solid var(--border);"><td style="padding:15px 22px;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${r[0]}</td><td style="padding:15px 22px;text-align:center;font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);">${r[1]}</td><td style="padding:15px 22px;text-align:right;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${usd2(r[2])}/mo</td></tr>`).join('');
+    const cfRowsHtml = cfRows.map(r => `<tr style="border-top:1px solid var(--border);"><td style="padding:15px 22px;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${r[0]}</td><td style="padding:15px 22px;text-align:center;font-family:var(--font-sans);font-size:13px;color:var(--fg-muted);">${r[1]}</td><td style="padding:15px 22px;text-align:right;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${r[3] || (usd2(r[2]) + '/mo')}</td></tr>`).join('');
     const short = surplus < 0;
     const ratio = expMo > 0 ? surplus / expMo : (surplus > 0 ? 1 : -1);
     let box;
@@ -1860,39 +1876,6 @@ function buildThreeBucket(inputs) {
         </div>
       </div>
     </div>`);
-  }
-
-  // 2d — When to turn on Social Security (claiming 62/67/70; teach)
-  {
-    const usd0 = n => '$' + Math.round(Number(n) || 0).toLocaleString('en-US');
-    const people = [];
-    if ((inputs.ssYouFRA || 0) > 0) people.push(['You', inputs.ssYouFRA, inputs.ssYouClaim]);
-    if (inputs.filingStatus === 'MFJ' && (inputs.ssSpouseFRA || 0) > 0) people.push(['Spouse', inputs.ssSpouseFRA, inputs.ssSpouseClaim]);
-    if (people.length) {
-      const ages = [62, 67, 70];
-      const block = (who, fra, chosen) => {
-        const pick = Math.max(62, Math.min(70, chosen || 67));
-        const cells = ages.map(a => {
-          const mo = Math.round(fra * ssClaimFactor(a));
-          const on = a === pick;
-          return `<div style="flex:1;text-align:center;padding:20px 10px;border-radius:10px;background:${on ? 'var(--ink-900)' : 'white'};border:1px solid ${on ? 'var(--ink-900)' : 'var(--border)'};">
-            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${on ? 'var(--gold-300)' : 'var(--fg-subtle)'};">Age ${a}</div>
-            <div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:${on ? 'white' : 'var(--ink-900)'};margin-top:6px;">${usd0(mo)}</div>
-            <div style="font-family:var(--font-sans);font-size:12px;color:${on ? 'rgba(255,255,255,0.82)' : 'var(--fg-muted)'};">/mo${on ? ' &middot; your plan' : ''}</div>
-          </div>`;
-        }).join('');
-        return `<div style="margin-bottom:24px;">
-          <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-600);margin-bottom:10px;">${who}</div>
-          <div style="display:flex;gap:14px;">${cells}</div>
-        </div>`;
-      };
-      const liftPct = Math.round((ssClaimFactor(70) / ssClaimFactor(62) - 1) * 100);
-      push(`${tb('Your income', 'When to turn on Social Security.', 'The same benefit, started later, is bigger for life.')}
-      <div style="max-width:1000px;margin:18px auto 0;text-align:left;">
-        ${people.map(p => block(p[0], p[1], p[2])).join('')}
-        <p style="font-family:var(--font-body);font-size:15px;color:var(--fg-muted);line-height:1.6;margin:6px 0 0;">Every year you wait past 67 adds about 8% &mdash; up to age 70. Waiting from 62 to 70 raises the monthly check by roughly ${liftPct}%, and cost-of-living raises are figured on the larger amount. It&rsquo;s a raise you can&rsquo;t outlive; the trade-off is starting later. Illustrative, based on current Social Security rules.</p>
-      </div>`);
-    }
   }
 
   // 2e — If one of you passes first (survivor income drop + widow's-penalty tax)
