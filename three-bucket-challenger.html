@@ -1142,10 +1142,46 @@ body.console-mode { overflow: hidden; }
         <div class="hint">What this household needs to live on each year (today&rsquo;s dollars). Grows with inflation each year.</div>
       </div>
 
-      <div class="form-row">
-        <label for="socialSecurity">Estimated Social Security income</label>
-        <input type="text" id="socialSecurity" value="$40,000" inputmode="numeric">
-        <div class="hint">Combined annual Social Security for the household once benefits start. Grows with inflation (COLA).</div>
+      <!-- Social Security — per person (monthly benefit at full retirement age) -->
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="ssYouMonthly">Your Social Security &mdash; monthly at 67</label>
+          <input type="text" id="ssYouMonthly" value="$2,800" inputmode="numeric">
+          <div class="hint">Your benefit at full retirement age, from your SSA statement.</div>
+        </div>
+        <div class="form-row">
+          <label for="ssYouClaim">You start claiming at age</label>
+          <select id="ssYouClaim"><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67" selected>67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option></select>
+          <div class="hint">Waiting past 67 adds about 8% per year, up to age 70.</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="ssSpouseMonthly">Spouse Social Security &mdash; monthly at 67</label>
+          <input type="text" id="ssSpouseMonthly" value="" inputmode="numeric">
+          <div class="hint">Leave blank if none. Used only when Married Filing Jointly.</div>
+        </div>
+        <div class="form-row">
+          <label for="ssSpouseClaim">Spouse starts claiming at age</label>
+          <select id="ssSpouseClaim"><option value="62">62</option><option value="63">63</option><option value="64">64</option><option value="65">65</option><option value="66">66</option><option value="67" selected>67</option><option value="68">68</option><option value="69">69</option><option value="70">70</option></select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="pension">Pension &mdash; annual</label>
+          <input type="text" id="pension" value="$0" inputmode="numeric">
+          <div class="hint">Combined annual pension income, if any.</div>
+        </div>
+        <div class="form-row">
+          <label for="pensionSurvivor">Pension survivor benefit</label>
+          <select id="pensionSurvivor">
+            <option value="100">100% continues</option>
+            <option value="75">75% continues</option>
+            <option value="50" selected>50% continues</option>
+            <option value="0">None</option>
+          </select>
+          <div class="hint">What the surviving spouse keeps if you pass first.</div>
+        </div>
       </div>
 
       <div class="form-grid">
@@ -1297,24 +1333,30 @@ const ULT = {
 };
 
 // 2026 federal brackets (approx). Thresholds for taxable income.
+// 2026 federal brackets — tops of TAXABLE income, calibrated to the roth30.com
+// MCP (bracket_headroom) on 2026-09-16. Cross-checked: federal_tax on $60k
+// taxable = $6,704 MFJ / $7,912 Single; $84k MFJ = $9,584 — deck matches to $0.
 const BRACKETS_MFJ = [
-  [23850,    0.10],
-  [96950,    0.12],
-  [206700,   0.22],
-  [394600,   0.24],
-  [501050,   0.32],
-  [751600,   0.35],
+  [24800,    0.10],
+  [100800,   0.12],
+  [211400,   0.22],
+  [403550,   0.24],
+  [512450,   0.32],
+  [768700,   0.35],
   [Infinity, 0.37]
 ];
 const BRACKETS_SINGLE = [
-  [11925,    0.10],
-  [48475,    0.12],
-  [103350,   0.22],
-  [197300,   0.24],
-  [250525,   0.32],
-  [626350,   0.35],
+  [12400,    0.10],
+  [50400,    0.12],
+  [105700,   0.22],
+  [201775,   0.24],
+  [256225,   0.32],
+  [640600,   0.35],
   [Infinity, 0.37]
 ];
+// Std deduction is the deck's gross->taxable assumption (the MCP takes taxable
+// income directly and defines no deduction). 2026 base TCJA figures; senior /
+// OBBBA add-ons not modeled (a conservative simplification).
 const STD_DED = { MFJ: 30000, Single: 15000 };
 
 // % negative stocks in S&P 500 (illustrative historical pattern)
@@ -1694,6 +1736,21 @@ function computeWidowPenalty(inputs, sim) {
   return { annual, cumulative, income: totalInc };
 }
 
+// ── Social Security claiming (SSA rules) ────────────────────────────────────
+// Benefit as a multiple of the full-retirement-age (67) amount. Delayed
+// retirement credits add 8%/yr (2/3%/mo) up to age 70 (+24%); claiming early
+// cuts 5/9%/mo for the first 36 months before FRA and 5/12%/mo beyond
+// (age 62 ~= -30%).
+function ssClaimFactor(claimAge) {
+  const FRA = 67;
+  const a = Math.max(62, Math.min(70, Number(claimAge) || FRA));
+  if (a >= FRA) return 1 + 0.08 * (a - FRA);
+  const monthsEarly = (FRA - a) * 12;
+  const first36 = Math.min(36, monthsEarly);
+  const beyond = Math.max(0, monthsEarly - 36);
+  return Math.max(0, 1 - (first36 * (5 / 900) + beyond * (5 / 1200)));
+}
+
 /* ===============================================================
  *  Formatters
  * =============================================================== */
@@ -1803,6 +1860,83 @@ function buildThreeBucket(inputs) {
         </div>
       </div>
     </div>`);
+  }
+
+  // 2d — When to turn on Social Security (claiming 62/67/70; teach)
+  {
+    const usd0 = n => '$' + Math.round(Number(n) || 0).toLocaleString('en-US');
+    const people = [];
+    if ((inputs.ssYouFRA || 0) > 0) people.push(['You', inputs.ssYouFRA, inputs.ssYouClaim]);
+    if (inputs.filingStatus === 'MFJ' && (inputs.ssSpouseFRA || 0) > 0) people.push(['Spouse', inputs.ssSpouseFRA, inputs.ssSpouseClaim]);
+    if (people.length) {
+      const ages = [62, 67, 70];
+      const block = (who, fra, chosen) => {
+        const pick = Math.max(62, Math.min(70, chosen || 67));
+        const cells = ages.map(a => {
+          const mo = Math.round(fra * ssClaimFactor(a));
+          const on = a === pick;
+          return `<div style="flex:1;text-align:center;padding:20px 10px;border-radius:10px;background:${on ? 'var(--ink-900)' : 'white'};border:1px solid ${on ? 'var(--ink-900)' : 'var(--border)'};">
+            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${on ? 'var(--gold-300)' : 'var(--fg-subtle)'};">Age ${a}</div>
+            <div style="font-family:var(--font-serif);font-size:30px;font-weight:700;color:${on ? 'white' : 'var(--ink-900)'};margin-top:6px;">${usd0(mo)}</div>
+            <div style="font-family:var(--font-sans);font-size:12px;color:${on ? 'rgba(255,255,255,0.82)' : 'var(--fg-muted)'};">/mo${on ? ' &middot; your plan' : ''}</div>
+          </div>`;
+        }).join('');
+        return `<div style="margin-bottom:24px;">
+          <div style="font-family:var(--font-sans);font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-600);margin-bottom:10px;">${who}</div>
+          <div style="display:flex;gap:14px;">${cells}</div>
+        </div>`;
+      };
+      const liftPct = Math.round((ssClaimFactor(70) / ssClaimFactor(62) - 1) * 100);
+      push(`${tb('Your income', 'When to turn on Social Security.', 'The same benefit, started later, is bigger for life.')}
+      <div style="max-width:1000px;margin:18px auto 0;text-align:left;">
+        ${people.map(p => block(p[0], p[1], p[2])).join('')}
+        <p style="font-family:var(--font-body);font-size:15px;color:var(--fg-muted);line-height:1.6;margin:6px 0 0;">Every year you wait past 67 adds about 8% &mdash; up to age 70. Waiting from 62 to 70 raises the monthly check by roughly ${liftPct}%, and cost-of-living raises are figured on the larger amount. It&rsquo;s a raise you can&rsquo;t outlive; the trade-off is starting later. Illustrative, based on current Social Security rules.</p>
+      </div>`);
+    }
+  }
+
+  // 2e — If one of you passes first (survivor income drop + widow's-penalty tax)
+  {
+    if (inputs.filingStatus === 'MFJ' && (inputs.claimedYouMo || 0) > 0 && (inputs.claimedSpouseMo || 0) > 0) {
+      const usd0 = n => '$' + Math.round(Number(n) || 0).toLocaleString('en-US');
+      const ssBoth = Math.round((inputs.claimedYouMo + inputs.claimedSpouseMo) * 12);
+      const ssSurv = Math.round(Math.max(inputs.claimedYouMo, inputs.claimedSpouseMo) * 12);
+      const pension = inputs.otherIncome || 0;
+      const survPct = (typeof inputs.pensionSurvivor === 'number') ? inputs.pensionSurvivor : 0.5;
+      const pensionSurv = Math.round(pension * survPct);
+      const portfolio = Math.round(((inputs.balance || 0) + (inputs.nonQualified || 0)) * 0.04);
+      const iraTaxable = Math.round((inputs.balance || 0) * 0.04);
+      const incBefore = ssBoth + pension + portfolio;
+      const incAfter = ssSurv + pensionSurv + portfolio;
+      const incDrop = incBefore - incAfter;
+      const taxBefore = Math.round(0.85 * ssBoth + pension + iraTaxable);
+      const taxAfter = Math.round(0.85 * ssSurv + pensionSurv + iraTaxable);
+      const widowExtra = Math.max(0, Math.round(computeTax(taxAfter, 'Single') - computeTax(taxAfter, 'MFJ')));
+      const row = (label, a, b, danger) => `<tr style="border-top:1px solid var(--border);"><td style="padding:14px 22px;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${label}</td><td style="padding:14px 22px;text-align:right;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${usd0(a)}</td><td style="padding:14px 22px;text-align:right;font-family:var(--font-body);font-size:16px;color:${danger ? '#7B241C' : 'var(--ink-900)'};">${usd0(b)}</td></tr>`;
+      push(`${tb('The risk to your income', 'If one of you passes first.', 'One Social Security check stops. The tax bill goes up.')}
+      <div style="max-width:1040px;margin:16px auto 0;text-align:left;">
+        <table style="width:100%;border-collapse:collapse;background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+          <tr style="background:var(--paper-100);font-family:var(--font-sans);font-size:11.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-subtle);"><td style="padding:13px 22px;">Household income</td><td style="padding:13px 22px;text-align:right;">Both of you</td><td style="padding:13px 22px;text-align:right;">Survivor alone</td></tr>
+          ${row('Social Security', ssBoth, ssSurv)}
+          ${pension > 0 ? row('Pension', pension, pensionSurv) : ''}
+          ${row('Portfolio income (4%)', portfolio, portfolio)}
+          <tr style="border-top:2px solid var(--gold-400);background:var(--paper-100);"><td style="padding:16px 22px;font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);">Total income</td><td style="padding:16px 22px;text-align:right;font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);">${usd0(incBefore)}</td><td style="padding:16px 22px;text-align:right;font-family:var(--font-serif);font-size:20px;font-weight:700;color:#7B241C;">${usd0(incAfter)}</td></tr>
+        </table>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;">
+          <div style="background:#7B241C;color:white;border-radius:10px;padding:20px 24px;">
+            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);">Income lost each year</div>
+            <div style="font-family:var(--font-serif);font-size:30px;font-weight:700;margin-top:6px;">${usd0(incDrop)}</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,0.9);margin-top:4px;">The smaller Social Security check ends${survPct < 1 ? ' and the pension drops to ' + Math.round(survPct * 100) + '%' : ''}.</div>
+          </div>
+          <div style="background:var(--ink-900);color:white;border-radius:10px;padding:20px 24px;">
+            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-300);">Extra tax as a single filer</div>
+            <div style="font-family:var(--font-serif);font-size:30px;font-weight:700;margin-top:6px;">${usd0(widowExtra)}<span style="font-size:16px;color:rgba(255,255,255,0.7);">/yr</span></div>
+            <div style="font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,0.85);margin-top:4px;">Nearly the same income, but the survivor files Single &mdash; the brackets compress.</div>
+          </div>
+        </div>
+        <p style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);margin:14px 0 0;">Illustrative, based on current 2026 rules. Tax brackets calibrated to the roth30.com engine; portfolio income shown at an assumed 4% draw.</p>
+      </div>`);
+    }
   }
 
   // 3 — The one question
@@ -3436,6 +3570,25 @@ function onGenerate(e) {
   // default to 0 (the IRA draw is auto-computed from totalIncomeNeeds - SS). URL
   // params for both still work for backward compatibility with existing links.
   const urlParams = new URLSearchParams(window.location.search);
+  // ── Social Security: per-person monthly-at-FRA x claiming factor ──────────
+  const _mfj = document.getElementById('filingStatus').value === 'MFJ';
+  const ssYouFRA    = parseMoney(document.getElementById('ssYouMonthly')?.value || '0');
+  const ssSpouseFRA = _mfj ? parseMoney(document.getElementById('ssSpouseMonthly')?.value || '0') : 0;
+  const ssYouClaim    = parseInt(document.getElementById('ssYouClaim')?.value, 10) || 67;
+  const ssSpouseClaim = parseInt(document.getElementById('ssSpouseClaim')?.value, 10) || 67;
+  const claimedYouMo    = ssYouFRA    * ssClaimFactor(ssYouClaim);
+  const claimedSpouseMo = ssSpouseFRA * ssClaimFactor(ssSpouseClaim);
+  let socialSecurityAnnual = Math.round((claimedYouMo + claimedSpouseMo) * 12);
+  // Back-compat: links passing a combined ?socialSecurity= (intake stores MONTHLY,
+  // so a value < $12k is annualized; a manual annual entry passes through).
+  if (!ssYouFRA && !ssSpouseFRA) {
+    let legacy = parseMoney(urlParams.get('socialSecurity') || '0');
+    if (legacy > 0 && legacy < 12000) legacy *= 12;
+    socialSecurityAnnual = legacy;
+  }
+  const pensionAnnual = parseMoney(document.getElementById('pension')?.value || urlParams.get('otherIncome') || '0');
+  const _survPct = parseInt(document.getElementById('pensionSurvivor')?.value, 10);
+  const pensionSurvivor = Number.isFinite(_survPct) ? _survPct / 100 : 0.5;
   const inputs = {
     firstName: document.getElementById('firstName').value.trim(),
     balance: parseMoney(document.getElementById('balance').value),
@@ -3444,9 +3597,10 @@ function onGenerate(e) {
     currentAge: parseInt(document.getElementById('currentAge').value, 10) || 63,
     ageOfDeath: (function(){ const v = parseInt((document.getElementById('ageOfDeath') || {}).value, 10); return Number.isFinite(v) ? v : null; })(),
     filingStatus: document.getElementById('filingStatus').value,
-    otherIncome: parseMoney(urlParams.get('otherIncome') || '0'),
+    otherIncome: pensionAnnual,
     totalIncomeNeeds: parseMoney(document.getElementById('totalIncomeNeeds')?.value || '0'),
-    socialSecurity: parseMoney(document.getElementById('socialSecurity')?.value || '0'),
+    socialSecurity: socialSecurityAnnual,
+    ssYouFRA, ssSpouseFRA, ssYouClaim, ssSpouseClaim, claimedYouMo, claimedSpouseMo, pensionSurvivor,
     annualWithdrawal: parseMoney(urlParams.get('annualWithdrawal') || '0'),
     inflationRate: (parseFloat(document.getElementById('inflationRate')?.value || '4') || 4) / 100,
     growthRate: parseFloat(document.getElementById('growthRate').value) / 100,
@@ -3694,17 +3848,24 @@ function applyUrlParamsToForm() {
   setText('filingStatus', 'filingStatus');
   setText('riskTolerance', 'riskTolerance');
   setMoney('totalIncomeNeeds', 'totalIncomeNeeds');
-  // Social Security: intake stores ss_current_amount MONTHLY, but this field is annual.
-  // Auto-detect a monthly-magnitude value (< $12k; combined household monthly SS maxes ~$10k)
-  // and annualize it (×12) so the field and the projection both use the annual figure.
+  // Social Security (per person, monthly at FRA) + pension.
+  setMoney('ssYouMonthly', 'ssYouMonthly');
+  setMoney('ssSpouseMonthly', 'ssSpouseMonthly');
+  setText('ssYouClaim', 'ssYouClaim');
+  setText('ssSpouseClaim', 'ssSpouseClaim');
+  setMoney('pension', 'pension');
+  setText('pensionSurvivor', 'pensionSurvivor');
+  // Back-compat: a legacy combined ?socialSecurity= (intake stores MONTHLY; a
+  // manual annual entry is >= $12k) maps into "your" monthly field so old links
+  // still populate a value.
   (() => {
+    if (params.get('ssYouMonthly')) return;
     const v = params.get('socialSecurity');
-    if (v !== null && v !== '') {
-      let n = parseMoney(v);
-      if (n > 0 && n < 12000) n = n * 12;
-      const el = document.getElementById('socialSecurity');
-      if (el) el.value = n > 0 ? '$' + n.toLocaleString('en-US') : v;
-    }
+    if (v === null || v === '') return;
+    const n = parseMoney(v);
+    const monthly = n >= 12000 ? Math.round(n / 12) : n;
+    const el = document.getElementById('ssYouMonthly');
+    if (el && monthly > 0) el.value = '$' + monthly.toLocaleString('en-US');
   })();
   // otherIncome and annualWithdrawal no longer have form fields; their URL
   // params are still honored inside onGenerate() for backward compatibility.
