@@ -1742,6 +1742,37 @@ function buildThreeBucket(inputs) {
       ${['Where you are today','What your financial future looks like','The gaps we need to close','Why the rules about money change in retirement','The solution','Your action plan'].map((t,i)=>`<div style="display:flex;align-items:center;gap:18px;padding:13px 0;border-bottom:1px solid var(--border);"><span style="font-family:var(--font-serif);font-weight:700;font-size:22px;color:var(--gold-500);width:34px;flex:0 0 auto;">${i+1}</span><span style="font-size:18px;color:var(--ink-900);">${t}</span></div>`).join('')}
     </div>`);
 
+  // 2b — Where you are today (current position / net worth; SWOT-style, dynamic)
+  {
+    const usd = n => '$' + Math.round(Number(n) || 0).toLocaleString('en-US') + '.00';
+    const trad = inputs.balance || 0, brok = inputs.nonQualified || 0, nw = trad + brok;
+    const income = inputs.totalIncomeNeeds || 0;
+    const retireYear = new Date().getFullYear() + Math.max(0, 65 - (inputs.currentAge || 65));
+    const nwRows = [];
+    if (brok > 0) nwRows.push(['Brokerage', false, brok]);
+    if (trad > 0) nwRows.push(['Traditional Retirement Accounts', true, trad]);
+    const nwRowsHtml = nwRows.map(r => `<tr style="border-top:1px solid var(--border);"><td style="padding:12px 20px;font-family:var(--font-body);font-size:15px;color:var(--ink-900);">${r[0]}</td><td style="padding:12px 20px;text-align:center;color:var(--gold-600);font-weight:700;font-size:16px;">${r[1] ? '&#10003;' : ''}</td><td style="padding:12px 20px;text-align:right;font-family:var(--font-body);font-size:15px;color:var(--ink-900);">${usd(r[2])}</td><td style="padding:12px 20px;"></td></tr>`).join('');
+    push(`${tb('Where you are today', 'Your retirement &amp; tax snapshot.', inputs.firstName ? 'Prepared for ' + inputs.firstName : '')}
+    <div style="max-width:1060px;margin:20px auto 0;text-align:left;">
+      <div style="background:var(--paper-100);border-radius:10px;padding:18px 24px;margin-bottom:22px;">
+        <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);margin-bottom:7px;">About this report</div>
+        <p style="font-family:var(--font-body);font-size:15px;color:var(--fg-muted);line-height:1.6;margin:0;">A personalized overview of your readiness for retirement &mdash; a clear picture of what it takes to retire comfortably and sustainably, built from your own numbers.</p>
+      </div>
+      <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);margin-bottom:12px;">Goals</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;">
+        <div style="background:rgba(199,154,62,0.13);border:1px solid rgba(199,154,62,0.28);border-radius:10px;padding:20px 24px;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);">Stop working in <strong style="color:var(--gold-600);">${retireYear}</strong></div>
+        <div style="background:rgba(199,154,62,0.13);border:1px solid rgba(199,154,62,0.28);border-radius:10px;padding:20px 24px;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);">Lifetime income of <strong style="color:var(--gold-600);">${income > 0 ? '$' + Math.round(income).toLocaleString('en-US') + '/yr' : '&mdash;'}</strong></div>
+      </div>
+      <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-600);">Net worth</div>
+      <div style="font-family:var(--font-sans);font-size:11.5px;color:var(--fg-subtle);letter-spacing:0.04em;margin:2px 0 12px;">Assets &minus; liabilities = net worth</div>
+      <table style="width:100%;border-collapse:collapse;background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <tr style="background:var(--paper-100);font-family:var(--font-sans);font-size:11.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-subtle);"><td style="padding:11px 20px;">Account type</td><td style="padding:11px 20px;text-align:center;">Tax liability</td><td style="padding:11px 20px;text-align:right;">Current value</td><td style="padding:11px 20px;text-align:right;">Liabilities</td></tr>
+        ${nwRowsHtml}
+        <tr style="border-top:2px solid var(--gold-400);background:var(--paper-100);"><td colspan="2" style="padding:14px 20px;font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);">Net worth</td><td style="padding:14px 20px;text-align:right;font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);">${usd(nw)}</td><td></td></tr>
+      </table>
+    </div>`);
+  }
+
   // 3 — The one question
   push(`<div class="title-block center" style="margin-top:12vh;">
       <div class="kicker">The Question</div>
@@ -3626,6 +3657,7 @@ function applyUrlParamsToForm() {
   };
   setText('firstName', 'firstName');
   setMoney('balance', 'balance');
+  setMoney('nonQualified', 'nonQualified');
   setText('currentAge', 'currentAge');
   setText('filingStatus', 'filingStatus');
   setText('riskTolerance', 'riskTolerance');
