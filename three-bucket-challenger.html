@@ -1993,13 +1993,13 @@ function buildThreeBucket(inputs) {
           ${dots}
           <text x="${L}" y="${Bb + 18}" font-size="10" fill="#8F8F94" font-family="sans-serif">1900</text>
           <text x="${Rr}" y="${Bb + 18}" font-size="10" fill="#8F8F94" font-family="sans-serif" text-anchor="end">today</text>
-          <text x="${Rr}" y="${T + 5}" font-size="10.5" fill="#8F8F94" font-family="sans-serif" text-anchor="end">– – the steady return you plan on</text>
+          <circle cx="${PX(2024)}" cy="${PY(40000)}" r="4" fill="var(--gold-500)"/><text x="${Rr}" y="34" font-size="10.5" fill="var(--gold-600)" font-family="sans-serif" text-anchor="end" font-weight="700">you are here</text>
         </svg>
-        <div style="font-family:var(--font-sans);font-size:11.5px;color:var(--fg-subtle);margin-top:2px;text-align:center;">Dow Jones, 1900&ndash;today (log scale) &middot; illustrative &mdash; the line you plan on vs. the market you get.</div>
+        <div style="font-family:var(--font-sans);font-size:11.5px;color:var(--fg-subtle);margin-top:2px;text-align:center;">Dow Jones since 1900, log scale (illustrative). Dashed = the steady return you plan on; solid = the market you actually get.</div>
       </div>
     </div>
     <div style="max-width:1080px;margin:16px auto 0;text-align:left;">
-      <div style="border-left:4px solid var(--gold-400);padding:12px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);">So the real question isn&rsquo;t &ldquo;do I have enough?&rdquo; &mdash; it&rsquo;s &ldquo;can I count on it?&rdquo;</div>
+      <div style="border-left:4px solid var(--gold-400);padding:12px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);">For 40 years, every dip on this chart was a gift &mdash; you bought in cheaper and it always came back. Now you flip it and start taking money <em>out</em>. Does the same climb still work in reverse?</div>
       <p style="font-size:11px;color:var(--fg-subtle);margin:10px 0 0;">Illustrative; index path approximate, shown on a log scale. A withdrawal that rises with inflation and survives down markets generally requires higher gross returns.</p>
     </div>`);
   }
