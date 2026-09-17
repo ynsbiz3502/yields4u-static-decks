@@ -1963,44 +1963,48 @@ function buildThreeBucket(inputs) {
     </div>`);
   }
 
-  // 3 — The real risk (bullets + Dow log-scale "not a straight line" chart; tracks the slider)
+  // 3 — The real risk (bullets + Dow climb that FORKS into two futures; sets up sequence risk)
   {
-    const nwC = (inputs.balance || 0) + (inputs.nonQualified || 0);
-    const nwM = '$' + (nwC / 1e6).toFixed(1) + 'M';
-    // Dow Jones (approx close/lows, log scale), 1900–today — the recognizable jagged climb.
     const dow = [[1900,68],[1906,100],[1914,55],[1921,64],[1929,381],[1932,41],[1937,194],[1942,93],[1950,235],[1956,500],[1966,995],[1974,577],[1982,777],[1987,1739],[1990,2634],[2000,11723],[2002,7286],[2007,14164],[2009,6547],[2013,16577],[2020,18592],[2021,36338],[2024,40000]];
-    const W = 560, H = 300, L = 40, Rr = 548, T = 16, Bb = 250, y0 = 1900, y1 = 2024, v0 = 40, v1 = 45000;
-    const PX = y => (L + (y - y0) / (y1 - y0) * (Rr - L)).toFixed(1);
+    const L = 40, HR = 400, FR = 548, T = 20, Bb = 246, y0 = 1900, y1 = 2024, v0 = 40, v1 = 150000;
+    const PXh = y => (L + (y - y0) / (y1 - y0) * (HR - L)).toFixed(1);
     const PY = v => (Bb - (Math.log(v) - Math.log(v0)) / (Math.log(v1) - Math.log(v0)) * (Bb - T)).toFixed(1);
-    const jag = 'M' + dow.map(d => PX(d[0]) + ',' + PY(d[1])).join(' L');
-    const smooth = 'M' + PX(1900) + ',' + PY(90) + ' L' + PX(2024) + ',' + PY(26000);
+    const jag = 'M' + dow.map(d => PXh(d[0]) + ',' + PY(d[1])).join(' L');
+    const hy = PY(40000);
+    const good = 'M' + HR + ',' + hy + ' L' + FR + ',' + (T + 8);
+    const bad = 'M' + HR + ',' + hy + ' L' + FR + ',214';
     const marks = [[1932, '1929'], [2002, '2000'], [2009, '2008'], [2020, '2020']];
-    const dots = marks.map(m => { const d = dow.find(x => x[0] === m[0]); return '<circle cx="' + PX(d[0]) + '" cy="' + PY(d[1]) + '" r="3.5" fill="#A83B2E"/><text x="' + PX(d[0]) + '" y="' + (+PY(d[1]) + 15) + '" font-size="10" fill="#A83B2E" font-family="sans-serif" text-anchor="middle">' + m[1] + '</text>'; }).join('');
+    const dots = marks.map(m => { const d = dow.find(x => x[0] === m[0]); return '<circle cx="' + PXh(d[0]) + '" cy="' + PY(d[1]) + '" r="3" fill="#A83B2E"/><text x="' + PXh(d[0]) + '" y="' + (+PY(d[1]) + 14) + '" font-size="9.5" fill="#A83B2E" font-family="sans-serif" text-anchor="middle">' + m[1] + '</text>'; }).join('');
     const bullet = t => '<li style="position:relative;padding-left:20px;margin-bottom:13px;font-family:var(--font-body);font-size:15.5px;color:var(--ink-900);line-height:1.5;"><span style="position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%;background:var(--gold-500);"></span>' + t + '</li>';
     push(`${tb('The real risk', 'So if <span class="s5rate">4%</span> is so safe, where&rsquo;s the risk?')}
-    <div style="max-width:1080px;margin:6px auto 0;display:grid;grid-template-columns:0.92fr 1.08fr;gap:30px;align-items:center;text-align:left;">
+    <div style="max-width:1080px;margin:6px auto 0;display:grid;grid-template-columns:0.82fr 1.18fr;gap:28px;align-items:center;text-align:left;">
       <ul style="list-style:none;margin:0;padding:0;">
-        ${bullet('<strong class="s5rate">4%</strong> is the easy part &mdash; even at zero growth it lasts <strong class="s5years">25</strong> years, and you can find it almost anywhere.')}
-        ${bullet('The risk isn&rsquo;t the rate. It&rsquo;s that you can&rsquo;t count on a <strong>straight line</strong>.')}
-        ${bullet('You get the market&rsquo;s <strong>order</strong> &mdash; not a smooth average &mdash; and rising costs keep lifting the bar.')}
-        ${bullet('To hold a rising <strong class="s5rate">4%</strong> through the down years, the good years quietly have to do <strong class="s5good" style="color:var(--gold-600);">6&ndash;8%</strong> &mdash; and no one picks when they come.')}
+        ${bullet('<strong class="s5rate">4%</strong> is the easy part &mdash; even at zero growth it lasts <strong class="s5years">25</strong> years.')}
+        ${bullet('The risk isn&rsquo;t the rate. You don&rsquo;t get the average &mdash; you get the <strong>order</strong>.')}
+        ${bullet('To hold a rising <strong class="s5rate">4%</strong>, the good years quietly need <strong class="s5good" style="color:var(--gold-600);">6&ndash;8%</strong> &mdash; and no one picks when they come.')}
       </ul>
       <div>
-        <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;">
-          <line x1="${L}" y1="${Bb}" x2="${Rr}" y2="${Bb}" stroke="var(--border)" stroke-width="1"/>
-          <path d="${smooth}" fill="none" stroke="#8F8F94" stroke-width="2" stroke-dasharray="5 5"/>
+        <svg viewBox="0 0 560 300" width="100%" style="display:block;">
+          <line x1="${L}" y1="${Bb}" x2="${FR}" y2="${Bb}" stroke="var(--border)" stroke-width="1"/>
+          <line x1="${HR}" y1="${T - 4}" x2="${HR}" y2="${Bb}" stroke="#E2DCCB" stroke-width="1" stroke-dasharray="3 3"/>
           <path d="${jag}" fill="none" stroke="var(--ink-900)" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="${good}" fill="none" stroke="#3E5C34" stroke-width="2.5" stroke-dasharray="6 4"/>
+          <path d="${bad}" fill="none" stroke="#A83B2E" stroke-width="2.5" stroke-dasharray="6 4"/>
           ${dots}
-          <text x="${L}" y="${Bb + 18}" font-size="10" fill="#8F8F94" font-family="sans-serif">1900</text>
-          <text x="${Rr}" y="${Bb + 18}" font-size="10" fill="#8F8F94" font-family="sans-serif" text-anchor="end">today</text>
-          <circle cx="${PX(2024)}" cy="${PY(40000)}" r="4" fill="var(--gold-500)"/><text x="${Rr}" y="34" font-size="10.5" fill="var(--gold-600)" font-family="sans-serif" text-anchor="end" font-weight="700">you are here</text>
+          <text x="${(HR + FR) / 2}" y="150" font-size="34" fill="#D8D2C2" font-family="sans-serif" text-anchor="middle" font-weight="700">?</text>
+          <circle cx="${HR}" cy="${hy}" r="4.5" fill="var(--gold-500)"/>
+          <text x="${HR - 8}" y="${+hy - 6}" font-size="10.5" fill="var(--gold-600)" font-family="sans-serif" text-anchor="end" font-weight="700">you are here</text>
+          <text x="${FR}" y="${T + 6}" font-size="10.5" fill="#3E5C34" font-family="sans-serif" text-anchor="end" font-weight="700">good order first</text>
+          <text x="${FR}" y="222" font-size="10.5" fill="#A83B2E" font-family="sans-serif" text-anchor="end" font-weight="700">bad order first</text>
+          <text x="${L}" y="${Bb + 16}" font-size="10" fill="#8F8F94" font-family="sans-serif">1900</text>
+          <text x="${HR}" y="${Bb + 16}" font-size="10" fill="#8F8F94" font-family="sans-serif" text-anchor="middle">today</text>
+          <text x="${(HR + FR) / 2}" y="${Bb + 16}" font-size="10" fill="#8F8F94" font-family="sans-serif" text-anchor="middle">the next 10 years</text>
         </svg>
-        <div style="font-family:var(--font-sans);font-size:11.5px;color:var(--fg-subtle);margin-top:2px;text-align:center;">Dow Jones since 1900, log scale (illustrative). Dashed = the steady return you plan on; solid = the market you actually get.</div>
+        <div style="font-family:var(--font-sans);font-size:11.5px;color:var(--fg-subtle);margin-top:2px;text-align:center;">Dow Jones since 1900 (log scale, illustrative). You rode the climb up. From here, the <em>order</em> of returns decides your path.</div>
       </div>
     </div>
-    <div style="max-width:1080px;margin:16px auto 0;text-align:left;">
-      <div style="border-left:4px solid var(--gold-400);padding:12px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);">For 40 years, every dip on this chart was a gift &mdash; you bought in cheaper and it always came back. Now you flip it and start taking money <em>out</em>. Does the same climb still work in reverse?</div>
-      <p style="font-size:11px;color:var(--fg-subtle);margin:10px 0 0;">Illustrative; index path approximate, shown on a log scale. A withdrawal that rises with inflation and survives down markets generally requires higher gross returns.</p>
+    <div style="max-width:1080px;margin:14px auto 0;text-align:left;">
+      <div style="border-left:4px solid var(--gold-400);padding:12px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);">For 40 years you bought the dips and rode it up. Now you&rsquo;re at the top, about to take money <em>out</em> &mdash; and from here it isn&rsquo;t your average return that decides if you make it. It&rsquo;s the order they arrive in.</div>
     </div>`);
   }
 
