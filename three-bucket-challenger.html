@@ -1799,7 +1799,7 @@ function cf2render(root) {
   set('cf-rateval', rateStr);
   set('cf-noterate', rateStr);
   set('cf-years', Math.round(100 / rate));
-  set('cf-inv', sh(invY * f) + u);
+  set('cf-inv', full(invY * f) + u);
   set('cf-exp-unit', u);
   if (expEl && document.activeElement !== expEl) expEl.value = Math.round(expY * f);
   const short = surY < 0;
@@ -1917,7 +1917,7 @@ function buildThreeBucket(inputs) {
     const rowS = 'display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 22px;border-top:1px solid var(--border);';
     const lblS = 'font-family:var(--font-body);font-size:16px;color:var(--ink-900);';
     const subS = 'font-family:var(--font-sans);font-size:11.5px;color:var(--fg-subtle);';
-    const valS = 'font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);white-space:nowrap;';
+    const valS = 'font-family:var(--font-serif);font-size:19px;font-weight:400;color:var(--ink-900);white-space:nowrap;';
     push(`${tb('The Simple Math', 'Cashflow analysis.')}
     <div class="cf2" data-port="${nwC}" data-sslo="${ssLoMo}" data-sshi="${ssHiMo}" data-ssplan="${ssPlanMo}" data-pen="${penMo}" data-expy="${inputs.totalIncomeNeeds || 0}" data-mode="mo" style="max-width:860px;margin:6px auto 0;text-align:left;">
       <div style="background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
@@ -1932,7 +1932,7 @@ function buildThreeBucket(inputs) {
               <span style="${subS}">${sh(nwC)} at <span id="cf-rateval" style="color:var(--gold-600);font-weight:700;">4%</span></span>
             </div>
           </div>
-          <div id="cf-inv" style="${valS}">${sh(invMo0)}/mo</div>
+          <div id="cf-inv" style="${valS}">${full(invMo0)}/mo</div>
         </div>
         <div style="${rowS}">
           <div><div style="${lblS}">&minus; Expenses</div>
@@ -1941,7 +1941,7 @@ function buildThreeBucket(inputs) {
               <span class="cf-modebtn" data-m="yr" onclick="cf2mode(this,'yr')" style="cursor:pointer;padding:3px 11px;font-family:var(--font-sans);font-size:11px;font-weight:700;background:transparent;color:var(--fg-muted);">Annual</span>
             </div>
           </div>
-          <div style="${valS}display:flex;align-items:baseline;gap:1px;">$<input type="number" id="cf-exp" value="${Math.round(expMo)}" step="100" oninput="cfExpEdit(this)" style="width:92px;font-family:var(--font-serif);font-size:19px;font-weight:700;color:var(--ink-900);text-align:right;border:none;border-bottom:1px dashed var(--gold-400);background:transparent;padding:0 2px;"><span id="cf-exp-unit" style="font-size:14px;font-weight:400;color:var(--fg-muted);">/mo</span></div>
+          <div style="${valS}display:flex;align-items:baseline;gap:1px;">$<input type="number" id="cf-exp" value="${Math.round(expMo)}" step="100" oninput="cfExpEdit(this)" style="width:92px;font-family:var(--font-serif);font-size:19px;font-weight:400;color:var(--ink-900);text-align:right;border:none;border-bottom:1px dashed var(--gold-400);background:transparent;padding:0 2px;"><span id="cf-exp-unit" style="font-size:14px;font-weight:400;color:var(--fg-muted);">/mo</span></div>
         </div>
         <div style="${rowS}border-top:2px solid var(--gold-400);background:var(--paper-100);padding:16px 22px;">
           <div id="cf-surplus-label" style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:${short0 ? '#7B241C' : '#1E8A55'};">${short0 ? 'Shortfall' : 'Surplus'}</div>
