@@ -1963,17 +1963,45 @@ function buildThreeBucket(inputs) {
     </div>`);
   }
 
-  // 3 — The 4% catch (bridge from cashflow into the rules-change reframe)
+  // 3 — The real risk (bullets + Dow log-scale "not a straight line" chart; tracks the slider)
   {
     const nwC = (inputs.balance || 0) + (inputs.nonQualified || 0);
     const nwM = '$' + (nwC / 1e6).toFixed(1) + 'M';
+    // Dow Jones (approx close/lows, log scale), 1900–today — the recognizable jagged climb.
+    const dow = [[1900,68],[1906,100],[1914,55],[1921,64],[1929,381],[1932,41],[1937,194],[1942,93],[1950,235],[1956,500],[1966,995],[1974,577],[1982,777],[1987,1739],[1990,2634],[2000,11723],[2002,7286],[2007,14164],[2009,6547],[2013,16577],[2020,18592],[2021,36338],[2024,40000]];
+    const W = 560, H = 300, L = 40, Rr = 548, T = 16, Bb = 250, y0 = 1900, y1 = 2024, v0 = 40, v1 = 45000;
+    const PX = y => (L + (y - y0) / (y1 - y0) * (Rr - L)).toFixed(1);
+    const PY = v => (Bb - (Math.log(v) - Math.log(v0)) / (Math.log(v1) - Math.log(v0)) * (Bb - T)).toFixed(1);
+    const jag = 'M' + dow.map(d => PX(d[0]) + ',' + PY(d[1])).join(' L');
+    const smooth = 'M' + PX(1900) + ',' + PY(90) + ' L' + PX(2024) + ',' + PY(26000);
+    const marks = [[1932, '1929'], [2002, '2000'], [2009, '2008'], [2020, '2020']];
+    const dots = marks.map(m => { const d = dow.find(x => x[0] === m[0]); return '<circle cx="' + PX(d[0]) + '" cy="' + PY(d[1]) + '" r="3.5" fill="#A83B2E"/><text x="' + PX(d[0]) + '" y="' + (+PY(d[1]) + 15) + '" font-size="10" fill="#A83B2E" font-family="sans-serif" text-anchor="middle">' + m[1] + '</text>'; }).join('');
+    const bullet = t => '<li style="position:relative;padding-left:20px;margin-bottom:13px;font-family:var(--font-body);font-size:15.5px;color:var(--ink-900);line-height:1.5;"><span style="position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%;background:var(--gold-500);"></span>' + t + '</li>';
     push(`${tb('The real risk', 'So if <span class="s5rate">4%</span> is so safe, where&rsquo;s the risk?')}
-      <div style="max-width:900px;margin:14px auto 0;text-align:left;font-family:var(--font-body);">
-        <p style="font-size:17px;color:var(--ink-900);line-height:1.65;margin:0 0 16px;">On paper, <span class="s5rate">4%</span> is the easy part &mdash; even earning nothing it lasts <span class="s5years">25</span> years, and you can find <span class="s5rate">4%</span> almost anywhere. So the risk isn&rsquo;t the rate you take out.</p>
-        <p style="font-size:17px;color:var(--ink-900);line-height:1.65;margin:0 0 18px;">It&rsquo;s that you can&rsquo;t count on a straight line. Your ${nwM} won&rsquo;t earn a smooth <span class="s5rate">4%</span> &mdash; it earns the market&rsquo;s <em>order</em>: good years and bad ones. And <span class="s5rate">4%</span> doesn&rsquo;t stay still &mdash; the rising cost of living keeps lifting it. To hold a real, rising <span class="s5rate">4%</span> through the down years, the money quietly has to earn closer to <strong style="color:var(--gold-600);"><span class="s5good">6&ndash;8%</span></strong> in the good ones &mdash; and no one gets to choose when the good years show up.</p>
-        <div style="border-left:4px solid var(--gold-400);padding:14px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:21px;color:var(--ink-900);">So the real question isn&rsquo;t &ldquo;do I have enough?&rdquo; &mdash; it&rsquo;s &ldquo;can I count on it?&rdquo;</div>
-        <p style="font-size:12px;color:var(--fg-subtle);margin:14px 0 0;">Illustrative. A withdrawal that keeps pace with inflation and survives down markets generally requires higher gross returns; actual figures depend on your mix, inflation, and market conditions.</p>
-      </div>`);
+    <div style="max-width:1080px;margin:6px auto 0;display:grid;grid-template-columns:0.92fr 1.08fr;gap:30px;align-items:center;text-align:left;">
+      <ul style="list-style:none;margin:0;padding:0;">
+        ${bullet('<strong class="s5rate">4%</strong> is the easy part &mdash; even at zero growth it lasts <strong class="s5years">25</strong> years, and you can find it almost anywhere.')}
+        ${bullet('The risk isn&rsquo;t the rate. It&rsquo;s that you can&rsquo;t count on a <strong>straight line</strong>.')}
+        ${bullet('You get the market&rsquo;s <strong>order</strong> &mdash; not a smooth average &mdash; and rising costs keep lifting the bar.')}
+        ${bullet('To hold a rising <strong class="s5rate">4%</strong> through the down years, the good years quietly have to do <strong class="s5good" style="color:var(--gold-600);">6&ndash;8%</strong> &mdash; and no one picks when they come.')}
+      </ul>
+      <div>
+        <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;">
+          <line x1="${L}" y1="${Bb}" x2="${Rr}" y2="${Bb}" stroke="var(--border)" stroke-width="1"/>
+          <path d="${smooth}" fill="none" stroke="#8F8F94" stroke-width="2" stroke-dasharray="5 5"/>
+          <path d="${jag}" fill="none" stroke="var(--ink-900)" stroke-width="2.5" stroke-linejoin="round"/>
+          ${dots}
+          <text x="${L}" y="${Bb + 18}" font-size="10" fill="#8F8F94" font-family="sans-serif">1900</text>
+          <text x="${Rr}" y="${Bb + 18}" font-size="10" fill="#8F8F94" font-family="sans-serif" text-anchor="end">today</text>
+          <text x="${Rr}" y="${T + 5}" font-size="10.5" fill="#8F8F94" font-family="sans-serif" text-anchor="end">– – the steady return you plan on</text>
+        </svg>
+        <div style="font-family:var(--font-sans);font-size:11.5px;color:var(--fg-subtle);margin-top:2px;text-align:center;">Dow Jones, 1900&ndash;today (log scale) &middot; illustrative &mdash; the line you plan on vs. the market you get.</div>
+      </div>
+    </div>
+    <div style="max-width:1080px;margin:16px auto 0;text-align:left;">
+      <div style="border-left:4px solid var(--gold-400);padding:12px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);">So the real question isn&rsquo;t &ldquo;do I have enough?&rdquo; &mdash; it&rsquo;s &ldquo;can I count on it?&rdquo;</div>
+      <p style="font-size:11px;color:var(--fg-subtle);margin:10px 0 0;">Illustrative; index path approximate, shown on a log scale. A withdrawal that rises with inflation and survives down markets generally requires higher gross returns.</p>
+    </div>`);
   }
 
   // 4 — The rules change (PPTX "In Retirement the Rules Change" image embedded)
