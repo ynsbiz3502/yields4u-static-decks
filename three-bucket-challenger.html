@@ -1826,6 +1826,30 @@ function buildThreeBucket(inputs) {
     </div>`);
   }
 
+  // 2b2 — Theme: it's the lifestyle it funds (transition; life-highlight collage)
+  {
+    // Life-highlight collage. Placeholder duotone tiles for now; swap each `img`
+    // with a base64 photo (data:image/jpeg;base64,...) when the generated collage is ready.
+    const lifeTiles = [
+      {cap:'Time with the grandkids', img:''},
+      {cap:'The trips you promised yourselves', img:''},
+      {cap:'The home that&rsquo;s finally yours', img:''},
+      {cap:'A table full of people', img:''},
+      {cap:'Mornings that belong to you', img:''},
+      {cap:'Taking care of the ones you love', img:''},
+    ];
+    const tileHtml = lifeTiles.map((t) => {
+      const bg = t.img ? ("#0e0e0f url('" + t.img + "') center/cover") : "linear-gradient(135deg, var(--gold-500), var(--ink-900))";
+      const overlay = t.img
+        ? '<div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(14,14,15,0) 42%, rgba(14,14,15,0.72));"></div>'
+        : '<div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(199,154,62,0.10), rgba(14,14,15,0.30));"></div>';
+      return '<div style="position:relative;border-radius:10px;overflow:hidden;aspect-ratio:4/3;background:' + bg + ';box-shadow:0 1px 3px rgba(0,0,0,0.12);">' + overlay + '<div style="position:absolute;left:0;right:0;bottom:0;padding:12px 14px;font-family:var(--font-serif);font-size:15px;color:white;line-height:1.25;">' + t.cap + '</div></div>';
+    }).join('');
+    push(`${tb('What matters', 'It&rsquo;s not how much you have. It&rsquo;s the lifestyle it can fund.')}
+      <p style="max-width:820px;margin:0 auto 22px;font-family:var(--font-body);font-size:16px;color:var(--fg-muted);text-align:center;line-height:1.6;">The number on the statement doesn&rsquo;t buy anything. The mornings, the trips, the grandkids, the years &mdash; that&rsquo;s what your money is really for.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1080px;margin:0 auto;">${tileHtml}</div>`);
+  }
+
   // 2c — Cashflow analysis (simple math); box color by surplus tier (green/goldenrod/maroon)
   {
     const usd2 = n => '$' + (Number(n) || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
@@ -1878,12 +1902,20 @@ function buildThreeBucket(inputs) {
     </div>`);
   }
 
-  // 3 — The one question
-  push(`<div class="title-block center" style="margin-top:12vh;">
-      <div class="kicker">The Question</div>
-      <h2 class="title" style="font-size:46px;max-width:920px;margin-left:auto;margin-right:auto;">How do you make sure you don&rsquo;t <em style="font-style:italic;color:var(--gold-600);">run out of money</em> in retirement?</h2>
-      <p class="subtitle" style="max-width:680px;margin:18px auto 0;">Every retiree&rsquo;s real question. The honest answer isn&rsquo;t a product &mdash; it&rsquo;s a plan.</p>
-    </div>`);
+  // 3 — The 4% catch (bridge from cashflow into the rules-change reframe)
+  {
+    const usdK = n => '$' + Math.round((Number(n) || 0) / 1000).toLocaleString('en-US') + 'k';
+    const nwC = (inputs.balance || 0) + (inputs.nonQualified || 0);
+    const inv = nwC * 0.04;
+    const nwM = '$' + (nwC / 1e6).toFixed(1) + 'M';
+    push(`${tb('The catch', 'The 4% you&rsquo;re counting on isn&rsquo;t really 4%.')}
+      <div style="max-width:900px;margin:14px auto 0;text-align:left;font-family:var(--font-body);">
+        <p style="font-size:17px;color:var(--ink-900);line-height:1.65;margin:0 0 16px;">To close your gap, your savings have to hand you about <strong>${usdK(inv)} a year</strong> &mdash; 4% of your ${nwM} &mdash; for the rest of your life.</p>
+        <p style="font-size:17px;color:var(--ink-900);line-height:1.65;margin:0 0 18px;">But 4% today doesn&rsquo;t stay 4%. Once you account for the rising cost of living and the years the market falls, your money has to <em>earn</em> closer to <strong style="color:var(--gold-600);">6&ndash;8%</strong> just to keep that 4% coming &mdash; every year, whether the market cooperates or not.</p>
+        <div style="border-left:4px solid var(--gold-400);padding:14px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:21px;color:var(--ink-900);">So the real question isn&rsquo;t &ldquo;do I have enough?&rdquo; &mdash; it&rsquo;s &ldquo;can I count on it?&rdquo;</div>
+        <p style="font-size:12px;color:var(--fg-subtle);margin:14px 0 0;">Illustrative. A 4% withdrawal that keeps pace with inflation and survives down markets generally requires higher gross returns; actual figures depend on your mix, inflation, and market conditions.</p>
+      </div>`);
+  }
 
   // 4 — The rules change (PPTX "In Retirement the Rules Change" image embedded)
   push(`${tb('The Shift', 'The rules change in retirement.', 'What got you here won&rsquo;t get you through.')}
