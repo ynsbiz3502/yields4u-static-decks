@@ -1963,48 +1963,39 @@ function buildThreeBucket(inputs) {
     </div>`);
   }
 
-  // 3 — The real risk (bullets + Dow climb that FORKS into two futures; sets up sequence risk)
+  // 3 — The real risk (original "market moves in cycles" DJIA log chart; sets up sequence risk)
   {
-    const dow = [[1900,68],[1906,100],[1914,55],[1921,64],[1929,381],[1932,41],[1937,194],[1942,93],[1950,235],[1956,500],[1966,995],[1974,577],[1982,777],[1987,1739],[1990,2634],[2000,11723],[2002,7286],[2007,14164],[2009,6547],[2013,16577],[2020,18592],[2021,36338],[2024,40000]];
-    const L = 40, HR = 400, FR = 548, T = 20, Bb = 246, y0 = 1900, y1 = 2024, v0 = 40, v1 = 150000;
-    const PXh = y => (L + (y - y0) / (y1 - y0) * (HR - L)).toFixed(1);
-    const PY = v => (Bb - (Math.log(v) - Math.log(v0)) / (Math.log(v1) - Math.log(v0)) * (Bb - T)).toFixed(1);
-    const jag = 'M' + dow.map(d => PXh(d[0]) + ',' + PY(d[1])).join(' L');
-    const hy = PY(40000);
-    const good = 'M' + HR + ',' + hy + ' L' + FR + ',' + (T + 8);
-    const bad = 'M' + HR + ',' + hy + ' L' + FR + ',214';
-    const marks = [[1932, '1929'], [2002, '2000'], [2009, '2008'], [2020, '2020']];
-    const dots = marks.map(m => { const d = dow.find(x => x[0] === m[0]); return '<circle cx="' + PXh(d[0]) + '" cy="' + PY(d[1]) + '" r="3" fill="#A83B2E"/><text x="' + PXh(d[0]) + '" y="' + (+PY(d[1]) + 14) + '" font-size="9.5" fill="#A83B2E" font-family="sans-serif" text-anchor="middle">' + m[1] + '</text>'; }).join('');
-    const bullet = t => '<li style="position:relative;padding-left:20px;margin-bottom:13px;font-family:var(--font-body);font-size:15.5px;color:var(--ink-900);line-height:1.5;"><span style="position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%;background:var(--gold-500);"></span>' + t + '</li>';
+    // Secular bull/bear periods (facts: dates, durations). Bear/flat stretches are the point.
+    const per = [[1896,1906,'bull',''],[1906,1924,'bear','18 yrs · flat'],[1924,1929,'bull',''],[1929,1954,'bear','25 yrs · flat'],[1954,1966,'bull',''],[1966,1982,'bear','17 yrs · flat'],[1982,1999,'bull',''],[2000,2010,'bear','11 yrs · flat'],[2011,2025,'bull','']];
+    // Approx DJIA anchors (log scale), 1896–today.
+    const dj = [[1896,40],[1906,100],[1914,55],[1921,64],[1929,381],[1932,41],[1937,194],[1942,93],[1950,235],[1956,500],[1966,995],[1974,577],[1982,777],[1987,1739],[1990,2634],[2000,11723],[2002,7286],[2007,14164],[2009,6547],[2013,16577],[2020,18592],[2021,36338],[2025,48000]];
+    const L = 54, R = 852, T = 24, Bb = 286, y0 = 1896, y1 = 2025, v0 = 38, v1 = 62000;
+    const PX = y => (L + (y - y0) / (y1 - y0) * (R - L));
+    const PY = v => (Bb - (Math.log(v) - Math.log(v0)) / (Math.log(v1) - Math.log(v0)) * (Bb - T));
+    const rects = per.map(p => '<rect x="' + PX(p[0]).toFixed(1) + '" y="' + T + '" width="' + (PX(p[1]) - PX(p[0])).toFixed(1) + '" height="' + (Bb - T).toFixed(1) + '" fill="' + (p[2] === 'bull' ? 'rgba(199,154,62,0.10)' : 'rgba(168,59,46,0.13)') + '"/>').join('');
+    const blabels = per.filter(p => p[3]).map(p => '<text x="' + ((PX(p[0]) + PX(p[1])) / 2).toFixed(1) + '" y="' + (T + 14) + '" font-size="10.5" fill="#A83B2E" font-family="sans-serif" text-anchor="middle" font-weight="700">' + p[3] + '</text>').join('');
+    const grid = [100, 1000, 10000].map(v => '<line x1="' + L + '" y1="' + PY(v).toFixed(1) + '" x2="' + R + '" y2="' + PY(v).toFixed(1) + '" stroke="#EEE9DC" stroke-width="1"/><text x="' + (L - 6) + '" y="' + (PY(v) + 3).toFixed(1) + '" font-size="9" fill="#B7B0A0" font-family="sans-serif" text-anchor="end">' + v.toLocaleString() + '</text>').join('');
+    const ticks = [1896, 1929, 1954, 1982, 2000, 2025].map(yr => '<text x="' + PX(yr).toFixed(1) + '" y="' + (Bb + 16) + '" font-size="9.5" fill="#8F8F94" font-family="sans-serif" text-anchor="middle">' + yr + '</text>').join('');
+    const line = 'M' + dj.map(d => PX(d[0]).toFixed(1) + ',' + PY(d[1]).toFixed(1)).join(' L');
+    const ex = PX(2025).toFixed(1), ey = PY(48000).toFixed(1);
     push(`${tb('The real risk', 'So if <span class="s5rate">4%</span> is so safe, where&rsquo;s the risk?')}
-    <div style="max-width:1080px;margin:6px auto 0;display:grid;grid-template-columns:0.82fr 1.18fr;gap:28px;align-items:center;text-align:left;">
-      <ul style="list-style:none;margin:0;padding:0;">
-        ${bullet('<strong class="s5rate">4%</strong> is the easy part &mdash; even at zero growth it lasts <strong class="s5years">25</strong> years.')}
-        ${bullet('The risk isn&rsquo;t the rate. You don&rsquo;t get the average &mdash; you get the <strong>order</strong>.')}
-        ${bullet('To hold a rising <strong class="s5rate">4%</strong>, the good years quietly need <strong class="s5good" style="color:var(--gold-600);">6&ndash;8%</strong> &mdash; and no one picks when they come.')}
-      </ul>
-      <div>
-        <svg viewBox="0 0 560 300" width="100%" style="display:block;">
-          <line x1="${L}" y1="${Bb}" x2="${FR}" y2="${Bb}" stroke="var(--border)" stroke-width="1"/>
-          <line x1="${HR}" y1="${T - 4}" x2="${HR}" y2="${Bb}" stroke="#E2DCCB" stroke-width="1" stroke-dasharray="3 3"/>
-          <path d="${jag}" fill="none" stroke="var(--ink-900)" stroke-width="2.5" stroke-linejoin="round"/>
-          <path d="${good}" fill="none" stroke="#3E5C34" stroke-width="2.5" stroke-dasharray="6 4"/>
-          <path d="${bad}" fill="none" stroke="#A83B2E" stroke-width="2.5" stroke-dasharray="6 4"/>
-          ${dots}
-          <text x="${(HR + FR) / 2}" y="150" font-size="34" fill="#D8D2C2" font-family="sans-serif" text-anchor="middle" font-weight="700">?</text>
-          <circle cx="${HR}" cy="${hy}" r="4.5" fill="var(--gold-500)"/>
-          <text x="${HR - 8}" y="${+hy - 6}" font-size="10.5" fill="var(--gold-600)" font-family="sans-serif" text-anchor="end" font-weight="700">you are here</text>
-          <text x="${FR}" y="${T + 6}" font-size="10.5" fill="#3E5C34" font-family="sans-serif" text-anchor="end" font-weight="700">good order first</text>
-          <text x="${FR}" y="222" font-size="10.5" fill="#A83B2E" font-family="sans-serif" text-anchor="end" font-weight="700">bad order first</text>
-          <text x="${L}" y="${Bb + 16}" font-size="10" fill="#8F8F94" font-family="sans-serif">1900</text>
-          <text x="${HR}" y="${Bb + 16}" font-size="10" fill="#8F8F94" font-family="sans-serif" text-anchor="middle">today</text>
-          <text x="${(HR + FR) / 2}" y="${Bb + 16}" font-size="10" fill="#8F8F94" font-family="sans-serif" text-anchor="middle">the next 10 years</text>
-        </svg>
-        <div style="font-family:var(--font-sans);font-size:11.5px;color:var(--fg-subtle);margin-top:2px;text-align:center;">Dow Jones since 1900 (log scale, illustrative). You rode the climb up. From here, the <em>order</em> of returns decides your path.</div>
+    <div style="max-width:1120px;margin:4px auto 0;text-align:left;">
+      <p style="font-family:var(--font-body);font-size:15.5px;color:var(--fg-muted);line-height:1.55;margin:0 0 8px;">The market climbs over time &mdash; but in long cycles. Four times in the last 129 years it went <strong style="color:#A83B2E;">flat or down for 11 to 25 years</strong> at a stretch.</p>
+      <svg viewBox="0 0 906 312" width="100%" style="display:block;">
+        ${rects}
+        ${grid}
+        <path d="${line}" fill="none" stroke="var(--ink-900)" stroke-width="2.5" stroke-linejoin="round"/>
+        ${blabels}
+        ${ticks}
+        <circle cx="${ex}" cy="${ey}" r="4.5" fill="var(--gold-500)"/>
+        <text x="${ex}" y="${+ey - 8}" font-size="10.5" fill="var(--gold-600)" font-family="sans-serif" text-anchor="end" font-weight="700">you are here</text>
+      </svg>
+      <div style="display:flex;gap:20px;justify-content:center;font-family:var(--font-sans);font-size:11.5px;color:var(--fg-muted);margin-top:2px;">
+        <span><span style="display:inline-block;width:13px;height:10px;background:rgba(199,154,62,0.4);vertical-align:middle;margin-right:5px;"></span>Bull markets (5)</span>
+        <span><span style="display:inline-block;width:13px;height:10px;background:rgba(168,59,46,0.4);vertical-align:middle;margin-right:5px;"></span>Flat or bear markets (4) &mdash; 11 to 25 years each</span>
+        <span style="color:var(--fg-subtle);">Dow Jones, 1896&ndash;today, log scale &middot; illustrative</span>
       </div>
-    </div>
-    <div style="max-width:1080px;margin:14px auto 0;text-align:left;">
-      <div style="border-left:4px solid var(--gold-400);padding:12px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:20px;color:var(--ink-900);">For 40 years you bought the dips and rode it up. Now you&rsquo;re at the top, about to take money <em>out</em> &mdash; and from here it isn&rsquo;t your average return that decides if you make it. It&rsquo;s the order they arrive in.</div>
+      <div style="border-left:4px solid var(--gold-400);padding:12px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:19px;color:var(--ink-900);margin-top:14px;">Even at <span class="s5rate">4%</span>, your savings can last <span class="s5years">25</span> years &mdash; <em>if</em> the returns come smoothly. They don&rsquo;t. Retire at the start of one of those flat decades while you&rsquo;re taking money out, and the 129-year average won&rsquo;t save you. It isn&rsquo;t the rate &mdash; it&rsquo;s the order they arrive in.</div>
     </div>`);
   }
 
