@@ -1878,50 +1878,6 @@ function buildThreeBucket(inputs) {
     </div>`);
   }
 
-  // 2e — If one of you passes first (survivor income drop + widow's-penalty tax)
-  {
-    if (inputs.filingStatus === 'MFJ' && (inputs.claimedYouMo || 0) > 0 && (inputs.claimedSpouseMo || 0) > 0) {
-      const usd0 = n => '$' + Math.round(Number(n) || 0).toLocaleString('en-US');
-      const ssBoth = Math.round((inputs.claimedYouMo + inputs.claimedSpouseMo) * 12);
-      const ssSurv = Math.round(Math.max(inputs.claimedYouMo, inputs.claimedSpouseMo) * 12);
-      const pension = inputs.otherIncome || 0;
-      const survPct = (typeof inputs.pensionSurvivor === 'number') ? inputs.pensionSurvivor : 0.5;
-      const pensionSurv = Math.round(pension * survPct);
-      const portfolio = Math.round(((inputs.balance || 0) + (inputs.nonQualified || 0)) * 0.04);
-      const iraTaxable = Math.round((inputs.balance || 0) * 0.04);
-      const incBefore = ssBoth + pension + portfolio;
-      const incAfter = ssSurv + pensionSurv + portfolio;
-      const incDrop = incBefore - incAfter;
-      const taxBefore = Math.round(0.85 * ssBoth + pension + iraTaxable);
-      const taxAfter = Math.round(0.85 * ssSurv + pensionSurv + iraTaxable);
-      const widowExtra = Math.max(0, Math.round(computeTax(taxAfter, 'Single') - computeTax(taxAfter, 'MFJ')));
-      const row = (label, a, b, danger) => `<tr style="border-top:1px solid var(--border);"><td style="padding:14px 22px;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${label}</td><td style="padding:14px 22px;text-align:right;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${usd0(a)}</td><td style="padding:14px 22px;text-align:right;font-family:var(--font-body);font-size:16px;color:${danger ? '#7B241C' : 'var(--ink-900)'};">${usd0(b)}</td></tr>`;
-      push(`${tb('The risk to your income', 'If one of you passes first.', 'One Social Security check stops. The tax bill goes up.')}
-      <div style="max-width:1040px;margin:16px auto 0;text-align:left;">
-        <table style="width:100%;border-collapse:collapse;background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
-          <tr style="background:var(--paper-100);font-family:var(--font-sans);font-size:11.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-subtle);"><td style="padding:13px 22px;">Household income</td><td style="padding:13px 22px;text-align:right;">Both of you</td><td style="padding:13px 22px;text-align:right;">Survivor alone</td></tr>
-          ${row('Social Security', ssBoth, ssSurv)}
-          ${pension > 0 ? row('Pension', pension, pensionSurv) : ''}
-          ${row('Portfolio income (4%)', portfolio, portfolio)}
-          <tr style="border-top:2px solid var(--gold-400);background:var(--paper-100);"><td style="padding:16px 22px;font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);">Total income</td><td style="padding:16px 22px;text-align:right;font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);">${usd0(incBefore)}</td><td style="padding:16px 22px;text-align:right;font-family:var(--font-serif);font-size:20px;font-weight:700;color:#7B241C;">${usd0(incAfter)}</td></tr>
-        </table>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;">
-          <div style="background:#7B241C;color:white;border-radius:10px;padding:20px 24px;">
-            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);">Income lost each year</div>
-            <div style="font-family:var(--font-serif);font-size:30px;font-weight:700;margin-top:6px;">${usd0(incDrop)}</div>
-            <div style="font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,0.9);margin-top:4px;">The smaller Social Security check ends${survPct < 1 ? ' and the pension drops to ' + Math.round(survPct * 100) + '%' : ''}.</div>
-          </div>
-          <div style="background:var(--ink-900);color:white;border-radius:10px;padding:20px 24px;">
-            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-300);">Extra tax as a single filer</div>
-            <div style="font-family:var(--font-serif);font-size:30px;font-weight:700;margin-top:6px;">${usd0(widowExtra)}<span style="font-size:16px;color:rgba(255,255,255,0.7);">/yr</span></div>
-            <div style="font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,0.85);margin-top:4px;">Nearly the same income, but the survivor files Single &mdash; the brackets compress.</div>
-          </div>
-        </div>
-        <p style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);margin:14px 0 0;">Illustrative, based on current 2026 rules. Tax brackets calibrated to the roth30.com engine; portfolio income shown at an assumed 4% draw.</p>
-      </div>`);
-    }
-  }
-
   // 3 — The one question
   push(`<div class="title-block center" style="margin-top:12vh;">
       <div class="kicker">The Question</div>
@@ -2029,6 +1985,50 @@ function buildThreeBucket(inputs) {
         </div>
       </div>
     </div>`);
+
+  // A6b — If one of you passes first (survivor income drop + widow's-penalty tax)
+  {
+    if (inputs.filingStatus === 'MFJ' && (inputs.claimedYouMo || 0) > 0 && (inputs.claimedSpouseMo || 0) > 0) {
+      const usd0 = n => '$' + Math.round(Number(n) || 0).toLocaleString('en-US');
+      const ssBoth = Math.round((inputs.claimedYouMo + inputs.claimedSpouseMo) * 12);
+      const ssSurv = Math.round(Math.max(inputs.claimedYouMo, inputs.claimedSpouseMo) * 12);
+      const pension = inputs.otherIncome || 0;
+      const survPct = (typeof inputs.pensionSurvivor === 'number') ? inputs.pensionSurvivor : 0.5;
+      const pensionSurv = Math.round(pension * survPct);
+      const portfolio = Math.round(((inputs.balance || 0) + (inputs.nonQualified || 0)) * 0.04);
+      const iraTaxable = Math.round((inputs.balance || 0) * 0.04);
+      const incBefore = ssBoth + pension + portfolio;
+      const incAfter = ssSurv + pensionSurv + portfolio;
+      const incDrop = incBefore - incAfter;
+      const taxBefore = Math.round(0.85 * ssBoth + pension + iraTaxable);
+      const taxAfter = Math.round(0.85 * ssSurv + pensionSurv + iraTaxable);
+      const widowExtra = Math.max(0, Math.round(computeTax(taxAfter, 'Single') - computeTax(taxAfter, 'MFJ')));
+      const row = (label, a, b, danger) => `<tr style="border-top:1px solid var(--border);"><td style="padding:14px 22px;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${label}</td><td style="padding:14px 22px;text-align:right;font-family:var(--font-body);font-size:16px;color:var(--ink-900);">${usd0(a)}</td><td style="padding:14px 22px;text-align:right;font-family:var(--font-body);font-size:16px;color:${danger ? '#7B241C' : 'var(--ink-900)'};">${usd0(b)}</td></tr>`;
+      push(`${tb('The risk to your income', 'If one of you passes first.', 'One Social Security check stops. The tax bill goes up.')}
+      <div style="max-width:1040px;margin:16px auto 0;text-align:left;">
+        <table style="width:100%;border-collapse:collapse;background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+          <tr style="background:var(--paper-100);font-family:var(--font-sans);font-size:11.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--fg-subtle);"><td style="padding:13px 22px;">Household income</td><td style="padding:13px 22px;text-align:right;">Both of you</td><td style="padding:13px 22px;text-align:right;">Survivor alone</td></tr>
+          ${row('Social Security', ssBoth, ssSurv)}
+          ${pension > 0 ? row('Pension', pension, pensionSurv) : ''}
+          ${row('Portfolio income (4%)', portfolio, portfolio)}
+          <tr style="border-top:2px solid var(--gold-400);background:var(--paper-100);"><td style="padding:16px 22px;font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);">Total income</td><td style="padding:16px 22px;text-align:right;font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--ink-900);">${usd0(incBefore)}</td><td style="padding:16px 22px;text-align:right;font-family:var(--font-serif);font-size:20px;font-weight:700;color:#7B241C;">${usd0(incAfter)}</td></tr>
+        </table>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;">
+          <div style="background:#7B241C;color:white;border-radius:10px;padding:20px 24px;">
+            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);">Income lost each year</div>
+            <div style="font-family:var(--font-serif);font-size:30px;font-weight:700;margin-top:6px;">${usd0(incDrop)}</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,0.9);margin-top:4px;">The smaller Social Security check ends${survPct < 1 ? ' and the pension drops to ' + Math.round(survPct * 100) + '%' : ''}.</div>
+          </div>
+          <div style="background:var(--ink-900);color:white;border-radius:10px;padding:20px 24px;">
+            <div style="font-family:var(--font-sans);font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-300);">Extra tax as a single filer</div>
+            <div style="font-family:var(--font-serif);font-size:30px;font-weight:700;margin-top:6px;">${usd0(widowExtra)}<span style="font-size:16px;color:rgba(255,255,255,0.7);">/yr</span></div>
+            <div style="font-family:var(--font-body);font-size:13px;color:rgba(255,255,255,0.85);margin-top:4px;">Nearly the same income, but the survivor files Single &mdash; the brackets compress.</div>
+          </div>
+        </div>
+        <p style="font-family:var(--font-sans);font-size:12px;color:var(--fg-subtle);margin:14px 0 0;">Illustrative, based on current 2026 rules. Tax brackets calibrated to the roth30.com engine; portfolio income shown at an assumed 4% draw.</p>
+      </div>`);
+    }
+  }
 
   // A7 — Layers of Protection (PPTX 17: title + layers metaphor)
   push(`<div class="title-block center" style="margin-top:6vh;">
