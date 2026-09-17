@@ -1864,7 +1864,7 @@ function buildThreeBucket(inputs) {
 
   // 2b — Where you are today (current position / net worth; SWOT-style, dynamic)
   {
-    const usd = n => '$' + Math.round(Number(n) || 0).toLocaleString('en-US') + '.00';
+    const usd = n => '$' + Math.round(Number(n) || 0).toLocaleString('en-US');
     const trad = inputs.balance || 0, brok = inputs.nonQualified || 0, nw = trad + brok;
     const income = inputs.totalIncomeNeeds || 0;
     const retireYear = new Date().getFullYear() + Math.max(0, 65 - (inputs.currentAge || 65));
