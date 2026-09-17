@@ -1961,14 +1961,12 @@ function buildThreeBucket(inputs) {
 
   // 3 — The 4% catch (bridge from cashflow into the rules-change reframe)
   {
-    const usdK = n => '$' + Math.round((Number(n) || 0) / 1000).toLocaleString('en-US') + 'k';
     const nwC = (inputs.balance || 0) + (inputs.nonQualified || 0);
-    const inv = nwC * 0.04;
     const nwM = '$' + (nwC / 1e6).toFixed(1) + 'M';
-    push(`${tb('The catch', 'The 4% you&rsquo;re counting on isn&rsquo;t really 4%.')}
+    push(`${tb('The real risk', 'So if 4% is so safe, where&rsquo;s the risk?')}
       <div style="max-width:900px;margin:14px auto 0;text-align:left;font-family:var(--font-body);">
-        <p style="font-size:17px;color:var(--ink-900);line-height:1.65;margin:0 0 16px;">To close your gap, your savings have to hand you about <strong>${usdK(inv)} a year</strong> &mdash; 4% of your ${nwM} &mdash; for the rest of your life.</p>
-        <p style="font-size:17px;color:var(--ink-900);line-height:1.65;margin:0 0 18px;">But 4% today doesn&rsquo;t stay 4%. Once you account for the rising cost of living and the years the market falls, your money has to <em>earn</em> closer to <strong style="color:var(--gold-600);">6&ndash;8%</strong> just to keep that 4% coming &mdash; every year, whether the market cooperates or not.</p>
+        <p style="font-size:17px;color:var(--ink-900);line-height:1.65;margin:0 0 16px;">On paper, 4% is the easy part &mdash; even earning nothing it lasts 25 years, and you can find 4% almost anywhere. So the risk isn&rsquo;t the rate you take out.</p>
+        <p style="font-size:17px;color:var(--ink-900);line-height:1.65;margin:0 0 18px;">It&rsquo;s that you can&rsquo;t count on a straight line. Your ${nwM} won&rsquo;t earn a smooth 4% &mdash; it earns the market&rsquo;s <em>order</em>: good years and bad ones. And 4% doesn&rsquo;t stay still &mdash; the rising cost of living keeps lifting it. To hold a real, rising 4% through the down years, the money quietly has to earn closer to <strong style="color:var(--gold-600);">6&ndash;8%</strong> in the good ones &mdash; and no one gets to choose when the good years show up.</p>
         <div style="border-left:4px solid var(--gold-400);padding:14px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:21px;color:var(--ink-900);">So the real question isn&rsquo;t &ldquo;do I have enough?&rdquo; &mdash; it&rsquo;s &ldquo;can I count on it?&rdquo;</div>
         <p style="font-size:12px;color:var(--fg-subtle);margin:14px 0 0;">Illustrative. A 4% withdrawal that keeps pace with inflation and survives down markets generally requires higher gross returns; actual figures depend on your mix, inflation, and market conditions.</p>
       </div>`);
