@@ -1978,9 +1978,8 @@ function buildThreeBucket(inputs) {
     const ticks = [1896, 1929, 1954, 1982, 2000, 2025].map(yr => '<text x="' + PX(yr).toFixed(1) + '" y="' + (Bb + 16) + '" font-size="9.5" fill="#8F8F94" font-family="sans-serif" text-anchor="middle">' + yr + '</text>').join('');
     const line = 'M' + dj.map(d => PX(d[0]).toFixed(1) + ',' + PY(d[1]).toFixed(1)).join(' L');
     const ex = PX(2025).toFixed(1), ey = PY(48000).toFixed(1);
-    push(`${tb('The real risk', 'So if <span class="s5rate">4%</span> is so safe, where&rsquo;s the risk?')}
-    <div style="max-width:1120px;margin:4px auto 0;text-align:left;">
-      <p style="font-family:var(--font-body);font-size:15.5px;color:var(--fg-muted);line-height:1.55;margin:0 0 8px;">The market climbs over time &mdash; but in long cycles. Four times in the last 129 years it went <strong style="color:#A83B2E;">flat or down for 11 to 25 years</strong> at a stretch.</p>
+    push(`${tb('The real risk', '<span class="s5rate">4%</span> is easy. Making it last is the hard part.', 'You don&rsquo;t get the market&rsquo;s average &mdash; you get its order, and it moves in long cycles.')}
+    <div style="max-width:1120px;margin:2px auto 0;text-align:left;">
       <svg viewBox="0 0 906 312" width="100%" style="display:block;">
         ${rects}
         ${grid}
@@ -1995,7 +1994,7 @@ function buildThreeBucket(inputs) {
         <span><span style="display:inline-block;width:13px;height:10px;background:rgba(168,59,46,0.4);vertical-align:middle;margin-right:5px;"></span>Flat or bear markets (4) &mdash; 11 to 25 years each</span>
         <span style="color:var(--fg-subtle);">Dow Jones, 1896&ndash;today, log scale &middot; illustrative</span>
       </div>
-      <div style="border-left:4px solid var(--gold-400);padding:12px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:19px;color:var(--ink-900);margin-top:14px;">Even at <span class="s5rate">4%</span>, your savings can last <span class="s5years">25</span> years &mdash; <em>if</em> the returns come smoothly. They don&rsquo;t. Retire at the start of one of those flat decades while you&rsquo;re taking money out, and the 129-year average won&rsquo;t save you. It isn&rsquo;t the rate &mdash; it&rsquo;s the order they arrive in.</div>
+      <div style="border-left:4px solid var(--gold-400);padding:12px 20px;background:var(--paper-100);border-radius:0 8px 8px 0;font-family:var(--font-serif);font-size:19px;color:var(--ink-900);margin-top:14px;">Even at <span class="s5rate">4%</span>, your savings can last <span class="s5years">25</span> years &mdash; <em>if</em> the returns come smoothly. They don&rsquo;t. Retire at the start of one of those flat decades while you&rsquo;re taking money out, and the 129-year average won&rsquo;t save you. It isn&rsquo;t the rate &mdash; it&rsquo;s the <em>order</em>. Which is why, the day you retire, the rules change.</div>
     </div>`);
   }
 
