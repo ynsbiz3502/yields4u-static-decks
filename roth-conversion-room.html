@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Roth Conversion Room — 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Playfair+Display:wght@500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ---------- Tokens (Yields4U palette) ---------- */
+  :root {
+    --bg: #FBF9F4;
+    --surface: #FFFFFF;
+    --surface-alt: #F5F1E8;
+    --ink: #0E0E0F;
+    --ink-muted: #4A4A4E;
+    --ink-subtle: #6B6B70;
+    --line: #E4DFD3;
+    --gold: #E8A33D;
+    --gold-deep: #B1711B;
+    --gold-soft: #FBF3E1;
+    --bar-before: #2A2A2D;
+    --focus: #B1711B;
+    --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --sans: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    --body: 'Source Sans 3', 'Source Sans Pro', system-ui, sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141415; --surface: #1C1C1E; --surface-alt: #232326;
+      --ink: #F3EFE6; --ink-muted: #C4C0B8; --ink-subtle: #9A968F;
+      --line: #34343A; --gold: #EAB35A; --gold-deep: #EAB35A; --gold-soft: #2B2418;
+      --bar-before: #CFCAC0; --focus: #EAB35A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141415; --surface: #1C1C1E; --surface-alt: #232326;
+    --ink: #F3EFE6; --ink-muted: #C4C0B8; --ink-subtle: #9A968F;
+    --line: #34343A; --gold: #EAB35A; --gold-deep: #EAB35A; --gold-soft: #2B2418;
+    --bar-before: #CFCAC0; --focus: #EAB35A;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--body); font-size: 17px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Layout ---------- */
+  .page { max-width: 1120px; margin: 0 auto; padding: 40px 24px 64px; }
+  header.top { margin-bottom: 32px; }
+  header.top h1 {
+    font-family: var(--serif); font-weight: 600; font-size: 34px;
+    line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.01em;
+  }
+  header.top p { margin: 0; color: var(--ink-muted); max-width: 60ch; }
+
+  .grid { display: grid; grid-template-columns: 340px 1fr; gap: 32px; align-items: start; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+
+  /* ---------- Inputs panel ---------- */
+  .panel {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; padding: 24px;
+  }
+  .field { margin-bottom: 20px; }
+  .field:last-child { margin-bottom: 0; }
+  .row-between > label { margin-bottom: 6px; }
+  .field > label, .field > .label, .row-between > label {
+    display: block; font-family: var(--sans); font-weight: 600;
+    font-size: 13px; color: var(--ink); margin-bottom: 6px;
+  }
+  .hint { font-size: 14px; color: var(--ink-subtle); margin-top: 6px; line-height: 1.4; }
+
+  .money { position: relative; }
+  .money span, .pct span {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    color: var(--ink-subtle); pointer-events: none; font-size: 17px;
+  }
+  .money span { left: 12px; }
+  .pct { position: relative; }
+  .pct span { right: 12px; }
+  input[type="text"] {
+    width: 100%; font: inherit; font-size: 18px; font-variant-numeric: tabular-nums;
+    color: var(--ink); background: var(--surface);
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 12px; min-height: 44px;
+  }
+  .money input { padding-left: 26px; }
+  .pct input { padding-right: 30px; }
+  input[type="text"]:focus { outline: 2px solid var(--focus); outline-offset: 1px; border-color: transparent; }
+
+  /* Segmented control — radio buttons styled as one row */
+  .segmented { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .segmented label {
+    flex: 1; text-align: center; cursor: pointer; padding: 10px 6px;
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    color: var(--ink-muted); border-left: 1px solid var(--line); min-height: 44px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .segmented label:first-of-type { border-left: 0; }
+  .segmented input { position: absolute; opacity: 0; pointer-events: none; }
+  .segmented input:checked + label { background: var(--ink); color: var(--bg); }
+  .segmented input:focus-visible + label { outline: 2px solid var(--focus); outline-offset: -3px; }
+
+  .row-between { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  button.link {
+    font: inherit; font-size: 14px; color: var(--gold-deep); background: none;
+    border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+  }
+  button.link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  /* ---------- Result ---------- */
+  .answer {
+    font-family: var(--serif); font-weight: 500; font-size: 40px;
+    line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 8px; max-width: 22ch;
+  }
+  .answer strong { font-weight: 600; }
+  .sub { color: var(--ink-muted); margin: 0 0 28px; max-width: 62ch; }
+  @media (max-width: 560px) { .answer { font-size: 30px; } }
+
+  /* Bracket ladder: a horizontal scale of taxable income */
+  .ladder { margin: 8px 0 36px; }
+  .track { position: relative; height: 44px; background: var(--surface-alt); border-radius: 4px; }
+  .fill { position: absolute; top: 0; bottom: 0; }
+  .fill.before { background: var(--bar-before); border-radius: 4px 0 0 4px; }
+  .fill.conversion { background: var(--gold); }
+  .tick { position: absolute; top: -6px; bottom: -6px; width: 1px; background: var(--ink-subtle); opacity: .5; }
+  .tick.target { background: var(--gold-deep); opacity: 1; width: 2px; }
+  .tick-labels { position: relative; height: 40px; margin-top: 8px; }
+  .tick-label {
+    position: absolute; transform: translateX(-50%); text-align: center;
+    font-size: 12px; color: var(--ink-subtle); white-space: nowrap; line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+  }
+  .rate-labels { position: relative; height: 18px; margin-bottom: 6px; }
+  .rate-label {
+    position: absolute; transform: translateX(-50%); font-family: var(--sans);
+    font-size: 12px; font-weight: 600; color: var(--ink-muted);
+  }
+  .legend { display: flex; gap: 20px; font-size: 14px; color: var(--ink-muted); margin-top: 4px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+
+  .figures { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-bottom: 32px; }
+  @media (max-width: 560px) { .figures { grid-template-columns: 1fr; } }
+  .figure { background: var(--surface); padding: 18px 20px; }
+  .figure .num { font-family: var(--serif); font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .figure .cap { font-size: 14px; color: var(--ink-subtle); }
+
+  h2 { font-family: var(--sans); font-weight: 700; font-size: 15px; margin: 0 0 10px; }
+  .table-wrap { overflow-x: auto; margin-bottom: 32px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { text-align: right; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--ink-subtle); }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.change { color: var(--gold-deep); font-weight: 600; }
+
+  .notice { background: var(--gold-soft); border-left: 3px solid var(--gold); padding: 12px 16px; border-radius: 4px; margin: 0 0 24px; font-size: 16px; }
+  .fine { font-size: 14px; color: var(--ink-subtle); max-width: 72ch; }
+  .fine p { margin: 0 0 8px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fill { transition: left .25s ease, width .25s ease; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <h1>Roth conversion room for 2026</h1>
+    <p>Enter this year's income. See how much you can convert before crossing into the next bracket, and what it costs in tax.</p>
+  </header>
+
+  <div class="grid">
+    <!-- ================= INPUTS ================= -->
+    <form class="panel" id="inputs" onsubmit="return false" novalidate>
+      <div class="field">
+        <span class="label" id="status-label">Filing status</span>
+        <div class="segmented" role="radiogroup" aria-labelledby="status-label">
+          <input type="radio" name="status" id="st-mfj" value="mfj" checked><label for="st-mfj">Married</label>
+          <input type="radio" name="status" id="st-single" value="single"><label for="st-single">Single</label>
+          <input type="radio" name="status" id="st-hoh" value="hoh"><label for="st-hoh">Head of household</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="label" id="age-label">People age 65 or older</span>
+        <div class="segmented" role="radiogroup" aria-labelledby="age-label" id="age-group">
+          <input type="radio" name="over65" id="age-0" value="0"><label for="age-0">None</label>
+          <input type="radio" name="over65" id="age-1" value="1"><label for="age-1">One</label>
+          <input type="radio" name="over65" id="age-2" value="2" checked><label for="age-2">Two</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="agi">Income this year, before any conversion</label>
+        <div class="money"><span>$</span><input type="text" id="agi" inputmode="numeric" autocomplete="off" placeholder="120,000" value="120,000" data-mask="currency"></div>
+        <div class="hint">Adjusted gross income: pensions, IRA withdrawals, wages, interest, dividends, and the taxable part of Social Security.</div>
+      </div>
+
+      <div class="field">
+        <label for="itemized">Itemized deductions</label>
+        <div class="money"><span>$</span><input type="text" id="itemized" inputmode="numeric" autocomplete="off" placeholder="Leave blank for standard" data-mask="currency"></div>
+        <div class="hint" id="deduction-hint"></div>
+      </div>
+
+      <div class="field">
+        <span class="label" id="target-label">Fill up to the top of</span>
+        <div class="segmented" role="radiogroup" aria-labelledby="target-label" id="target-group">
+          <input type="radio" name="target" id="t-12" value="0.12"><label for="t-12">12%</label>
+          <input type="radio" name="target" id="t-22" value="0.22"><label for="t-22">22%</label>
+          <input type="radio" name="target" id="t-24" value="0.24" checked><label for="t-24">24%</label>
+          <input type="radio" name="target" id="t-32" value="0.32"><label for="t-32">32%</label>
+          <input type="radio" name="target" id="t-35" value="0.35"><label for="t-35">35%</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="state">State income tax rate</label>
+        <div class="pct"><input type="text" id="state" inputmode="decimal" autocomplete="off" placeholder="0" value="0" data-mask="percent"><span>%</span></div>
+        <div class="hint">Use your state's rate on the last dollar earned. New York top rates run about 6% to 7% at these incomes.</div>
+      </div>
+
+      <div class="field">
+        <div class="row-between">
+          <label for="conversion">Conversion amount</label>
+          <button type="button" class="link" id="use-full">Use full room</button>
+        </div>
+        <div class="money"><span>$</span><input type="text" id="conversion" inputmode="numeric" autocomplete="off" data-mask="currency"></div>
+        <div class="hint" id="conversion-hint">Filled with the full room automatically. Type a different amount to test it.</div>
+      </div>
+    </form>
+
+    <!-- ================= RESULT ================= -->
+    <section aria-live="polite">
+      <p class="answer" id="answer"></p>
+      <p class="sub" id="sub"></p>
+
+      <div id="notice-slot"></div>
+
+      <div class="ladder" aria-hidden="true">
+        <div class="rate-labels" id="rate-labels"></div>
+        <div class="track" id="track"></div>
+        <div class="tick-labels" id="tick-labels"></div>
+        <div class="legend">
+          <span><i style="background:var(--bar-before)"></i>Taxable income today</span>
+          <span><i style="background:var(--gold)"></i>Added by the conversion</span>
+        </div>
+      </div>
+
+      <div class="figures">
+        <div class="figure"><div class="num" id="fig-fed"></div><div class="cap">Added federal tax</div></div>
+        <div class="figure"><div class="num" id="fig-state"></div><div class="cap">Added state tax</div></div>
+        <div class="figure"><div class="num" id="fig-rate"></div><div class="cap">Tax rate on the conversion</div></div>
+      </div>
+
+      <h2>Before and after</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Before</th><th>After</th><th>Change</th></tr></thead>
+          <tbody id="compare"></tbody>
+        </table>
+      </div>
+
+      <h2>Where the conversion lands</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bracket</th><th>Taxable dollars added</th><th>Federal tax</th></tr></thead>
+          <tbody id="by-bracket"></tbody>
+        </table>
+      </div>
+
+      <div class="fine">
+        <p>2026 federal brackets and deductions from IRS Rev. Proc. 2025-32, including the $6,000 senior deduction per person 65+ and its phase-out above $75,000 of income ($150,000 married).</p>
+        <p>Not included: capital gains and qualified dividends stacking on top of ordinary income, additional Social Security becoming taxable because of the conversion, Medicare IRMAA surcharges two years out, the 3.8% net investment income tax, and AMT. Check these before acting on a conversion near those thresholds.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+/**
+ * tax-engine.js
+ * ------------------------------------------------------------------
+ * Federal income tax math for a single-year Roth conversion estimate.
+ * All figures are for tax year 2026 (IRS Rev. Proc. 2025-32 and the
+ * One Big Beautiful Bill Act senior deduction).
+ *
+ * How the calculator reasons about a conversion:
+ *   1. AGI (income before the conversion) minus deductions = taxable income.
+ *   2. A Roth conversion is ordinary income, so it adds dollar-for-dollar to AGI.
+ *   3. The senior deduction ($6,000 per person 65+) shrinks as AGI rises,
+ *      so a conversion can raise taxable income by MORE than the conversion
+ *      itself while AGI sits in the phase-out range.
+ *   4. "Headroom" is the largest conversion that keeps taxable income at or
+ *      below the top of the chosen bracket. Because of step 3, it is solved
+ *      by search rather than simple subtraction.
+ *
+ * Not modeled (flagged in the UI): capital gains stacking, extra taxation
+ * of Social Security caused by the conversion, IRMAA, NIIT, AMT.
+ *
+ * Works in Node (module.exports) and in the browser (window.TaxEngine).
+ */
+(function (root) {
+  "use strict";
+
+  // ---------- 2026 ordinary income brackets ----------
+  // Each entry: the rate, and the top of that bracket in taxable income.
+  // The last bracket has no top (Infinity).
+  const BRACKETS_2026 = {
+    single: [
+      { rate: 0.10, upTo: 12400 },
+      { rate: 0.12, upTo: 50400 },
+      { rate: 0.22, upTo: 105700 },
+      { rate: 0.24, upTo: 201775 },
+      { rate: 0.32, upTo: 256225 },
+      { rate: 0.35, upTo: 640600 },
+      { rate: 0.37, upTo: Infinity },
+    ],
+    mfj: [
+      { rate: 0.10, upTo: 24800 },
+      { rate: 0.12, upTo: 100800 },
+      { rate: 0.22, upTo: 211400 },
+      { rate: 0.24, upTo: 403550 },
+      { rate: 0.32, upTo: 512450 },
+      { rate: 0.35, upTo: 768700 },
+      { rate: 0.37, upTo: Infinity },
+    ],
+    hoh: [
+      { rate: 0.10, upTo: 17700 },
+      { rate: 0.12, upTo: 67450 },
+      { rate: 0.22, upTo: 105700 },
+      { rate: 0.24, upTo: 201750 },
+      { rate: 0.32, upTo: 256200 },
+      { rate: 0.35, upTo: 640600 },
+      { rate: 0.37, upTo: Infinity },
+    ],
+  };
+
+  // ---------- 2026 deductions ----------
+  const STANDARD_DEDUCTION_2026 = { single: 16100, mfj: 32200, hoh: 24150 };
+
+  // Extra standard deduction for each person 65 or older.
+  const ADDITIONAL_65_2026 = { single: 2050, mfj: 1650, hoh: 2050 };
+
+  // Senior deduction (2025–2028): $6,000 per person 65+, available whether
+  // or not the household itemizes. Each person's $6,000 is reduced by 6% of
+  // modified AGI above the threshold.
+  const SENIOR_DEDUCTION_PER_PERSON = 6000;
+  const SENIOR_PHASEOUT_RATE = 0.06;
+  const SENIOR_PHASEOUT_START = { single: 75000, mfj: 150000, hoh: 75000 };
+
+  /**
+   * Federal tax on taxable income, walking up the brackets.
+   * Each bracket taxes only the dollars that fall inside it.
+   */
+  function federalTax(taxableIncome, status) {
+    if (taxableIncome <= 0) return 0;
+
+    const brackets = BRACKETS_2026[status];
+    let tax = 0;
+    let bottomOfBracket = 0;
+
+    for (const bracket of brackets) {
+      const dollarsInThisBracket =
+        Math.min(taxableIncome, bracket.upTo) - bottomOfBracket;
+
+      if (dollarsInThisBracket <= 0) break;
+
+      tax += dollarsInThisBracket * bracket.rate;
+      bottomOfBracket = bracket.upTo;
+    }
+
+    return Math.round(tax * 100) / 100;
+  }
+
+  /**
+   * Senior deduction for the household, after the phase-out.
+   * Returned separately so the UI can show how much of it a conversion erases.
+   */
+  function seniorDeduction({ status, agi, over65Count }) {
+    const dollarsOverThreshold = Math.max(0, agi - SENIOR_PHASEOUT_START[status]);
+    const reductionPerPerson = dollarsOverThreshold * SENIOR_PHASEOUT_RATE;
+    const perPerson = Math.max(0, SENIOR_DEDUCTION_PER_PERSON - reductionPerPerson);
+    return perPerson * over65Count;
+  }
+
+  /**
+   * Total deduction = the larger of (standard + 65+ add-on) or itemized,
+   * plus the senior deduction, which stacks on top of either choice.
+   */
+  function totalDeduction({ status, agi, over65Count, itemized }) {
+    const standard =
+      STANDARD_DEDUCTION_2026[status] + ADDITIONAL_65_2026[status] * over65Count;
+
+    const baseDeduction = Math.max(standard, itemized || 0);
+
+    return baseDeduction + seniorDeduction({ status, agi, over65Count });
+  }
+
+  /** Taxable income = AGI minus total deduction, never below zero. */
+  function taxableIncome(inputs) {
+    return Math.max(0, inputs.agi - totalDeduction(inputs));
+  }
+
+  /** The bracket (rate + range) a given taxable income falls in. */
+  function bracketFor(taxable, status) {
+    const brackets = BRACKETS_2026[status];
+    let bottom = 0;
+    for (const bracket of brackets) {
+      if (taxable <= bracket.upTo) return { ...bracket, from: bottom };
+      bottom = bracket.upTo;
+    }
+    return { ...brackets[brackets.length - 1], from: bottom };
+  }
+
+  /** Top of the bracket that uses `rate` for the given filing status. */
+  function topOfBracket(rate, status) {
+    const bracket = BRACKETS_2026[status].find((b) => b.rate === rate);
+    return bracket ? bracket.upTo : 0;
+  }
+
+  /**
+   * Largest whole-dollar conversion that keeps taxable income at or below
+   * the top of the target bracket.
+   *
+   * Taxable income only goes up as the conversion goes up, so a binary
+   * search over whole dollars finds the answer exactly, including inside
+   * the senior deduction phase-out where each converted dollar raises
+   * taxable income by more than one dollar.
+   */
+  function headroomToBracket(inputs, targetRate) {
+    const limit = topOfBracket(targetRate, inputs.status);
+    if (limit === Infinity) return Infinity;
+
+    const taxableAfter = (conversion) =>
+      taxableIncome({ ...inputs, agi: inputs.agi + conversion });
+
+    if (taxableAfter(0) >= limit) return 0;
+
+    let low = 0; // known to fit
+    let high = limit + 1; // a conversion this large cannot fit
+
+    while (high - low > 1) {
+      const middle = Math.floor((low + high) / 2);
+      if (taxableAfter(middle) <= limit) {
+        low = middle;
+      } else {
+        high = middle;
+      }
+    }
+    return low;
+  }
+
+  /**
+   * Split a conversion across the brackets it lands in.
+   * Returns one row per bracket touched: rate, dollars, tax.
+   * Uses the change in taxable income (not the raw conversion) so any
+   * lost senior deduction is counted where it actually lands.
+   */
+  function conversionByBracket(taxableBefore, taxableAfter, status) {
+    const rows = [];
+    let bottom = 0;
+    for (const bracket of BRACKETS_2026[status]) {
+      const overlapStart = Math.max(taxableBefore, bottom);
+      const overlapEnd = Math.min(taxableAfter, bracket.upTo);
+      const dollars = overlapEnd - overlapStart;
+      if (dollars > 0) {
+        rows.push({ rate: bracket.rate, dollars, tax: dollars * bracket.rate });
+      }
+      bottom = bracket.upTo;
+    }
+    return rows;
+  }
+
+  /**
+   * Full before/after picture for a given conversion amount.
+   * stateRate is optional (a flat percentage as a decimal, e.g. 0.05).
+   */
+  function analyzeConversion(inputs, conversion, stateRate) {
+    const describe = (agi) => {
+      const snapshot = { ...inputs, agi };
+      const taxable = taxableIncome(snapshot);
+      return {
+        agi,
+        deduction: totalDeduction(snapshot),
+        seniorDeduction: seniorDeduction(snapshot),
+        taxable,
+        federalTax: federalTax(taxable, inputs.status),
+        bracket: bracketFor(taxable, inputs.status),
+      };
+    };
+
+    const before = describe(inputs.agi);
+    const after = describe(inputs.agi + conversion);
+
+    const addedFederalTax = after.federalTax - before.federalTax;
+    const addedStateTax = conversion * (stateRate || 0);
+    const addedTotalTax = addedFederalTax + addedStateTax;
+
+    return {
+      conversion,
+      before,
+      after,
+      addedFederalTax,
+      addedStateTax,
+      addedTotalTax,
+      effectiveRateOnConversion: conversion > 0 ? addedTotalTax / conversion : 0,
+      seniorDeductionLost: before.seniorDeduction - after.seniorDeduction,
+      byBracket: conversionByBracket(before.taxable, after.taxable, inputs.status),
+    };
+  }
+
+  const TaxEngine = {
+    BRACKETS_2026,
+    STANDARD_DEDUCTION_2026,
+    federalTax,
+    seniorDeduction,
+    totalDeduction,
+    taxableIncome,
+    bracketFor,
+    topOfBracket,
+    headroomToBracket,
+    conversionByBracket,
+    analyzeConversion,
+  };
+
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = TaxEngine;
+  } else {
+    root.TaxEngine = TaxEngine;
+  }
+})(this);
+
+</script>
+<script>
+/**
+ * Page logic
+ * ------------------------------------------------------------------
+ * Flow on every change:
+ *   readInputs() → engine.headroomToBracket() → pick conversion amount
+ *   → engine.analyzeConversion() → render()
+ *
+ * The conversion field has two modes:
+ *   - auto:   it mirrors the headroom and updates as inputs change
+ *   - manual: the advisor typed a number; it stays put until
+ *             "Use full room" switches back to auto
+ */
+(function () {
+  "use strict";
+  const engine = window.TaxEngine;
+
+  // ---------- Formatting ----------
+  const dollars = (n) =>
+    "$" + Math.round(n).toLocaleString("en-US");
+  const plainNumber = (n) => Math.round(n).toLocaleString("en-US");
+  const percent = (n, digits = 1) => (n * 100).toFixed(digits).replace(/\.0$/, "") + "%";
+
+  // ---------- Input masks ----------
+  // Currency: show commas while typing, keep the caret next to the same digit.
+  // The clean number is read back with digitsOnly().
+  const digitsOnly = (text) => Number(String(text).replace(/[^\d]/g, "")) || 0;
+
+  function applyCurrencyMask(input) {
+    const caret = input.selectionStart ?? input.value.length;
+    const digitsLeftOfCaret = input.value.slice(0, caret).replace(/[^\d]/g, "").length;
+    const raw = input.value.replace(/[^\d]/g, "").replace(/^0+(?=\d)/, "");
+
+    input.value = raw === "" ? "" : Number(raw).toLocaleString("en-US");
+
+    // Walk the new string until we've passed the same number of digits.
+    let position = 0, seen = 0;
+    while (position < input.value.length && seen < digitsLeftOfCaret) {
+      if (/\d/.test(input.value[position])) seen++;
+      position++;
+    }
+    if (document.activeElement === input) input.setSelectionRange(position, position);
+  }
+
+  // Percent: digits and one decimal point, max two decimals.
+  function applyPercentMask(input) {
+    let cleaned = input.value.replace(/[^\d.]/g, "");
+    const firstDot = cleaned.indexOf(".");
+    if (firstDot !== -1) {
+      cleaned = cleaned.slice(0, firstDot + 1) + cleaned.slice(firstDot + 1).replace(/\./g, "").slice(0, 2);
+    }
+    input.value = cleaned;
+  }
+
+  // ---------- Elements ----------
+  const $ = (id) => document.getElementById(id);
+  const form = $("inputs");
+  const conversionInput = $("conversion");
+  const useFullButton = $("use-full");
+
+  let conversionMode = "auto";
+
+  function readInputs() {
+    return {
+      status: form.querySelector('input[name="status"]:checked').value,
+      over65Count: Number(form.querySelector('input[name="over65"]:checked').value),
+      agi: digitsOnly($("agi").value),
+      itemized: digitsOnly($("itemized").value),
+      targetRate: Number(form.querySelector('input[name="target"]:checked').value),
+      stateRate: (parseFloat($("state").value) || 0) / 100,
+    };
+  }
+
+  // Single filers and heads of household can have at most one person 65+.
+  function syncAgeOptions(status) {
+    const twoOption = $("age-2");
+    const twoLabel = form.querySelector('label[for="age-2"]');
+    const married = status === "mfj";
+    twoOption.disabled = !married;
+    twoLabel.style.display = married ? "" : "none";
+    if (!married && twoOption.checked) $("age-1").checked = true;
+  }
+
+  // ---------- Main update ----------
+  function update() {
+    const inputs = readInputs();
+    syncAgeOptions(inputs.status);
+    const fresh = readInputs();
+
+    const engineInputs = {
+      status: fresh.status, agi: fresh.agi,
+      over65Count: fresh.over65Count, itemized: fresh.itemized,
+    };
+
+    const room = engine.headroomToBracket(engineInputs, fresh.targetRate);
+
+    if (conversionMode === "auto") {
+      conversionInput.value = room > 0 ? plainNumber(room) : "0";
+    }
+    const conversion = digitsOnly(conversionInput.value);
+
+    const result = engine.analyzeConversion(engineInputs, conversion, fresh.stateRate);
+    render(fresh, room, result);
+  }
+
+  // ---------- Rendering ----------
+  function render(inputs, room, result) {
+    const targetTop = engine.topOfBracket(inputs.targetRate, inputs.status);
+    const targetLabel = percent(inputs.targetRate, 0);
+
+    // Deduction hint under the itemized field
+    const standard = engine.STANDARD_DEDUCTION_2026[inputs.status];
+    $("deduction-hint").textContent =
+      `Standard deduction is ${dollars(standard)} plus the 65+ additions. Total deduction used today: ${dollars(result.before.deduction)}.`;
+
+    // Conversion field helper text and reset button
+    useFullButton.style.visibility = conversionMode === "manual" ? "visible" : "hidden";
+    $("conversion-hint").textContent = conversionMode === "manual"
+      ? `Full room to the top of ${targetLabel} is ${dollars(room)}.`
+      : "Filled with the full room automatically. Type a different amount to test it.";
+
+    // Headline answer
+    const answer = $("answer");
+    const sub = $("sub");
+    if (room === 0) {
+      answer.textContent = `No room left in the ${targetLabel} bracket.`;
+      sub.textContent = `Taxable income today is ${dollars(result.before.taxable)}, already past the ${dollars(targetTop)} top of ${targetLabel}. Choose a higher bracket to see how much fits.`;
+    } else if (conversionMode === "auto") {
+      answer.innerHTML = `Convert <strong>${dollars(room)}</strong> and stay in the ${targetLabel} bracket.`;
+      sub.textContent = `That brings taxable income to ${dollars(result.after.taxable)}, the top of ${targetLabel}, for ${dollars(result.addedTotalTax)} in added tax.`;
+    } else {
+      const overBy = result.after.taxable - targetTop;
+      answer.innerHTML = `Converting <strong>${dollars(result.conversion)}</strong> costs ${dollars(result.addedTotalTax)} in tax.`;
+      sub.textContent = overBy > 0
+        ? `That goes ${dollars(overBy)} past the top of ${targetLabel}, into the ${percent(result.after.bracket.rate, 0)} bracket.`
+        : `That leaves ${dollars(room - result.conversion)} of room before the top of ${targetLabel}.`;
+    }
+
+    // Senior deduction notice — only when the conversion actually erases some
+    const notice = $("notice-slot");
+    if (result.seniorDeductionLost >= 1) {
+      notice.innerHTML = `<p class="notice">This conversion reduces the senior deduction by ${dollars(result.seniorDeductionLost)}. Those dollars become taxable too, so the tax rate on the conversion is higher than the bracket rate.</p>`;
+    } else {
+      notice.innerHTML = "";
+    }
+
+    renderLadder(inputs, result, targetTop);
+
+    // Figures
+    $("fig-fed").textContent = dollars(result.addedFederalTax);
+    $("fig-state").textContent = dollars(result.addedStateTax);
+    $("fig-rate").textContent = result.conversion > 0 ? percent(result.effectiveRateOnConversion) : "—";
+
+    // Before / after table
+    const rows = [
+      ["Adjusted gross income", result.before.agi, result.after.agi, "money"],
+      ["Total deduction", result.before.deduction, result.after.deduction, "money"],
+      ["Taxable income", result.before.taxable, result.after.taxable, "money"],
+      ["Federal tax", result.before.federalTax, result.after.federalTax, "money"],
+      ["Top bracket reached", result.before.bracket.rate, result.after.bracket.rate, "rate"],
+      ["Average federal rate",
+        result.before.agi ? result.before.federalTax / result.before.agi : 0,
+        result.after.agi ? result.after.federalTax / result.after.agi : 0, "avg"],
+    ];
+    $("compare").innerHTML = rows.map(([label, before, after, kind]) => {
+      let b, a, c;
+      if (kind === "money") {
+        b = dollars(before); a = dollars(after);
+        const diff = after - before;
+        c = diff === 0 ? "—" : (diff > 0 ? "+" : "−") + dollars(Math.abs(diff));
+      } else if (kind === "rate") {
+        b = percent(before, 0); a = percent(after, 0); c = before === after ? "—" : "Higher";
+      } else {
+        b = percent(before); a = percent(after);
+        const diff = after - before;
+        c = Math.abs(diff) < 0.0005 ? "—" : (diff > 0 ? "+" : "−") + percent(Math.abs(diff));
+      }
+      return `<tr><td>${label}</td><td>${b}</td><td>${a}</td><td class="change">${c}</td></tr>`;
+    }).join("");
+
+    // By-bracket table
+    const bracketRows = result.byBracket.map((r) =>
+      `<tr><td>${percent(r.rate, 0)}</td><td>${dollars(r.dollars)}</td><td>${dollars(r.tax)}</td></tr>`
+    );
+    $("by-bracket").innerHTML = bracketRows.length
+      ? bracketRows.join("")
+      : `<tr><td colspan="3" style="text-align:left;color:var(--ink-subtle)">Enter a conversion amount to see how it's taxed.</td></tr>`;
+  }
+
+  /**
+   * Draws the bracket ladder.
+   * The scale runs from $0 to a little past whichever is larger:
+   * taxable income after the conversion, or the top of the target bracket.
+   */
+  function renderLadder(inputs, result, targetTop) {
+    const brackets = engine.BRACKETS_2026[inputs.status];
+    const scaleMax = Math.max(result.after.taxable, targetTop) * 1.1 || 1;
+    const at = (value) => Math.min(100, (value / scaleMax) * 100);
+
+    const track = $("track");
+    const ticks = $("tick-labels");
+    const rates = $("rate-labels");
+    track.innerHTML = ""; ticks.innerHTML = ""; rates.innerHTML = "";
+
+    // Filled bars
+    const before = document.createElement("div");
+    before.className = "fill before";
+    before.style.left = "0%";
+    before.style.width = at(result.before.taxable) + "%";
+    track.appendChild(before);
+
+    const added = document.createElement("div");
+    added.className = "fill conversion";
+    added.style.left = at(result.before.taxable) + "%";
+    added.style.width = (at(result.after.taxable) - at(result.before.taxable)) + "%";
+    track.appendChild(added);
+
+    // Bracket boundaries and rate names
+    let bottom = 0;
+    for (const bracket of brackets) {
+      if (bottom >= scaleMax) break;
+      const top = Math.min(bracket.upTo, scaleMax);
+      const middle = (at(bottom) + at(top)) / 2;
+
+      // Only label a bracket if it's wide enough to read
+      if (at(top) - at(bottom) > 5) {
+        const rate = document.createElement("div");
+        rate.className = "rate-label";
+        rate.style.left = middle + "%";
+        rate.textContent = percent(bracket.rate, 0);
+        rates.appendChild(rate);
+      }
+
+      if (bracket.upTo < scaleMax) {
+        const isTarget = bracket.upTo === targetTop;
+        const tick = document.createElement("div");
+        tick.className = "tick" + (isTarget ? " target" : "");
+        tick.style.left = at(bracket.upTo) + "%";
+        track.appendChild(tick);
+
+        // Label the target boundary always; others only if not crowded
+        if (isTarget || at(bracket.upTo) > 12) {
+          const label = document.createElement("div");
+          label.className = "tick-label";
+          label.style.left = at(bracket.upTo) + "%";
+          label.style.color = isTarget ? "var(--gold-deep)" : "";
+          label.style.fontWeight = isTarget ? "600" : "";
+          label.textContent = "$" + Math.round(bracket.upTo / 1000).toLocaleString() + "k";
+          ticks.appendChild(label);
+        }
+      }
+      bottom = bracket.upTo;
+    }
+  }
+
+  // ---------- Events ----------
+  form.addEventListener("input", (event) => {
+    const input = event.target;
+    if (input.dataset.mask === "currency") applyCurrencyMask(input);
+    if (input.dataset.mask === "percent") applyPercentMask(input);
+    if (input === conversionInput) conversionMode = "manual";
+    update();
+  });
+  form.addEventListener("change", update);
+
+  useFullButton.addEventListener("click", () => {
+    conversionMode = "auto";
+    update();
+    conversionInput.focus();
+  });
+
+  // ---------- Prefill from URL (prospect auto-fill) ----------
+  // The dashboard's build_static_deck_url RPC opens this deck as
+  //   ...?auto=1&agi=<income>&filingStatus=<MFJ|Single|…>&age=<n>&spouseAge=<n>
+  // We read those params and set the form before the first render. With no
+  // params (opened directly) the built-in defaults stand untouched.
+  (function prefillFromUrl() {
+    const params = new URLSearchParams(location.search);
+    if (![...params.keys()].length) return;
+
+    const setRadio = (name, value) => {
+      const el = form.querySelector(`input[name="${name}"][value="${value}"]`);
+      if (el && !el.disabled) el.checked = true;
+    };
+
+    // Filing status: the RPC normalizes to "MFJ"/"Single"; raw intake values
+    // may also arrive (mfj/single/hoh/mfs/qw/married/…). Map to the three
+    // statuses this calculator supports.
+    const fsRaw = (params.get("filingStatus") || params.get("status") || "").toLowerCase();
+    if (fsRaw) {
+      let fs = "mfj";
+      if (/mfs|separat/.test(fsRaw)) fs = "single";
+      else if (/mfj|married|joint|qw|widow|surviv/.test(fsRaw)) fs = "mfj";
+      else if (/hoh|head/.test(fsRaw)) fs = "hoh";
+      else if (/single|^s$/.test(fsRaw)) fs = "single";
+      setRadio("status", fs);
+      syncAgeOptions(fs); // enable/disable the "Two" option to match
+    }
+
+    // People 65 or older: derive from the household ages. The spouse only
+    // counts when the return is married filing jointly.
+    const age = parseInt(params.get("age") || "", 10);
+    const spouseAge = parseInt(params.get("spouseAge") || "", 10);
+    if (!Number.isNaN(age) || !Number.isNaN(spouseAge)) {
+      const married = form.querySelector('input[name="status"]:checked').value === "mfj";
+      let over65 = 0;
+      if (!Number.isNaN(age) && age >= 65) over65++;
+      if (married && !Number.isNaN(spouseAge) && spouseAge >= 65) over65++;
+      setRadio("over65", String(over65));
+    }
+
+    // Income before the conversion (AGI) — the calculator's primary input.
+    const agi = params.get("agi");
+    if (agi != null && agi !== "") {
+      const n = Math.round(Number(String(agi).replace(/[^\d.]/g, "")));
+      if (!Number.isNaN(n) && n > 0) $("agi").value = n.toLocaleString("en-US");
+    }
+  })();
+
+  update();
+})();
+</script>
+</body>
+</html>
