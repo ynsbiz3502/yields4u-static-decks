@@ -240,7 +240,7 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
     <h2 id="compareHead">Strategy comparison</h2>
     <div class="gold-rule"></div>
     <p class="measure">
-      Each strategy converts every year from 2026 through <span id="lastConvYearText">2034</span>, the year before required minimum distributions begin.
+      Each strategy converts every year from 2026 through <span id="lastConvYearText">2034</span>, each up to its own bracket or IRMAA limit.
       The winner is the strategy that leaves your family the most money after every tax is paid — yours, and the tax your heirs would owe on any IRA left behind.
       Select a row to see its year-by-year projection.
     </p>
@@ -1070,8 +1070,11 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
       stateRate: v.stateRate,
       capitalLossCarryover: v.capitalLossCarryover,
       heirTaxRate: v.heirTaxRate,
-      // Convert through the year before RMDs start.
-      lastConversionYear: olderBirthYear + RothEngine.rmdStartAge(olderBirthYear) - 1
+      // Conversions run every year of the projection. RMDs do not stop conversions —
+      // once RMDs begin you simply convert on top of the RMD, up to the bracket target.
+      // (The old "year before RMDs start" cutoff zeroed out every conversion for anyone
+      // already at or past RMD age, collapsing all strategies to "no conversions".)
+      lastConversionYear: olderBirthYear + FIXED.endAge
     };
   }
 
