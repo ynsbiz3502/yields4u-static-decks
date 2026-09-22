@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2026 Roth Conversion Analysis · Yields4U</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ------------------------------------------------------------------
+   Design tokens (Yields4U: ink, gold, paper). Dark mode swaps the
+   surfaces and keeps gold as the only accent.
+   ------------------------------------------------------------------ */
+:root {
+  --gold-400: #E8A33D; --gold-500: #D48E27; --gold-600: #B1711B; --gold-50: #FBF3E1;
+  --ink-900: #0E0E0F; --ink-600: #4A4A4E; --ink-500: #6B6B70; --ink-200: #DCDCDE;
+  --paper-0: #FFFFFF; --paper-50: #FBF9F4; --paper-100: #F5F1E8; --paper-200: #EDE6D5;
+  --success: #2E7D5B; --danger: #A83B2E; --info: #2F5673;
+
+  --bg: var(--paper-50); --surface: var(--paper-0); --surface-alt: var(--paper-100);
+  --fg: var(--ink-900); --fg-muted: var(--ink-600); --fg-subtle: var(--ink-500);
+  --accent-text: var(--gold-600); --border: var(--ink-200); --rule: var(--paper-200);
+  --selected-bg: var(--gold-50);
+  --chart-1: #0E0E0F; --chart-2: #E8A33D; --chart-3: #8F8F94; --chart-4: #2F5673;
+
+  --font-sans: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Source Sans 3', 'Source Sans Pro', system-ui, -apple-system, sans-serif;
+
+  --shadow-sm: 0 1px 2px rgba(14,14,15,.06), 0 1px 1px rgba(14,14,15,.04);
+  --shadow-md: 0 4px 14px rgba(14,14,15,.08), 0 1px 3px rgba(14,14,15,.05);
+  --radius-md: 4px; --radius-lg: 8px;
+
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121213; --surface: #1C1C1E; --surface-alt: #232326;
+    --fg: #F5F1E8; --fg-muted: #C9C4B8; --fg-subtle: #9A968E;
+    --accent-text: #EABC5C; --border: #34343A; --rule: #2C2C31; --selected-bg: #2A2419;
+    --chart-1: #F5F1E8; --chart-2: #E8A33D; --chart-3: #8F8F94; --chart-4: #7FA7C6;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121213; --surface: #1C1C1E; --surface-alt: #232326;
+  --fg: #F5F1E8; --fg-muted: #C9C4B8; --fg-subtle: #9A968E;
+  --accent-text: #EABC5C; --border: #34343A; --rule: #2C2C31; --selected-bg: #2A2419;
+  --chart-1: #F5F1E8; --chart-2: #E8A33D; --chart-3: #8F8F94; --chart-4: #7FA7C6;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------ Layout ------------------------------ */
+.page { max-width: 1120px; margin: 0 auto; padding: 0 24px 64px; }
+section { padding: 48px 0 8px; border-top: 1px solid var(--rule); }
+section:first-of-type { border-top: none; }
+.eyebrow {
+  font-family: var(--font-sans); font-weight: 600; font-size: 12px;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--accent-text); margin: 0 0 8px;
+}
+h1, h2 { font-family: var(--font-serif); font-weight: 600; letter-spacing: -.02em; margin: 0; }
+h1 { font-size: clamp(34px, 5vw, 52px); line-height: 1.1; }
+h2 { font-size: clamp(26px, 3.4vw, 34px); line-height: 1.2; }
+h3 { font-family: var(--font-sans); font-weight: 700; font-size: 18px; margin: 0 0 8px; }
+.gold-rule { width: 64px; height: 3px; background: var(--gold-400); margin: 16px 0 20px; }
+.lead { font-size: 20px; color: var(--fg-muted); max-width: 720px; }
+.measure { max-width: 720px; }
+.muted { color: var(--fg-muted); }
+.small { font-size: 14px; color: var(--fg-muted); }
+
+/* ------------------------------ Header ------------------------------ */
+.masthead { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 24px 0; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+.masthead .logo { height: 76px; width: auto; display: block; }
+.logo-plate { background: #FFFFFF; border-radius: var(--radius-md); padding: 6px 10px; }
+.masthead .prepared { font-family: var(--font-sans); font-size: 13px; color: var(--fg-muted); text-align: right; line-height: 1.5; }
+.hero { padding: 56px 0 24px; }
+.hero .display-italic { font-family: var(--font-serif); font-style: italic; font-weight: 500; color: var(--accent-text); }
+
+/* ------------------------------ Cards ------------------------------ */
+.grid { display: grid; gap: 16px; }
+.grid-4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); padding: 24px;
+}
+.card.featured { border-top: 3px solid var(--gold-400); }
+.stat-label { font-family: var(--font-sans); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-muted); }
+.stat-value { font-family: var(--font-serif); font-size: 32px; font-weight: 600; line-height: 1.2; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.stat-note { font-size: 14px; color: var(--fg-muted); margin-top: 6px; line-height: 1.45; }
+.numeral {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 34px; height: 34px; border-radius: 50%; background: var(--ink-900); color: var(--gold-400);
+  font-family: var(--font-serif); font-weight: 700; font-size: 17px; border: 1px solid var(--gold-400);
+}
+.finding { display: flex; gap: 16px; align-items: flex-start; }
+.finding p { margin: 0; }
+
+/* ---------------------------- Assumptions --------------------------- */
+.inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px 24px; }
+.field label { display: block; font-family: var(--font-sans); font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--fg); }
+.field .hint { display: block; font-size: 13px; color: var(--fg-subtle); margin-top: 4px; line-height: 1.4; }
+.input-wrap { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); transition: border-color 120ms ease, box-shadow 120ms ease; }
+.input-wrap:focus-within { border-color: var(--gold-400); box-shadow: 0 0 0 3px rgba(232,163,61,.25); }
+.input-wrap .affix { padding: 0 10px; color: var(--fg-muted); font-family: var(--font-sans); font-size: 15px; }
+.input-wrap input {
+  flex: 1; min-width: 0; border: 0; background: transparent; color: var(--fg);
+  font-family: var(--font-body); font-size: 17px; padding: 11px 10px; outline: none; font-variant-numeric: tabular-nums;
+}
+.input-wrap .affix + input { padding-left: 0; }
+.estimate-tag { font-family: var(--font-sans); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--danger); margin-left: 6px; }
+.from-return-tag { font-family: var(--font-sans); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--success); margin-left: 6px; }
+.button {
+  font-family: var(--font-sans); font-weight: 600; font-size: 14px; border-radius: var(--radius-md);
+  padding: 10px 18px; cursor: pointer; border: 1px solid var(--fg); background: transparent; color: var(--fg);
+  transition: background 120ms ease, color 120ms ease;
+}
+.button:hover { background: var(--fg); color: var(--bg); }
+
+/* --------------------------- Strategy picker ------------------------ */
+.segmented { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 20px; }
+.segmented button {
+  font-family: var(--font-sans); font-size: 14px; font-weight: 600; cursor: pointer;
+  padding: 9px 14px; border-radius: var(--radius-md); border: 1px solid var(--border);
+  background: var(--surface); color: var(--fg); transition: background 120ms ease, border-color 120ms ease;
+}
+.segmented button[aria-pressed="true"] { background: var(--ink-900); color: #FFFFFF; border-color: var(--ink-900); }
+:root[data-theme="dark"] .segmented button[aria-pressed="true"] { background: var(--gold-400); color: var(--ink-900); border-color: var(--gold-400); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .segmented button[aria-pressed="true"] { background: var(--gold-400); color: var(--ink-900); border-color: var(--gold-400); } }
+.chip { display: inline-block; font-family: var(--font-sans); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--gold-400); color: var(--ink-900); margin-left: 8px; vertical-align: middle; }
+
+/* ------------------------------- Tables ------------------------------ */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-sm); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { padding: 10px 11px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--rule); font-size: 15px; }
+th:first-child, td:first-child { text-align: left; }
+#yearBody td:first-child, #yearTable thead th:first-child { position: sticky; left: 0; background: var(--surface); z-index: 1; }
+#yearTable thead th:first-child { background: var(--surface-alt); z-index: 2; }
+thead th { vertical-align: bottom; line-height: 1.3; }
+thead th { font-family: var(--font-sans); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-muted); background: var(--surface-alt); position: sticky; top: 0; }
+tbody tr:last-child td { border-bottom: none; }
+tr.is-selected td { background: var(--selected-bg); }
+tr.is-best td:first-child { box-shadow: inset 3px 0 0 var(--gold-400); }
+tr.clickable { cursor: pointer; }
+tr.clickable:hover td { background: var(--surface-alt); }
+tr.phase-row td { background: var(--surface-alt); font-family: var(--font-sans); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-text); text-align: left; }
+.good { color: var(--success); font-weight: 600; }
+.bad { color: var(--danger); font-weight: 600; }
+
+/* ------------------------------- Charts ------------------------------ */
+.chart-card { padding: 20px 20px 12px; }
+.chart-box { position: relative; height: 320px; }
+.chart-title { font-family: var(--font-sans); font-weight: 700; font-size: 15px; margin: 0 0 4px; }
+.chart-sub { font-size: 14px; color: var(--fg-muted); margin: 0 0 12px; }
+
+/* ------------------------------- Footer ------------------------------ */
+.disclosure { font-size: 13px; color: var(--fg-subtle); line-height: 1.55; }
+.disclosure li { margin-bottom: 6px; }
+footer { margin-top: 48px; padding: 32px 24px; background: var(--ink-900); color: #F5F1E8; }
+footer .inner { max-width: 1120px; margin: 0 auto; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-family: var(--font-sans); font-size: 13px; }
+footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--gold-400); font-size: 17px; }
+
+@media (max-width: 640px) {
+  .page { padding: 0 16px 48px; }
+  .masthead .prepared { text-align: left; }
+  .chart-box { height: 260px; }
+  .stat-value { font-size: 28px; }
+}
+@media print {
+  .no-print { display: none !important; }
+  section { break-inside: avoid; }
+  .table-scroll { overflow: visible; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============================== Masthead ============================== -->
+  <header class="masthead">
+    <div class="logo-plate"><img class="logo" src="data:image/png;base64,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" alt="Yields4U — Low Risk, Low Volatility Retirement Solutions"></div>
+    <div class="prepared">
+      Prepared by Leibel Sternbach, EA, ChFC<br>
+      Yields4U · September 22, 2026
+    </div>
+  </header>
+
+  <!-- ================================ Hero ================================ -->
+  <div class="hero">
+    <p class="eyebrow">Roth conversion analysis · Tax year 2026</p>
+    <h1 id="householdName">Roth Conversion Analysis</h1>
+    <div class="gold-rule"></div>
+    <p class="lead">
+      You need <strong id="heroNeed">$72,000</strong> a year. Social Security covers part of it;
+      the rest comes from your investments. The question this report answers:
+      <span class="display-italic">how much of your IRA should you move to Roth each year — before the IRS starts forcing withdrawals?</span>
+    </p>
+  </div>
+
+  <!-- ========================= 1. Where you stand ========================= -->
+  <section aria-labelledby="standHead">
+    <p class="eyebrow">Your 2026 baseline · before any conversion</p>
+    <h2 id="standHead">Where you stand today</h2>
+    <div class="gold-rule"></div>
+    <div class="grid grid-4">
+      <div class="card"><div class="stat-label">Adjusted gross income</div><div class="stat-value" id="standAgi">—</div><div class="stat-note">Projected 2026, before any conversion</div></div>
+      <div class="card"><div class="stat-label">Taxable income</div><div class="stat-value" id="standTaxable">—</div><div class="stat-note" id="standTaxableNote">After the standard and senior deductions</div></div>
+      <div class="card"><div class="stat-label">Federal tax</div><div class="stat-value" id="standFed">—</div><div class="stat-note" id="standFedNote">On this year's income</div></div>
+      <div class="card"><div class="stat-label">Marginal bracket</div><div class="stat-value" id="standRate">—</div><div class="stat-note">The rate on your next dollar of ordinary income</div></div>
+    </div>
+    <div class="grid grid-3" style="margin-top:16px" id="standFindings"></div>
+  </section>
+
+  <!-- ============================ 2. The answer =========================== -->
+  <section aria-labelledby="answerHead">
+    <p class="eyebrow">The recommendation</p>
+    <h2 id="answerHead">What to do in 2026</h2>
+    <div class="gold-rule"></div>
+    <p class="measure" id="answerLead"></p>
+    <p class="small measure">Account balances are not on a tax return. The IRA and brokerage balances used here are estimates — enter the actual figures under <a href="#assumeHead">Assumptions</a> and every number updates.</p>
+    <div class="grid grid-4" id="actionCards"></div>
+    <div class="card" style="margin-top:16px">
+      <h3>How to pay the tax without another penalty</h3>
+      <p class="measure" id="paymentPlan" style="margin:0"></p>
+    </div>
+  </section>
+
+  <!-- ========================= 3. Compare strategies ====================== -->
+  <section aria-labelledby="compareHead">
+    <p class="eyebrow">Five ways to handle the IRA</p>
+    <h2 id="compareHead">Strategy comparison</h2>
+    <div class="gold-rule"></div>
+    <p class="measure">
+      Each strategy converts every year from 2026 through <span id="lastConvYearText">2034</span>, the year before required minimum distributions begin.
+      The winner is the strategy that leaves your family the most money after every tax is paid — yours, and the tax your heirs would owe on any IRA left behind.
+      Select a row to see its year-by-year projection.
+    </p>
+    <div class="table-scroll">
+      <table aria-describedby="compareHead">
+        <thead>
+          <tr>
+            <th scope="col">Strategy</th>
+            <th scope="col">2026 conversion</th>
+            <th scope="col">2026 tax</th>
+            <th scope="col">After-tax legacy<br>(today's dollars)</th>
+            <th scope="col">Versus no<br>conversions</th>
+            <th scope="col">Your lifetime<br>taxes</th>
+            <th scope="col">Tax left<br>to heirs</th>
+            <th scope="col">Medicare<br>IRMAA</th>
+            <th scope="col">First RMD</th>
+            <th scope="col">Total<br>converted</th>
+          </tr>
+        </thead>
+        <tbody id="compareBody"></tbody>
+      </table>
+    </div>
+    <p class="small" style="margin-top:10px">Legacy is brokerage + Roth + IRA, less the tax heirs would owe on the IRA, stated in today's dollars. Lifetime taxes include federal, state and local income tax, and the 3.8% net investment income tax. Legacy is measured at the end of <span id="finalYearText">2055</span>, when the older spouse reaches 95.</p>
+  </section>
+
+  <!-- ============================ 4. Charts =============================== -->
+  <section aria-labelledby="chartsHead">
+    <p class="eyebrow">Projected income</p>
+    <h2 id="chartsHead">Year by year</h2>
+    <div class="gold-rule"></div>
+    <div class="segmented" role="group" aria-label="Strategy shown in charts and table" id="strategyPicker"></div>
+
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));">
+      <div class="card chart-card">
+        <p class="chart-title">Where each year's income comes from</p>
+        <p class="chart-sub">Gross dollars before tax. Roth conversions are not income you spend, so they are not shown here.</p>
+        <div class="chart-box"><canvas id="sourcesChart" aria-label="Income sources by year"></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <p class="chart-title">Required minimum distributions</p>
+        <p class="chart-sub">What the IRS forces out of the IRA each year, compared with doing nothing.</p>
+        <div class="chart-box"><canvas id="rmdChart" aria-label="Required minimum distributions by year"></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <p class="chart-title">Taxes paid each year</p>
+        <p class="chart-sub">Federal, state and IRMAA combined. Conversions pay tax early to shrink it later.</p>
+        <div class="chart-box"><canvas id="taxChart" aria-label="Taxes by year"></canvas></div>
+      </div>
+      <div class="card chart-card">
+        <p class="chart-title">After-tax wealth</p>
+        <p class="chart-sub">Brokerage + Roth + IRA less the tax your heirs would owe on the IRA.</p>
+        <div class="chart-box"><canvas id="wealthChart" aria-label="After-tax wealth by year"></canvas></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px">Income projection: <span id="tableStrategyName"></span></h3>
+    <p class="small">Every year delivers the spending need after tax. Dividends and withdrawals are drawn in this order: Social Security, RMDs, dividends, brokerage account, IRA, then Roth. Conversion taxes are paid from the brokerage account.</p>
+    <div class="table-scroll">
+      <table id="yearTable">
+        <thead>
+          <tr>
+            <th scope="col">Year</th>
+            <th scope="col">Ages</th>
+            <th scope="col">Spending need</th>
+            <th scope="col">Social Security</th>
+            <th scope="col">RMD</th>
+            <th scope="col">Dividends</th>
+            <th scope="col">From brokerage</th>
+            <th scope="col">From IRA</th>
+            <th scope="col">From Roth</th>
+            <th scope="col">Roth conversion</th>
+            <th scope="col">Bracket</th>
+            <th scope="col">Income tax<br>(fed + state)</th>
+            <th scope="col">IRMAA</th>
+            <th scope="col">IRA</th>
+            <th scope="col">Roth</th>
+            <th scope="col">Brokerage</th>
+          </tr>
+        </thead>
+        <tbody id="yearBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================ 5. Assumptions ========================== -->
+  <section aria-labelledby="assumeHead" class="no-print-break">
+    <p class="eyebrow">Change any number and the report recalculates</p>
+    <h2 id="assumeHead">Assumptions</h2>
+    <div class="gold-rule"></div>
+    <p class="measure">
+      Items marked <span class="from-return-tag" style="margin:0">From return</span> come straight from the 2025 filing.
+      Items marked <span class="estimate-tag" style="margin:0">Estimate</span> are not on a tax return and need the actual figure before this is presented.
+    </p>
+    <div class="card">
+      <div class="inputs" id="inputsGrid"></div>
+      <div style="margin-top:20px" class="no-print"><button class="button" type="button" id="resetBtn">Restore original assumptions</button></div>
+    </div>
+  </section>
+
+  <!-- ============================ 6. Disclosures ========================== -->
+  <section aria-labelledby="discHead">
+    <p class="eyebrow">How the numbers are built</p>
+    <h2 id="discHead">Method and disclosures</h2>
+    <div class="gold-rule"></div>
+    <ul class="disclosure measure">
+      <li>All figures are projections computed from the assumptions below, not a filed return. The 2026 baseline appears under &ldquo;Where you stand today&rdquo; and every number updates when an assumption changes.</li>
+      <li>2026 federal law as enacted by the One Big Beautiful Bill Act: permanent 10/12/22/24/32/35/37% brackets, $32,200 standard deduction plus $1,650 per spouse over 65, and the $6,000-per-person senior deduction for 2025 through 2028 only. Brackets, deductions and IRMAA thresholds grow with the inflation assumption after 2026.</li>
+      <li>Social Security taxation uses the statutory $32,000 and $44,000 thresholds, which are not indexed.</li>
+      <li>Medicare IRMAA uses the 2026 surcharges for Part B and Part D. Each year's income sets the premium two years later.</li>
+      <li>RMDs begin at 75 for anyone born in 1960 or later (SECURE 2.0) and use the Uniform Lifetime Table on the prior year-end balance. Both IRAs are combined and measured on the older spouse's age.</li>
+      <li>State and local income tax are modeled as a single flat rate on income other than Social Security, after a $2,000-per-senior exemption. This is a simplification &mdash; confirm your state&rsquo;s treatment of retirement income.</li>
+      <li>Both spouses are assumed to live through the projection and file jointly. A surviving spouse files single with narrower brackets, which raises the tax on the same IRA income and makes conversions more valuable than shown here.</li>
+      <li>Returns are applied evenly each year. Real markets vary, and the order of returns affects outcomes.</li>
+      <li>This analysis is for planning discussion. It is not a tax return and does not replace advice on your full situation. Confirm figures with your tax preparer before executing a conversion.</li>
+    </ul>
+  </section>
+</div>
+
+<footer>
+  <div class="inner">
+    <div><span class="tag">Live your dreams.</span></div>
+    <div>Yields4U · yields4u.com · Leibel Sternbach, EA, ChFC, NSSA, APMA</div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* =====================================================================
+   Yields4U Roth Conversion Engine
+   ---------------------------------------------------------------------
+   Pure functions only. No DOM access. The same file runs in Node (for
+   tests) and in the browser (inlined into the published report).
+
+   Scope and simplifications (all disclosed in the report):
+   - Married filing jointly for the whole projection.
+   - One combined traditional IRA, measured by the older spouse's age
+     for RMD purposes.
+   - Federal law as of 2026 (OBBBA): permanent TCJA brackets, $6,000
+     senior deduction per person for 2025–2028 only.
+   - Brackets, deductions and IRMAA thresholds indexed at the inflation
+     input after 2026. SS taxation thresholds are not indexed (by law).
+   - Indiana state + county tax as one flat rate. Indiana does not tax
+     Social Security.
+   ===================================================================== */
+(function (root) {
+  "use strict";
+
+  /* ---------------------------------------------------------------
+     1. Published tax tables
+     --------------------------------------------------------------- */
+
+  // Top of each ordinary bracket for MFJ (10%, 12%, 22%, 24%, 32%, 35%).
+  // Income above the last number is taxed at 37%.
+  var BRACKET_RATES = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37];
+
+  var TAX_TABLES = {
+    2025: {
+      bracketTops: [23850, 96950, 206700, 394600, 501050, 751600],
+      standardDeduction: 31500,
+      additional65PerPerson: 1600,
+      ltcgZeroTop: 96700,      // qualified dividends/LTCG taxed at 0% up to here
+      ltcgFifteenTop: 600050   // 15% up to here, 20% above
+    },
+    2026: {
+      bracketTops: [24800, 100800, 211400, 403550, 512450, 768700],
+      standardDeduction: 32200,
+      additional65PerPerson: 1650,
+      ltcgZeroTop: 98900,
+      ltcgFifteenTop: 613700
+    }
+  };
+
+  // 2026 Medicare IRMAA (MFJ). MAGI from two years earlier sets the premium.
+  // Surcharges are per person, per month, above the standard premium.
+  var IRMAA_2026 = {
+    magiThresholds: [218000, 274000, 342000, 410000, 750000],
+    partBSurcharge: [81.20, 202.90, 324.60, 446.30, 487.00],
+    partDSurcharge: [14.50, 37.50, 60.40, 83.30, 91.00]
+  };
+
+  var SENIOR_DEDUCTION = {
+    perPerson: 6000,
+    firstYear: 2025,
+    lastYear: 2028,
+    phaseoutStartMfj: 150000,
+    phaseoutRate: 0.06
+  };
+
+  var NIIT = { rate: 0.038, thresholdMfj: 250000 };
+
+  // Social Security taxation thresholds for MFJ. Fixed by statute.
+  var SS_BASE_MFJ = 32000;
+  var SS_ADJUSTED_BASE_MFJ = 44000;
+
+  // Uniform Lifetime Table (post-2022), ages 72–105.
+  var UNIFORM_LIFETIME = {
+    72: 27.4, 73: 26.5, 74: 25.5, 75: 24.6, 76: 23.7, 77: 22.9, 78: 22.0,
+    79: 21.1, 80: 20.2, 81: 19.4, 82: 18.5, 83: 17.7, 84: 16.8, 85: 16.0,
+    86: 15.2, 87: 14.4, 88: 13.7, 89: 12.9, 90: 12.2, 91: 11.5, 92: 10.8,
+    93: 10.1, 94: 9.5, 95: 8.9, 96: 8.4, 97: 7.8, 98: 7.3, 99: 6.8,
+    100: 6.4, 101: 6.0, 102: 5.6, 103: 5.2, 104: 4.9, 105: 4.6
+  };
+
+  // Indiana gives $1,000 per person plus $1,000 more per person 65+.
+  var INDIANA_EXEMPTION_PER_SENIOR = 2000;
+
+  var CAPITAL_LOSS_ORDINARY_LIMIT = 3000;
+
+  /* ---------------------------------------------------------------
+     2. Year parameters
+     --------------------------------------------------------------- */
+
+  /**
+   * Returns the tax parameters for a given year.
+   * 2025 and 2026 use the published tables. Later years scale the 2026
+   * table by the inflation assumption so bracket creep is not overstated.
+   */
+  function yearParams(year, inflation) {
+    if (year === 2025) return copyTable(TAX_TABLES[2025], IRMAA_2026, 1);
+    var factor = Math.pow(1 + inflation, Math.max(0, year - 2026));
+    return copyTable(TAX_TABLES[2026], IRMAA_2026, factor);
+  }
+
+  function copyTable(table, irmaa, factor) {
+    return {
+      bracketTops: table.bracketTops.map(function (t) { return t * factor; }),
+      standardDeduction: table.standardDeduction * factor,
+      additional65PerPerson: table.additional65PerPerson * factor,
+      ltcgZeroTop: table.ltcgZeroTop * factor,
+      ltcgFifteenTop: table.ltcgFifteenTop * factor,
+      irmaaThresholds: irmaa.magiThresholds.map(function (t) { return t * factor; })
+    };
+  }
+
+  /* ---------------------------------------------------------------
+     3. Individual tax calculations
+     --------------------------------------------------------------- */
+
+  /** Tax on ordinary taxable income using progressive brackets. */
+  function ordinaryIncomeTax(taxableOrdinary, bracketTops) {
+    var tax = 0;
+    var lowerEdge = 0;
+    for (var i = 0; i < BRACKET_RATES.length; i++) {
+      var upperEdge = i < bracketTops.length ? bracketTops[i] : Infinity;
+      if (taxableOrdinary <= lowerEdge) break;
+      var incomeInThisBracket = Math.min(taxableOrdinary, upperEdge) - lowerEdge;
+      tax += incomeInThisBracket * BRACKET_RATES[i];
+      lowerEdge = upperEdge;
+    }
+    return tax;
+  }
+
+  /** The bracket rate that applies to the last dollar of ordinary income. */
+  function marginalOrdinaryRate(taxableOrdinary, bracketTops) {
+    for (var i = 0; i < bracketTops.length; i++) {
+      if (taxableOrdinary < bracketTops[i]) return BRACKET_RATES[i];
+    }
+    return BRACKET_RATES[BRACKET_RATES.length - 1];
+  }
+
+  /**
+   * Federal income tax with qualified dividends and long-term gains
+   * stacked on top of ordinary income (the Qualified Dividends and
+   * Capital Gain Tax Worksheet).
+   */
+  function federalIncomeTax(taxableIncome, preferentialIncome, params) {
+    var preferential = Math.min(Math.max(0, preferentialIncome), taxableIncome);
+    var ordinary = taxableIncome - preferential;
+
+    var tax = ordinaryIncomeTax(ordinary, params.bracketTops);
+
+    // Preferential income fills the 0% band first, then 15%, then 20%.
+    var zeroRoom = Math.max(0, params.ltcgZeroTop - ordinary);
+    var atZero = Math.min(preferential, zeroRoom);
+
+    var fifteenRoom = Math.max(0, params.ltcgFifteenTop - Math.max(ordinary, params.ltcgZeroTop));
+    var atFifteen = Math.min(preferential - atZero, fifteenRoom);
+
+    var atTwenty = preferential - atZero - atFifteen;
+
+    return tax + atFifteen * 0.15 + atTwenty * 0.20;
+  }
+
+  /**
+   * Taxable Social Security for MFJ.
+   * provisional income = other AGI items + half of Social Security.
+   */
+  function taxableSocialSecurity(ssGross, otherIncome) {
+    var provisional = otherIncome + 0.5 * ssGross;
+    if (provisional <= SS_BASE_MFJ) return 0;
+
+    if (provisional <= SS_ADJUSTED_BASE_MFJ) {
+      return Math.min(0.5 * ssGross, 0.5 * (provisional - SS_BASE_MFJ));
+    }
+
+    var firstTier = Math.min(0.5 * ssGross, 0.5 * (SS_ADJUSTED_BASE_MFJ - SS_BASE_MFJ));
+    return Math.min(0.85 * ssGross, 0.85 * (provisional - SS_ADJUSTED_BASE_MFJ) + firstTier);
+  }
+
+  /** OBBBA senior deduction, 2025–2028, phased out at 6% of MAGI over $150k (MFJ). */
+  function seniorDeduction(year, magi, seniorCount) {
+    if (year < SENIOR_DEDUCTION.firstYear || year > SENIOR_DEDUCTION.lastYear) return 0;
+    var reduction = Math.max(0, magi - SENIOR_DEDUCTION.phaseoutStartMfj) * SENIOR_DEDUCTION.phaseoutRate;
+    var perPerson = Math.max(0, SENIOR_DEDUCTION.perPerson - reduction);
+    return perPerson * seniorCount;
+  }
+
+  /** Annual IRMAA surcharge for the household, based on MAGI from two years earlier. */
+  function irmaaAnnualSurcharge(magiTwoYearsAgo, thresholds, peopleOnMedicare) {
+    var tier = -1;
+    for (var i = 0; i < thresholds.length; i++) {
+      if (magiTwoYearsAgo > thresholds[i]) tier = i;
+    }
+    if (tier < 0) return 0;
+    var monthly = IRMAA_2026.partBSurcharge[tier] + IRMAA_2026.partDSurcharge[tier];
+    return monthly * 12 * peopleOnMedicare;
+  }
+
+  /** RMD start age under SECURE 2.0. */
+  function rmdStartAge(birthYear) {
+    if (birthYear >= 1960) return 75;
+    if (birthYear >= 1951) return 73;
+    return 72;
+  }
+
+  function rmdDivisor(age) {
+    if (age < 72) return null;
+    return UNIFORM_LIFETIME[Math.min(age, 105)];
+  }
+
+  /* ---------------------------------------------------------------
+     4. One year's full tax picture
+     --------------------------------------------------------------- */
+
+  /**
+   * Computes every tax number for one year.
+   *
+   * @param {object} y
+   *   year, inflation, stateRate, seniorCount (people 65+),
+   *   wages, pension, iraDistributions (RMD + extra withdrawals + conversion),
+   *   interest, qualifiedDividends, nonqualifiedDividends,
+   *   realizedLongTermGain, capitalLossCarryoverIn, socialSecurity,
+   *   passThroughIncome (S-corp K-1, can be negative)
+   */
+  function computeYearTax(y) {
+    var params = yearParams(y.year, y.inflation);
+
+    // Capital loss carryover: first offsets gains, then up to $3,000 of ordinary income.
+    var gains = Math.max(0, y.realizedLongTermGain || 0);
+    var carryIn = y.capitalLossCarryoverIn || 0;
+    var offsetAgainstGains = Math.min(carryIn, gains);
+    var remainingLoss = carryIn - offsetAgainstGains;
+    var offsetAgainstOrdinary = Math.min(CAPITAL_LOSS_ORDINARY_LIMIT, remainingLoss);
+    var carryOut = remainingLoss - offsetAgainstOrdinary;
+    var netLongTermGain = gains - offsetAgainstGains;
+    var capitalLine = netLongTermGain - offsetAgainstOrdinary; // Form 1040 line 7
+
+    var ordinaryItems =
+      (y.wages || 0) + (y.pension || 0) + (y.iraDistributions || 0) +
+      (y.interest || 0) + (y.passThroughIncome || 0);
+    var dividends = (y.qualifiedDividends || 0) + (y.nonqualifiedDividends || 0);
+
+    var incomeBeforeSocialSecurity = ordinaryItems + dividends + capitalLine;
+    var ssTaxable = taxableSocialSecurity(y.socialSecurity || 0, incomeBeforeSocialSecurity);
+    var agi = incomeBeforeSocialSecurity + ssTaxable;
+    var magi = agi; // no tax-exempt interest or foreign exclusions in this plan
+
+    var standard = params.standardDeduction + params.additional65PerPerson * y.seniorCount;
+    var senior = seniorDeduction(y.year, magi, y.seniorCount);
+    var totalDeduction = standard + senior;
+
+    var taxableIncome = Math.max(0, agi - totalDeduction);
+    var preferential = Math.min(taxableIncome, (y.qualifiedDividends || 0) + netLongTermGain);
+    var ordinaryTaxable = taxableIncome - preferential;
+
+    var federal = federalIncomeTax(taxableIncome, preferential, params);
+
+    var netInvestmentIncome = (y.interest || 0) + dividends + netLongTermGain;
+    var niit = Math.max(0, Math.min(netInvestmentIncome, magi - NIIT.thresholdMfj)) * NIIT.rate;
+
+    // Indiana: starts from federal AGI, removes taxable Social Security, applies exemptions.
+    var indianaBase = Math.max(0, agi - ssTaxable - INDIANA_EXEMPTION_PER_SENIOR * y.seniorCount);
+    var state = indianaBase * (y.stateRate || 0);
+
+    return {
+      params: params,
+      agi: agi,
+      magi: magi,
+      ssTaxable: ssTaxable,
+      standardDeduction: standard,
+      seniorDeduction: senior,
+      totalDeduction: totalDeduction,
+      taxableIncome: taxableIncome,
+      ordinaryTaxable: ordinaryTaxable,
+      preferentialIncome: preferential,
+      federalTax: federal,
+      niit: niit,
+      stateTax: state,
+      totalTax: federal + niit + state,
+      marginalRate: marginalOrdinaryRate(ordinaryTaxable, params.bracketTops),
+      capitalLossCarryoverOut: carryOut
+    };
+  }
+
+  /* ---------------------------------------------------------------
+     5. Multi-year projection
+     --------------------------------------------------------------- */
+
+  /**
+   * Conversion strategies. "target" says what the conversion is sized to reach.
+   *   none      – no conversions
+   *   bracket   – taxable income reaches the top of the chosen bracket
+   *   irmaa     – MAGI stays just under the first IRMAA threshold
+   */
+  var STRATEGIES = [
+    { id: "none",  label: "No conversions",          type: "none" },
+    { id: "b12",   label: "Fill the 12% bracket",    type: "bracket", bracketIndex: 1 },
+    { id: "irmaa", label: "Stay under IRMAA",        type: "irmaa" },
+    { id: "b22",   label: "Fill the 22% bracket",    type: "bracket", bracketIndex: 2 },
+    { id: "b24",   label: "Fill the 24% bracket",    type: "bracket", bracketIndex: 3 }
+  ];
+
+  var IRMAA_CUSHION = 2000; // stay this far under the threshold to absorb small surprises
+
+  /**
+   * Runs the cash-flow for one year given a conversion amount.
+   * Spending is funded in this order: Social Security, pension, RMD,
+   * dividends, then the taxable account, then extra IRA withdrawals,
+   * then Roth. Tax depends on the withdrawals and the withdrawals depend
+   * on the tax, so we repeat until the tax stops changing.
+   */
+  function solveYear(state, year, conversion, a) {
+    var yearIndex = year - a.startYear;
+    var olderAge = year - Math.min(a.birthYear1, a.birthYear2);
+    var seniorCount = (year - a.birthYear1 >= 65 ? 1 : 0) + (year - a.birthYear2 >= 65 ? 1 : 0);
+
+    var socialSecurity = a.socialSecurity * Math.pow(1 + a.ssCola, yearIndex);
+    var pension = a.pension;
+    var spendingNeed = a.spendingNeed * Math.pow(1 + a.inflation, yearIndex);
+
+    var divisor = olderAge >= rmdStartAge(Math.min(a.birthYear1, a.birthYear2)) ? rmdDivisor(olderAge) : null;
+    var rmd = divisor ? state.ira / divisor : 0;
+
+    var dividends = state.taxable * a.dividendYield;
+    var irmaa = state.irmaaDueByYear[year] || 0;
+
+    var iraRoomAfterRmdAndConversion = Math.max(0, state.ira - rmd - conversion);
+    var gainFraction = state.taxable > 0 ? Math.max(0, 1 - state.taxableBasis / state.taxable) : 0;
+
+    var estimatedTax = 0;
+    var result = null;
+
+    for (var pass = 0; pass < 60; pass++) {
+      var cashIn = socialSecurity + pension + rmd + dividends;
+      var cashOut = spendingNeed + estimatedTax + irmaa;
+      var shortfall = cashOut - cashIn;
+
+      var fromTaxable = 0, fromIra = 0, fromRoth = 0, surplus = 0;
+      if (shortfall <= 0) {
+        surplus = -shortfall;
+      } else {
+        fromTaxable = Math.min(shortfall, state.taxable);
+        var left = shortfall - fromTaxable;
+        fromIra = Math.min(left, iraRoomAfterRmdAndConversion);
+        left -= fromIra;
+        fromRoth = Math.min(left, state.roth + conversion);
+      }
+
+      var tax = computeYearTax({
+        year: year,
+        inflation: a.inflation,
+        stateRate: a.stateRate,
+        seniorCount: seniorCount,
+        pension: pension,
+        iraDistributions: rmd + fromIra + conversion,
+        qualifiedDividends: dividends,
+        realizedLongTermGain: fromTaxable * gainFraction,
+        capitalLossCarryoverIn: state.capitalLossCarryover,
+        socialSecurity: socialSecurity
+      });
+
+      result = {
+        year: year,
+        olderAge: olderAge,
+        socialSecurity: socialSecurity,
+        pension: pension,
+        spendingNeed: spendingNeed,
+        rmd: rmd,
+        dividends: dividends,
+        fromTaxable: fromTaxable,
+        fromIra: fromIra,
+        fromRoth: fromRoth,
+        surplus: surplus,
+        conversion: conversion,
+        irmaa: irmaa,
+        gainFraction: gainFraction,
+        tax: tax
+      };
+
+      if (Math.abs(tax.totalTax - estimatedTax) < 0.01) break;
+      estimatedTax = tax.totalTax;
+    }
+    return result;
+  }
+
+  /** Finds the largest conversion that keeps the chosen measure at or under the target. */
+  function sizeConversion(state, year, strategy, a) {
+    if (strategy.type === "none") return 0;
+    if (year > a.lastConversionYear) return 0;
+
+    var params = yearParams(year, a.inflation);
+    var measure, target;
+    if (strategy.type === "bracket") {
+      measure = function (r) { return r.tax.taxableIncome; };
+      target = params.bracketTops[strategy.bracketIndex];
+    } else {
+      measure = function (r) { return r.tax.magi; };
+      target = params.irmaaThresholds[0] - IRMAA_CUSHION;
+    }
+
+    var olderAge = year - Math.min(a.birthYear1, a.birthYear2);
+    var divisor = olderAge >= rmdStartAge(Math.min(a.birthYear1, a.birthYear2)) ? rmdDivisor(olderAge) : null;
+    var rmd = divisor ? state.ira / divisor : 0;
+    var maxConversion = Math.max(0, state.ira - rmd);
+
+    if (measure(solveYear(state, year, 0, a)) >= target) return 0;
+    if (measure(solveYear(state, year, maxConversion, a)) <= target) return maxConversion;
+
+    var low = 0, high = maxConversion;
+    for (var i = 0; i < 50; i++) {
+      var mid = (low + high) / 2;
+      if (measure(solveYear(state, year, mid, a)) <= target) low = mid; else high = mid;
+    }
+    return Math.floor(low / 100) * 100; // round down to the nearest $100
+  }
+
+  /**
+   * Projects every year from startYear through endAge of the older spouse.
+   * @returns {{rows: object[], summary: object}}
+   */
+  function project(a, strategy) {
+    var state = {
+      ira: a.iraBalance,
+      roth: a.rothBalance,
+      taxable: a.taxableBalance,
+      taxableBasis: a.taxableBalance * (1 - a.unrealizedGainPct),
+      capitalLossCarryover: a.capitalLossCarryover,
+      irmaaDueByYear: {},
+      magiByYear: {}
+    };
+    state.magiByYear[a.startYear - 1] = a.priorYearMagi;
+
+    var rows = [];
+    var endYear = Math.min(a.birthYear1, a.birthYear2) + a.endAge;
+
+    // The prior year's MAGI sets IRMAA for startYear + 1.
+    state.irmaaDueByYear[a.startYear + 1] = irmaaFor(a.startYear + 1, a.priorYearMagi, a);
+
+    for (var year = a.startYear; year <= endYear; year++) {
+      var conversion = sizeConversion(state, year, strategy, a);
+      var r = solveYear(state, year, conversion, a);
+
+      // Update balances. Withdrawals come out at the start of the year; growth follows.
+      var iraAfter = (state.ira - r.rmd - r.fromIra - r.conversion) * (1 + a.returnRate);
+      var rothAfter = (state.roth + r.conversion - r.fromRoth) * (1 + a.returnRate);
+
+      var basisPortion = r.fromTaxable * (1 - r.gainFraction);
+      var taxableBeforeGrowth = state.taxable - r.fromTaxable + r.surplus;
+      var priceReturn = a.returnRate - a.dividendYield; // dividends were paid out as cash
+      var taxableAfter = taxableBeforeGrowth * (1 + priceReturn);
+      var basisAfter = state.taxableBasis - basisPortion + r.surplus;
+
+      state.ira = Math.max(0, iraAfter);
+      state.roth = Math.max(0, rothAfter);
+      state.taxable = Math.max(0, taxableAfter);
+      state.taxableBasis = Math.max(0, Math.min(basisAfter, state.taxable));
+      state.capitalLossCarryover = r.tax.capitalLossCarryoverOut;
+      state.magiByYear[year] = r.tax.magi;
+      state.irmaaDueByYear[year + 2] = irmaaFor(year + 2, r.tax.magi, a);
+
+      r.endIra = state.ira;
+      r.endRoth = state.roth;
+      r.endTaxable = state.taxable;
+      r.afterTaxWealth = state.taxable + state.roth + state.ira * (1 - a.heirTaxRate);
+      r.spendable = r.socialSecurity + r.pension + r.rmd + r.dividends + r.fromTaxable + r.fromIra + r.fromRoth - r.tax.totalTax - r.irmaa - r.surplus;
+      rows.push(r);
+    }
+
+    return { rows: rows, summary: summarize(rows, a, strategy) };
+  }
+
+  function irmaaFor(premiumYear, magi, a) {
+    var people = (premiumYear - a.birthYear1 >= 65 ? 1 : 0) + (premiumYear - a.birthYear2 >= 65 ? 1 : 0);
+    var thresholds = yearParams(premiumYear - 2, a.inflation).irmaaThresholds;
+    return irmaaAnnualSurcharge(magi, thresholds, people);
+  }
+
+  function summarize(rows, a, strategy) {
+    var totals = { federal: 0, state: 0, niit: 0, irmaa: 0, conversions: 0, rmds: 0 };
+    var discountedTaxes = 0;
+    var peakRate = 0;
+    rows.forEach(function (r, i) {
+      totals.federal += r.tax.federalTax;
+      totals.state += r.tax.stateTax;
+      totals.niit += r.tax.niit;
+      totals.irmaa += r.irmaa;
+      totals.conversions += r.conversion;
+      totals.rmds += r.rmd;
+      discountedTaxes += (r.tax.totalTax + r.irmaa) / Math.pow(1 + a.inflation, i);
+      peakRate = Math.max(peakRate, r.tax.marginalRate);
+    });
+    var last = rows[rows.length - 1];
+    var firstRmdRow = rows.filter(function (r) { return r.rmd > 0; })[0] || null;
+    var heirTax = last.endIra * a.heirTaxRate;
+    var lifetimeTaxes = totals.federal + totals.state + totals.niit + totals.irmaa;
+
+    return {
+      strategyId: strategy.id,
+      strategyLabel: strategy.label,
+      firstYearConversion: rows[0].conversion,
+      firstYearTax: rows[0].tax.totalTax,
+      totalConversions: totals.conversions,
+      lifetimeTaxes: lifetimeTaxes,
+      lifetimeTaxesToday: discountedTaxes,
+      heirTax: heirTax,
+      familyTaxes: lifetimeTaxes + heirTax,
+      irmaaTotal: totals.irmaa,
+      totalRmds: totals.rmds,
+      firstRmd: firstRmdRow ? firstRmdRow.rmd : 0,
+      firstRmdYear: firstRmdRow ? firstRmdRow.year : null,
+      peakMarginalRate: peakRate,
+      endIra: last.endIra,
+      endRoth: last.endRoth,
+      endTaxable: last.endTaxable,
+      afterTaxWealth: last.afterTaxWealth,
+      afterTaxWealthToday: last.afterTaxWealth / Math.pow(1 + a.inflation, rows.length - 1),
+      finalYear: last.year
+    };
+  }
+
+  /** Runs every strategy and marks the one that leaves the family the most after all taxes. */
+  function compareStrategies(a) {
+    var runs = STRATEGIES.map(function (s) { return project(a, s); });
+    var best = runs.reduce(function (acc, run) {
+      return run.summary.afterTaxWealth > acc.summary.afterTaxWealth ? run : acc;
+    }, runs[0]);
+    return { runs: runs, bestId: best.summary.strategyId };
+  }
+
+  var api = {
+    TAX_TABLES: TAX_TABLES,
+    IRMAA_2026: IRMAA_2026,
+    STRATEGIES: STRATEGIES,
+    yearParams: yearParams,
+    ordinaryIncomeTax: ordinaryIncomeTax,
+    federalIncomeTax: federalIncomeTax,
+    taxableSocialSecurity: taxableSocialSecurity,
+    seniorDeduction: seniorDeduction,
+    irmaaAnnualSurcharge: irmaaAnnualSurcharge,
+    rmdStartAge: rmdStartAge,
+    rmdDivisor: rmdDivisor,
+    computeYearTax: computeYearTax,
+    project: project,
+    compareStrategies: compareStrategies
+  };
+
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  else root.RothEngine = api;
+})(typeof window !== "undefined" ? window : this);
+
+</script>
+<script>
+/* =====================================================================
+   Report controller
+   ---------------------------------------------------------------------
+   Flow: read inputs → run all five strategies → render the
+   recommendation, the comparison table, charts and year table for the
+   strategy the reader has selected. Every input change repeats the flow.
+   ===================================================================== */
+(function () {
+  "use strict";
+
+  /* ----------------------------------------------------------------
+     1. Input definitions. "source" tells the reader where a number
+        came from. Stored values are clean numbers; the fields show
+        formatted text.
+     ---------------------------------------------------------------- */
+  var FIELDS = [
+    { key: "spendingNeed",      label: "Annual spending need (after tax)", kind: "currency", value: 80000, source: "client", hint: "Annual after-tax spending target for 2026. Grows with inflation." },
+    { key: "socialSecurity",    label: "2026 Social Security (both)",      kind: "currency", value: 48000, source: "client", hint: "Combined household Social Security for 2026." },
+    { key: "iraBalance",        label: "Traditional IRA balance",          kind: "currency", value: 1000000, source: "client", hint: "Combined traditional IRA / 401(k) balance." },
+    { key: "taxableBalance",    label: "Brokerage account balance",        kind: "currency", value: 300000, source: "client", hint: "Combined taxable (non-retirement) brokerage balance." },
+    { key: "rothBalance",       label: "Existing Roth balance",            kind: "currency", value: 0, source: "client", hint: "Existing Roth IRA balance, if any." },
+    { key: "pension",           label: "Pension or annuity income",        kind: "currency", value: 0, source: "client", hint: "Annual pension or annuity income, if any." },
+    { key: "returnRate",        label: "Investment return",                kind: "percent",  value: 7, source: "estimate", hint: "Applied to IRA, Roth and brokerage." },
+    { key: "dividendYield",     label: "Brokerage dividend yield",         kind: "percent",  value: 2, source: "estimate", hint: "Part of the return, taxed each year." },
+    { key: "unrealizedGainPct", label: "Unrealized gain in brokerage",     kind: "percent",  value: 30, source: "estimate", hint: "Share of each brokerage sale that is a taxable gain." },
+    { key: "inflation",         label: "Inflation",                        kind: "percent",  value: 2.5, source: "estimate", hint: "Grows spending, brackets and IRMAA thresholds." },
+    { key: "ssCola",            label: "Social Security COLA",             kind: "percent",  value: 2.5, source: "estimate", hint: "Annual Social Security increase after 2026." },
+    { key: "stateRate",         label: "State + local income tax",         kind: "percent",  value: 0, source: "estimate", hint: "Flat rate on income other than Social Security. Enter 0 if there is no state income tax." },
+    { key: "heirTaxRate",       label: "Heirs' tax rate on inherited IRA", kind: "percent",  value: 24, source: "estimate", hint: "Heirs must empty an inherited IRA within 10 years." },
+    { key: "capitalLossCarryover", label: "Capital loss carryover",        kind: "currency", value: 0, source: "estimate", hint: "Capital loss carried into 2026, if any." },
+    { key: "priorYearMagi",     label: "Prior-year income (for IRMAA)",    kind: "currency", value: 150000, source: "estimate", hint: "Last year's MAGI. Sets the first two years of Medicare IRMAA." },
+    { key: "birthYear1",        label: "Older spouse's birth year",        kind: "year",     value: 1959, source: "estimate", hint: "Sets the RMD start age (SECURE 2.0)." },
+    { key: "birthYear2",        label: "Younger spouse's birth year",      kind: "year",     value: 1961, source: "estimate", hint: "Used for the second senior deduction and exemption." }
+  ];
+
+  var FIXED = { startYear: 2026, endAge: 95 };
+
+  var state = { values: {}, selectedId: null, results: null, charts: {} };
+
+  /* ----------------------------------------------------------------
+     2. Formatting helpers
+     ---------------------------------------------------------------- */
+  function money(n) {
+    var rounded = Math.round(n);
+    var text = "$" + Math.abs(rounded).toLocaleString("en-US");
+    return rounded < 0 ? "(" + text + ")" : text;
+  }
+  function moneyOrDash(n) { return Math.round(n) === 0 ? "—" : money(n); }
+  function compactMoney(n) {
+    if (Math.abs(n) >= 1e6) return "$" + (n / 1e6).toFixed(2) + "M";
+    if (Math.abs(n) >= 1e3) return "$" + Math.round(n / 1e3) + "K";
+    return money(n);
+  }
+  function pct(n, digits) { return (n * 100).toFixed(digits === undefined ? 1 : digits) + "%"; }
+  function el(id) { return document.getElementById(id); }
+  function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  /* ----------------------------------------------------------------
+     3. Input masks
+        Currency: digits only, grouped with commas while typing.
+        Percent:  digits and one decimal point.
+        Year:     four digits.
+        The caret stays after the same digit when commas are inserted.
+     ---------------------------------------------------------------- */
+  function formatCurrencyText(raw) {
+    var digits = String(raw).replace(/[^0-9]/g, "").replace(/^0+(?=\d)/, "");
+    return digits === "" ? "" : Number(digits).toLocaleString("en-US");
+  }
+  function cleanPercentText(raw) {
+    var cleaned = String(raw).replace(/[^0-9.]/g, "");
+    var firstDot = cleaned.indexOf(".");
+    if (firstDot !== -1) cleaned = cleaned.slice(0, firstDot + 1) + cleaned.slice(firstDot + 1).replace(/\./g, "");
+    return cleaned;
+  }
+  function parseField(field, text) {
+    var n = Number(String(text).replace(/[^0-9.]/g, ""));
+    if (!isFinite(n)) n = 0;
+    return field.kind === "percent" ? n / 100 : n;
+  }
+  function displayValue(field, value) {
+    if (field.kind === "currency") return formatCurrencyText(value);
+    if (field.kind === "percent") return String(value);
+    return String(value);
+  }
+
+  function attachMask(input, field) {
+    input.addEventListener("input", function () {
+      if (field.kind === "currency") {
+        var caret = input.selectionStart || 0;
+        var digitsBeforeCaret = input.value.slice(0, caret).replace(/[^0-9]/g, "").length;
+        input.value = formatCurrencyText(input.value);
+        var pos = 0, seen = 0;
+        while (pos < input.value.length && seen < digitsBeforeCaret) {
+          if (/[0-9]/.test(input.value[pos])) seen++;
+          pos++;
+        }
+        input.setSelectionRange(pos, pos);
+      } else if (field.kind === "percent") {
+        input.value = cleanPercentText(input.value);
+      } else {
+        input.value = input.value.replace(/[^0-9]/g, "").slice(0, 4);
+      }
+      state.values[field.key] = parseField(field, input.value);
+      scheduleRecalculate();
+    });
+  }
+
+  function buildInputs() {
+    var grid = el("inputsGrid");
+    grid.innerHTML = "";
+    FIELDS.forEach(function (field) {
+      var wrap = document.createElement("div");
+      wrap.className = "field";
+      var tag = field.source === "return" ? '<span class="from-return-tag">From return</span>'
+              : field.source === "estimate" ? '<span class="estimate-tag">Estimate</span>' : "";
+      var prefix = field.kind === "currency" ? '<span class="affix">$</span>' : "";
+      var suffix = field.kind === "percent" ? '<span class="affix">%</span>' : "";
+      var mode = field.kind === "percent" ? "decimal" : "numeric";
+      var shown = field.kind === "percent" ? String(field.value) : displayValue(field, field.value);
+      wrap.innerHTML =
+        '<label for="in_' + field.key + '">' + field.label + tag + '</label>' +
+        '<div class="input-wrap">' + prefix +
+        '<input id="in_' + field.key + '" type="text" inputmode="' + mode + '" autocomplete="off" value="' + shown + '">' +
+        suffix + '</div>' +
+        '<span class="hint">' + field.hint + '</span>';
+      grid.appendChild(wrap);
+      attachMask(wrap.querySelector("input"), field);
+      state.values[field.key] = field.kind === "percent" ? field.value / 100 : field.value;
+    });
+  }
+
+  /* ----------------------------------------------------------------
+     4. Calculation
+     ---------------------------------------------------------------- */
+  function assumptions() {
+    var v = state.values;
+    var olderBirthYear = Math.min(v.birthYear1 || 1960, v.birthYear2 || 1960);
+    return {
+      startYear: FIXED.startYear,
+      endAge: FIXED.endAge,
+      priorYearMagi: v.priorYearMagi,
+      birthYear1: v.birthYear1 || 1960,
+      birthYear2: v.birthYear2 || 1960,
+      iraBalance: v.iraBalance,
+      rothBalance: v.rothBalance,
+      taxableBalance: v.taxableBalance,
+      unrealizedGainPct: v.unrealizedGainPct,
+      dividendYield: v.dividendYield,
+      returnRate: v.returnRate,
+      inflation: v.inflation,
+      ssCola: v.ssCola,
+      socialSecurity: v.socialSecurity,
+      pension: v.pension,
+      spendingNeed: v.spendingNeed,
+      stateRate: v.stateRate,
+      capitalLossCarryover: v.capitalLossCarryover,
+      heirTaxRate: v.heirTaxRate,
+      // Convert through the year before RMDs start.
+      lastConversionYear: olderBirthYear + RothEngine.rmdStartAge(olderBirthYear) - 1
+    };
+  }
+
+  var timer = null;
+  function scheduleRecalculate() {
+    clearTimeout(timer);
+    timer = setTimeout(recalculate, 250);
+  }
+
+  function recalculate() {
+    var a = assumptions();
+    if (a.birthYear1 < 1920 || a.birthYear2 < 1920) return; // wait for a full four-digit year
+    var comparison = RothEngine.compareStrategies(a);
+    var previousBest = state.results ? state.results.bestId : null;
+    state.results = comparison;
+    state.assumptions = a;
+    // Follow the recommendation unless the reader picked something else.
+    if (!state.selectedId || state.selectedId === previousBest) state.selectedId = comparison.bestId;
+    render();
+  }
+
+  function runFor(id) {
+    return state.results.runs.filter(function (r) { return r.summary.strategyId === id; })[0];
+  }
+
+  /* ----------------------------------------------------------------
+     5. Rendering
+     ---------------------------------------------------------------- */
+  function render() {
+    var a = state.assumptions;
+    el("heroNeed").textContent = money(a.spendingNeed);
+    el("lastConvYearText").textContent = a.lastConversionYear;
+    renderRecommendation();
+    renderBaseline();
+    renderComparison();
+    renderPicker();
+    renderYearTable();
+    renderCharts();
+  }
+
+  function renderRecommendation() {
+    var best = runFor(state.results.bestId);
+    var none = runFor("none");
+    var s = best.summary;
+    var first = best.rows[0];
+    var a = state.assumptions;
+
+    var extraTax = first.tax.totalTax - none.rows[0].tax.totalTax;
+    var effectiveRate = first.conversion > 0 ? extraTax / first.conversion : 0;
+    var legacyGain = s.afterTaxWealth - none.summary.afterTaxWealth;
+    var legacyGainToday = s.afterTaxWealthToday - none.summary.afterTaxWealthToday;
+
+    if (s.strategyId === "none") {
+      el("answerLead").innerHTML = "<strong>With these assumptions, converting does not pay.</strong> Leaving the IRA alone leaves your family the most after tax. Check the estimated balances and heirs' tax rate below.";
+    } else {
+      el("answerLead").innerHTML =
+        "<strong>" + s.strategyLabel + " every year through " + a.lastConversionYear + ".</strong> " +
+        "In 2026 that means converting <strong>" + money(first.conversion) + "</strong> from the IRA to a Roth IRA by December 31. " +
+        "Compared with doing nothing, this plan leaves your family <strong>" + money(legacyGain) + " more</strong> after every tax by " + s.finalYear +
+        " (" + money(legacyGainToday) + " in today's dollars) and cuts your first required distribution from " +
+        money(none.summary.firstRmd) + " to " + money(s.firstRmd) + ".";
+    }
+
+    var cards = [
+      { label: "Convert in 2026", value: money(first.conversion), note: "Complete by December 31, 2026" },
+      { label: "Added tax in 2026", value: money(extraTax), note: "Federal " + money(first.tax.federalTax) + " · State " + money(first.tax.stateTax) },
+      { label: "Tax rate on the conversion", value: pct(effectiveRate), note: "Every tax combined, divided by the amount converted" },
+      { label: "Taxable income after conversion", value: money(first.tax.taxableIncome), note: "Top dollar taxed at " + pct(first.tax.marginalRate, 0) + " · MAGI " + money(first.tax.magi) }
+    ];
+    el("actionCards").innerHTML = cards.map(function (c, i) {
+      return '<div class="card' + (i === 0 ? " featured" : "") + '"><div class="stat-label">' + c.label +
+             '</div><div class="stat-value">' + c.value + '</div><div class="stat-note">' + c.note + '</div></div>';
+    }).join("");
+
+    // Underpayment safe harbor: at least 90% of the current-year tax. A 110%-of-
+    // prior-year prong also exists but needs last year's actual tax.
+    var federalNeeded = first.tax.federalTax * 0.90;
+    if (s.strategyId === "none") {
+      el("paymentPlan").innerHTML =
+        "No conversion is recommended under these assumptions, so there is no extra tax to prepay. " +
+        "If you convert anyway, pay the tax from the brokerage account &mdash; not from the IRA &mdash; so the full amount lands in the Roth.";
+    } else {
+      el("paymentPlan").innerHTML =
+        "Pay the conversion tax from the brokerage account, not from the IRA, so the full amount lands in the Roth. " +
+        "To stay in the underpayment safe harbor, federal estimated payments of at least <strong>" + money(Math.ceil(federalNeeded / 100) * 100) + "</strong> " +
+        "(90% of your projected 2026 tax, or 110% of last year&rsquo;s tax if that is lower) avoid a penalty. " +
+        "Plan on a federal payment of about " + money(first.tax.federalTax) + " and a state payment of about " + money(first.tax.stateTax) +
+        " by January 15, 2027. Because the conversion happens late in the year, the annualized-income method on Form 2210 keeps the earlier quarters penalty-free.";
+    }
+  }
+
+  function renderBaseline() {
+    var none = runFor("none");
+    if (!none) return;
+    var t = none.rows[0].tax;
+    var a = state.assumptions;
+
+    el("standAgi").textContent = money(t.agi);
+    el("standTaxable").textContent = money(t.taxableIncome);
+    el("standTaxableNote").textContent = "After " + money(t.standardDeduction) + " standard and " + money(t.seniorDeduction) + " senior deductions";
+    el("standFed").textContent = money(t.federalTax);
+    el("standFedNote").textContent = "Plus " + money(t.stateTax) + " state and " + money(t.niit) + " NIIT";
+    el("standRate").textContent = pct(t.marginalRate, 0);
+
+    var seniorCount = (FIXED.startYear - a.birthYear1 >= 65 ? 1 : 0) + (FIXED.startYear - a.birthYear2 >= 65 ? 1 : 0);
+    var fullSenior = 6000 * seniorCount;
+    var seniorLost = Math.max(0, fullSenior - t.seniorDeduction);
+    var ssShare = a.socialSecurity > 0 ? Math.round(t.ssTaxable / a.socialSecurity * 100) : 0;
+
+    var findings = [];
+    if (a.socialSecurity > 0) {
+      findings.push("<strong>" + ssShare + "% of your Social Security is taxable this year.</strong> " +
+        money(t.ssTaxable) + " of " + money(a.socialSecurity) + ". Roth withdrawals later do not add to this the way IRA withdrawals do.");
+    }
+    if (seniorLost > 1) {
+      findings.push("<strong>You lose " + money(seniorLost) + " of the senior deduction.</strong> " +
+        "It shrinks by 6 cents for every dollar of income over $150,000 and disappears after 2028.");
+    } else if (fullSenior > 0) {
+      findings.push("<strong>You qualify for the full " + money(fullSenior) + " senior deduction.</strong> " +
+        "It phases out above $150,000 of income and disappears after 2028 &mdash; a reason to act in these years.");
+    }
+    if (a.capitalLossCarryover > 0) {
+      findings.push("<strong>" + money(a.capitalLossCarryover) + " of capital losses carry into 2026.</strong> " +
+        "They offset future gains first, then $3,000 a year of ordinary income.");
+    } else {
+      var rmdAge = RothEngine.rmdStartAge(Math.min(a.birthYear1, a.birthYear2));
+      findings.push("<strong>Required distributions begin at age " + rmdAge + ".</strong> " +
+        "Every dollar left in the IRA until then builds a larger future RMD that stacks on top of Social Security.");
+    }
+    el("standFindings").innerHTML = findings.map(function (f, i) {
+      return '<div class="card finding"><span class="numeral">' + (i + 1) + '</span><p>' + f + '</p></div>';
+    }).join("");
+  }
+
+  function renderComparison() {
+    var body = el("compareBody");
+    var bestId = state.results.bestId;
+    var noneToday = runFor("none").summary.afterTaxWealthToday;
+    function advantage(diff) {
+      if (Math.round(diff) === 0) return "—";
+      return '<span class="' + (diff > 0 ? "good" : "bad") + '">' + (diff > 0 ? "+" : "−") + money(Math.abs(diff)) + '</span>';
+    }
+    body.innerHTML = state.results.runs.map(function (run) {
+      var s = run.summary;
+      var classes = ["clickable"];
+      if (s.strategyId === bestId) classes.push("is-best");
+      if (s.strategyId === state.selectedId) classes.push("is-selected");
+      return '<tr class="' + classes.join(" ") + '" data-id="' + s.strategyId + '" tabindex="0" aria-selected="' + (s.strategyId === state.selectedId) + '">' +
+        '<td><strong>' + s.strategyLabel + '</strong>' + (s.strategyId === bestId ? '<span class="chip">Recommended</span>' : "") + '</td>' +
+        '<td>' + moneyOrDash(s.firstYearConversion) + '</td>' +
+        '<td>' + moneyOrDash(s.firstYearTax) + '</td>' +
+        '<td><strong>' + money(s.afterTaxWealthToday) + '</strong></td>' +
+        '<td>' + advantage(s.afterTaxWealthToday - noneToday) + '</td>' +
+        '<td>' + money(s.lifetimeTaxes) + '</td>' +
+        '<td>' + moneyOrDash(s.heirTax) + '</td>' +
+        '<td>' + moneyOrDash(s.irmaaTotal) + '</td>' +
+        '<td>' + (s.firstRmd > 0 ? money(s.firstRmd) : "None") + '</td>' +
+        '<td>' + moneyOrDash(s.totalConversions) + '</td>' +
+        '</tr>';
+    }).join("");
+    el("finalYearText").textContent = state.results.runs[0].summary.finalYear;
+
+    Array.prototype.forEach.call(body.querySelectorAll("tr"), function (tr) {
+      function choose() { select(tr.getAttribute("data-id")); }
+      tr.addEventListener("click", choose);
+      tr.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); } });
+    });
+  }
+
+  function renderPicker() {
+    var picker = el("strategyPicker");
+    picker.innerHTML = state.results.runs.map(function (run) {
+      var s = run.summary;
+      return '<button type="button" data-id="' + s.strategyId + '" aria-pressed="' + (s.strategyId === state.selectedId) + '">' +
+        s.strategyLabel + (s.strategyId === state.results.bestId ? " · Recommended" : "") + '</button>';
+    }).join("");
+    Array.prototype.forEach.call(picker.querySelectorAll("button"), function (b) {
+      b.addEventListener("click", function () { select(b.getAttribute("data-id")); });
+    });
+  }
+
+  function select(id) {
+    state.selectedId = id;
+    renderComparison();
+    renderPicker();
+    renderYearTable();
+    renderCharts();
+  }
+
+  function renderYearTable() {
+    var run = runFor(state.selectedId);
+    var a = state.assumptions;
+    el("tableStrategyName").textContent = run.summary.strategyLabel;
+    var rmdStartYear = Math.min(a.birthYear1, a.birthYear2) + RothEngine.rmdStartAge(Math.min(a.birthYear1, a.birthYear2));
+
+    var html = "";
+    run.rows.forEach(function (r) {
+      if (r.year === a.startYear) html += '<tr class="phase-row"><td colspan="16">Conversion years · ' + a.startYear + '–' + a.lastConversionYear + '</td></tr>';
+      if (r.year === rmdStartYear) html += '<tr class="phase-row"><td colspan="16">Required minimum distributions begin · ' + rmdStartYear + '</td></tr>';
+      html += '<tr>' +
+        '<td><strong>' + r.year + '</strong></td>' +
+        '<td>' + (r.year - a.birthYear1) + ' / ' + (r.year - a.birthYear2) + '</td>' +
+        '<td>' + money(r.spendingNeed) + '</td>' +
+        '<td>' + money(r.socialSecurity + r.pension) + '</td>' +
+        '<td>' + moneyOrDash(r.rmd) + '</td>' +
+        '<td>' + moneyOrDash(r.dividends) + '</td>' +
+        '<td>' + moneyOrDash(r.fromTaxable) + '</td>' +
+        '<td>' + moneyOrDash(r.fromIra) + '</td>' +
+        '<td>' + moneyOrDash(r.fromRoth) + '</td>' +
+        '<td>' + moneyOrDash(r.conversion) + '</td>' +
+        '<td>' + (r.tax.taxableIncome > 0 ? pct(r.tax.marginalRate, 0) : "0%") + '</td>' +
+        '<td>' + moneyOrDash(r.tax.totalTax) + '</td>' +
+        '<td>' + moneyOrDash(r.irmaa) + '</td>' +
+        '<td>' + compactMoney(r.endIra) + '</td>' +
+        '<td>' + compactMoney(r.endRoth) + '</td>' +
+        '<td>' + compactMoney(r.endTaxable) + '</td>' +
+        '</tr>';
+    });
+    el("yearBody").innerHTML = html;
+  }
+
+  /* ----------------------------------------------------------------
+     6. Charts (Chart.js). If the library fails to load, the tables
+        still carry every number.
+     ---------------------------------------------------------------- */
+  function renderCharts() {
+    if (typeof Chart === "undefined") return;
+    var run = runFor(state.selectedId);
+    var none = runFor("none");
+    var years = run.rows.map(function (r) { return r.year; });
+
+    var ink = cssVar("--chart-1"), gold = cssVar("--chart-2"), grey = cssVar("--chart-3"), blue = cssVar("--chart-4");
+    var textColor = cssVar("--fg-muted"), gridColor = cssVar("--rule");
+    Chart.defaults.font.family = "'Source Sans 3', system-ui, sans-serif";
+    Chart.defaults.font.size = 13;
+    Chart.defaults.color = textColor;
+
+    var moneyAxis = {
+      ticks: { callback: function (v) { return compactMoney(v); } },
+      grid: { color: gridColor }, border: { display: false }
+    };
+    var yearAxis = { grid: { display: false }, ticks: { maxTicksLimit: 10 } };
+    var tooltip = { callbacks: { label: function (c) { return c.dataset.label + ": " + money(c.parsed.y); } } };
+    var common = { responsive: true, maintainAspectRatio: false, animation: { duration: 220 }, interaction: { mode: "index", intersect: false } };
+
+    draw("sourcesChart", {
+      type: "bar",
+      data: {
+        labels: years,
+        datasets: [
+          { label: "Social Security", data: run.rows.map(function (r) { return r.socialSecurity + r.pension; }), backgroundColor: ink },
+          { label: "IRA (RMD + withdrawals)", data: run.rows.map(function (r) { return r.rmd + r.fromIra; }), backgroundColor: gold },
+          { label: "Brokerage (dividends + sales)", data: run.rows.map(function (r) { return r.dividends + r.fromTaxable; }), backgroundColor: grey },
+          { label: "Roth", data: run.rows.map(function (r) { return r.fromRoth; }), backgroundColor: blue }
+        ]
+      },
+      options: Object.assign({}, common, {
+        scales: { x: Object.assign({ stacked: true }, yearAxis), y: Object.assign({ stacked: true }, moneyAxis) },
+        plugins: { tooltip: tooltip, legend: { position: "bottom", labels: { usePointStyle: true, pointStyle: "rectRounded", boxHeight: 8 } } }
+      })
+    });
+
+    var lineOptions = Object.assign({}, common, {
+      scales: { x: yearAxis, y: moneyAxis },
+      plugins: { tooltip: tooltip, legend: { position: "bottom", labels: { usePointStyle: true, pointStyle: "rectRounded", boxHeight: 8 } } }
+    });
+    function lineSet(label, data, color, dashed) {
+      return { label: label, data: data, borderColor: color, backgroundColor: color, borderWidth: 2.5, pointRadius: 0, tension: 0.2, borderDash: dashed ? [6, 5] : [] };
+    }
+    var sameAsNone = state.selectedId === "none";
+
+    draw("rmdChart", { type: "line", data: { labels: years, datasets: [
+      lineSet("No conversions", none.rows.map(function (r) { return r.rmd; }), grey, true)
+    ].concat(sameAsNone ? [] : [lineSet(run.summary.strategyLabel, run.rows.map(function (r) { return r.rmd; }), gold)]) }, options: lineOptions });
+
+    draw("taxChart", { type: "line", data: { labels: years, datasets: [
+      lineSet("No conversions", none.rows.map(function (r) { return r.tax.totalTax + r.irmaa; }), grey, true)
+    ].concat(sameAsNone ? [] : [lineSet(run.summary.strategyLabel, run.rows.map(function (r) { return r.tax.totalTax + r.irmaa; }), gold)]) }, options: lineOptions });
+
+    draw("wealthChart", { type: "line", data: { labels: years, datasets: [
+      lineSet("No conversions", none.rows.map(function (r) { return r.afterTaxWealth; }), grey, true)
+    ].concat(sameAsNone ? [] : [lineSet(run.summary.strategyLabel, run.rows.map(function (r) { return r.afterTaxWealth; }), gold)]) }, options: lineOptions });
+  }
+
+  function draw(canvasId, config) {
+    if (state.charts[canvasId]) state.charts[canvasId].destroy();
+    state.charts[canvasId] = new Chart(el(canvasId), config);
+  }
+
+  /* ----------------------------------------------------------------
+     6b. Prospect prefill from URL parameters
+        The dashboard's build_static_deck_url opens this deck with the
+        prospect's intake values as ?agi=&iraBalance=&... . With no
+        params the neutral sample defaults stand. The tax engine is
+        married-filing-jointly; a non-MFJ prospect gets a visible notice.
+     ---------------------------------------------------------------- */
+  function prefillFromUrl() {
+    var params = new URLSearchParams(location.search);
+    var keys = [];
+    params.forEach(function (_, k) { keys.push(k); });
+    if (!keys.length) return;
+
+    function num(name) {
+      var raw = params.get(name);
+      if (raw == null || raw === "") return null;
+      var n = Number(String(raw).replace(/[^0-9.\-]/g, ""));
+      return isFinite(n) ? n : null;
+    }
+    function setField(key, value) {
+      if (value == null) return;
+      for (var i = 0; i < FIELDS.length; i++) {
+        if (FIELDS[i].key === key) { FIELDS[i].value = value; return; }
+      }
+    }
+
+    setField("iraBalance", num("iraBalance"));
+    setField("taxableBalance", num("taxableBalance"));
+    setField("rothBalance", num("rothBalance"));
+    setField("spendingNeed", num("spendingNeed"));
+    setField("pension", num("pension"));
+
+    // Social Security: combine per-person monthly benefits into an annual household figure.
+    var ssAnnual = num("socialSecurity");
+    if (ssAnnual == null) {
+      var monthly = (num("ssYouMonthly") || 0) + (num("ssSpouseMonthly") || 0);
+      if (monthly > 0) ssAnnual = monthly < 12000 ? monthly * 12 : monthly;
+    }
+    setField("socialSecurity", ssAnnual);
+
+    // Prior-year income for first-year IRMAA (the prospect's AGI).
+    setField("priorYearMagi", num("priorYearMagi") != null ? num("priorYearMagi") : num("agi"));
+
+    // Birth years from ages. Older spouse = smaller birth year.
+    var ages = [];
+    if (num("age") && num("age") > 0) ages.push(num("age"));
+    if (num("spouseAge") && num("spouseAge") > 0) ages.push(num("spouseAge"));
+    if (ages.length) {
+      if (ages.length === 1) ages.push(ages[0]); // assume a same-age spouse for the MFJ model
+      setField("birthYear1", FIXED.startYear - Math.max(ages[0], ages[1]));
+      setField("birthYear2", FIXED.startYear - Math.min(ages[0], ages[1]));
+    }
+
+    // Household name in the hero and title.
+    var name = [params.get("firstName"), params.get("lastName")].filter(Boolean).join(" ").trim();
+    if (name) {
+      var h = el("householdName");
+      if (h) h.textContent = name;
+      document.title = "2026 Roth Conversion Analysis · " + name + " · Yields4U";
+    }
+
+    // The engine models married filing jointly; warn if the prospect files otherwise.
+    var fs = (params.get("filingStatus") || "").toLowerCase();
+    if (fs && !/mfj|married|joint|qw|widow|surviv/.test(fs)) {
+      var banner = document.createElement("p");
+      banner.style.cssText = "margin-top:16px;padding:12px 16px;border-left:3px solid var(--gold-400);background:var(--gold-50);border-radius:4px;font-size:15px;color:var(--fg-muted);";
+      banner.innerHTML = "This analysis models a <strong>married-filing-jointly</strong> household. " +
+        "This prospect&rsquo;s filing status is different, so the tax figures are illustrative until the assumptions are adjusted.";
+      var hero = document.querySelector(".hero");
+      if (hero) hero.appendChild(banner);
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     7. Start
+     ---------------------------------------------------------------- */
+  prefillFromUrl();
+  buildInputs();
+  el("resetBtn").addEventListener("click", function () {
+    state.selectedId = null;
+    buildInputs();
+    recalculate();
+  });
+  // Redraw charts when the viewer switches light/dark so colors stay readable.
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    var onChange = function () { if (state.results) renderCharts(); };
+    if (mq.addEventListener) mq.addEventListener("change", onChange);
+  }
+  recalculate();
+})();
+</script>
+</body>
+</html>
