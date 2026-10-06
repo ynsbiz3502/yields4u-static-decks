@@ -290,9 +290,9 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
         <div class="chart-box"><canvas id="taxChart" aria-label="Taxes by year"></canvas></div>
       </div>
       <div class="card chart-card">
-        <p class="chart-title">After-tax wealth</p>
-        <p class="chart-sub">Brokerage + Roth + IRA less the tax your heirs would owe on the IRA.</p>
-        <div class="chart-box"><canvas id="wealthChart" aria-label="After-tax wealth by year"></canvas></div>
+        <p class="chart-title">After-tax wealth advantage</p>
+        <p class="chart-sub">Each plan compared with no conversions, in that year&rsquo;s dollars. Above zero means more for your family after every tax.</p>
+        <div class="chart-box"><canvas id="wealthChart" aria-label="After-tax wealth advantage over no conversions, by year"></canvas></div>
       </div>
     </div>
 
@@ -966,9 +966,18 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
     if (Math.abs(n) >= 1e3) return "$" + Math.round(n / 1e3) + "K";
     return money(n);
   }
+  function signedMoney(n) { var r = Math.round(n); return r === 0 ? "$0" : (r > 0 ? "+" : "−") + money(Math.abs(r)); }
+  function signedCompact(n) { return Math.round(n) === 0 ? "$0" : (n > 0 ? "+" : "−") + compactMoney(Math.abs(n)); }
   function pct(n, digits) { return (n * 100).toFixed(digits === undefined ? 1 : digits) + "%"; }
   function el(id) { return document.getElementById(id); }
   function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function withAlpha(hex, alpha) {
+    var h = String(hex).replace("#", "");
+    if (h.length === 3) h = h.split("").map(function (c) { return c + c; }).join("");
+    var n = parseInt(h, 16);
+    if (!isFinite(n)) return hex;
+    return "rgba(" + (n >> 16 & 255) + "," + (n >> 8 & 255) + "," + (n & 255) + "," + alpha + ")";
+  }
 
   /* ----------------------------------------------------------------
      3. Input masks
@@ -1354,9 +1363,37 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
       lineSet("No conversions", none.rows.map(function (r) { return r.tax.totalTax + r.irmaa; }), grey, true)
     ].concat(sameAsNone ? [] : [lineSet(run.summary.strategyLabel, run.rows.map(function (r) { return r.tax.totalTax + r.irmaa; }), gold)]) }, options: lineOptions });
 
+    // After-tax wealth is drawn as each plan's advantage over "No conversions", so the
+    // zero line is the do-nothing case. Absolute balances all compound along the same
+    // curve and hide a 5% difference; the advantage makes the decision visible.
+    var muted = withAlpha(grey, 0.45), zeroLine = withAlpha(ink, 0.55);
+    var advantageSets = state.results.runs.filter(function (r) { return r.summary.strategyId !== "none"; }).map(function (r) {
+      var selected = r.summary.strategyId === state.selectedId;
+      var set = lineSet(r.summary.strategyLabel, r.rows.map(function (row, i) { return row.afterTaxWealth - none.rows[i].afterTaxWealth; }), selected ? gold : muted);
+      if (!selected) set.borderWidth = 1.5;
+      set.order = selected ? 0 : 1; // the selected plan draws on top
+      return set;
+    });
     draw("wealthChart", { type: "line", data: { labels: years, datasets: [
-      lineSet("No conversions", none.rows.map(function (r) { return r.afterTaxWealth; }), grey, true)
-    ].concat(sameAsNone ? [] : [lineSet(run.summary.strategyLabel, run.rows.map(function (r) { return r.afterTaxWealth; }), gold)]) }, options: lineOptions });
+      lineSet("No conversions", years.map(function () { return 0; }), grey, true)
+    ].concat(advantageSets) }, options: Object.assign({}, lineOptions, {
+      scales: { x: yearAxis, y: {
+        beginAtZero: true,
+        ticks: { callback: function (v) { return signedCompact(v); } },
+        grid: {
+          color: function (ctx) { return ctx.tick && ctx.tick.value === 0 ? zeroLine : gridColor; },
+          lineWidth: function (ctx) { return ctx.tick && ctx.tick.value === 0 ? 1.5 : 1; }
+        },
+        border: { display: false }
+      } },
+      plugins: {
+        legend: { position: "bottom", labels: { usePointStyle: true, pointStyle: "rectRounded", boxHeight: 8, sort: function (a, b) { return a.datasetIndex - b.datasetIndex; } } },
+        tooltip: {
+          filter: function (item) { return item.dataset.label !== "No conversions"; },
+          callbacks: { label: function (c) { return c.dataset.label + ": " + signedMoney(c.parsed.y); } }
+        }
+      }
+    }) });
   }
 
   function draw(canvasId, config) {
@@ -1395,6 +1432,7 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
     setField("rothBalance", num("rothBalance"));
     setField("spendingNeed", num("spendingNeed"));
     setField("pension", num("pension"));
+    setField("capitalLossCarryover", num("capitalLossCarryover"));
 
     // Social Security: combine per-person monthly benefits into an annual household figure.
     var ssAnnual = num("socialSecurity");
