@@ -918,7 +918,9 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
    ---------------------------------------------------------------------
    Flow: read inputs → run all five strategies → render the
    recommendation, the comparison table, charts and year table for the
-   strategy the reader has selected. Every input change repeats the flow.
+   strategy the reader has selected. Every input change repeats the flow
+   and writes the inputs back to the address bar (6c), so the link can be
+   copied or shared and reopens with the same numbers.
    ===================================================================== */
 (function () {
   "use strict";
@@ -950,7 +952,7 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
 
   var FIXED = { startYear: 2026, endAge: 95 };
 
-  var state = { values: {}, selectedId: null, results: null, charts: {} };
+  var state = { values: {}, selectedId: null, results: null, charts: {}, touched: false };
 
   /* ----------------------------------------------------------------
      2. Formatting helpers
@@ -1025,6 +1027,7 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
         input.value = input.value.replace(/[^0-9]/g, "").slice(0, 4);
       }
       state.values[field.key] = parseField(field, input.value);
+      state.touched = true;
       scheduleRecalculate();
     });
   }
@@ -1103,6 +1106,7 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
     // Follow the recommendation unless the reader picked something else.
     if (!state.selectedId || state.selectedId === previousBest) state.selectedId = comparison.bestId;
     render();
+    if (state.touched) syncUrl();
   }
 
   function runFor(id) {
@@ -1455,6 +1459,11 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
       setField("birthYear2", FIXED.startYear - Math.min(ages[0], ages[1]));
     }
 
+    // Direct field keys win over the dashboard shorthands above. They are what this
+    // page writes back to the address bar after an edit (see syncUrl), so a copied
+    // link reopens with exactly the numbers that were on screen.
+    FIELDS.forEach(function (f) { setField(f.key, num(f.key)); });
+
     // Household name in the hero and title.
     var name = [params.get("firstName"), params.get("lastName")].filter(Boolean).join(" ").trim();
     if (name) {
@@ -1476,6 +1485,33 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
   }
 
   /* ----------------------------------------------------------------
+     6c. Address bar = the inputs
+        After any edit (or Reset) every input is written to the URL as
+        ?key=value: currency and years as whole numbers, percents as
+        typed (7, 2.5). The link can then be copied, bookmarked or shared
+        and reopens with the same numbers. The dashboard shorthands (age,
+        agi, monthly Social Security) are dropped once the direct keys
+        exist; everything else (names, filing status) is kept. replaceState
+        keeps edits out of the browser history. A plain page load never
+        rewrites the URL.
+     ---------------------------------------------------------------- */
+  var ALIAS_PARAMS = ["age", "spouseAge", "agi", "ssYouMonthly", "ssSpouseMonthly"];
+  function urlValue(field, value) {
+    var n = Number(value) || 0;
+    if (field.kind === "percent") return String(Math.round(n * 100 * 1e4) / 1e4);
+    return String(Math.round(n));
+  }
+  function syncUrl() {
+    if (!window.history || typeof history.replaceState !== "function") return;
+    var params = new URLSearchParams(location.search);
+    ALIAS_PARAMS.forEach(function (k) { params.delete(k); });
+    FIELDS.forEach(function (f) { params.set(f.key, urlValue(f, state.values[f.key])); });
+    var next = location.pathname + "?" + params.toString() + location.hash;
+    if (next === location.pathname + location.search + location.hash) return;
+    try { history.replaceState(history.state, "", next); } catch (e) { /* sandboxed frame: inputs still work */ }
+  }
+
+  /* ----------------------------------------------------------------
      7. Start
      ---------------------------------------------------------------- */
   prefillFromUrl();
@@ -1483,6 +1519,7 @@ footer .tag { font-family: var(--font-serif); font-style: italic; color: var(--g
   el("resetBtn").addEventListener("click", function () {
     state.selectedId = null;
     buildInputs();
+    state.touched = true;
     recalculate();
   });
   // Redraw charts when the viewer switches light/dark so colors stay readable.
